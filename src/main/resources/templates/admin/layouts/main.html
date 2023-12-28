@@ -6,11 +6,22 @@
     <title th:if="${pageTitle != null}" th:text="${pageTitle}"></title>
 
     <link rel="stylesheet" type="text/css" th:href="@{/common/css/style.css}">
+    <link rel="stylesheet" type="text/css"
+          th:each="cssFile : ${addCommonCss}"
+          th:href="@{/common/css/{file}.css(file=${cssFile})}">
 
     <link rel="stylesheet" type="text/css" th:href="@{/admin/css/style.css}">
+    <link rel="stylesheet" type="text/css"
+          th:each="cssFile : ${addCss}"
+          th:href="@{/admin/css/{file}.css(file=${cssFile})}">
 
     <script th:src="@{/common/js/common.js}"></script>
+    <script th:each="jsFile : ${addCommonScript}"
+            th:src="@{/common/js/{file}.js(file=${jsFile})}"></script>
+
     <script th:src="@{/admin/js/common.js}"></script>
+    <script th:each="jsFile : ${addScript}"
+            th:src="@{/admin/js/{file}.js(file=${jsFile})}"></script>
 </head>
 <body>
 
