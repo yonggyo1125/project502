@@ -16,5 +16,8 @@ public class Utils {
 
         String pattern = ".*(iPhone|iPod|iPad|BlackBerry|Android|Windows CE|LG|MOT|SAMSUNG|SonyEricsson).*";
 
+        boolean isMobile = ua.matches(pattern);
+
+        return isMobile;
     }
 }
