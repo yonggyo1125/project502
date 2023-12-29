@@ -20,4 +20,10 @@ public class Utils {
 
         return isMobile;
     }
+
+    public String tpl(String path) {
+        String prefix = isMobile() ? "mobile/" : "front/";
+
+        return prefix + path;
+    }
 }
