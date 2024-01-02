@@ -5,7 +5,6 @@ import org.choongang.member.controllers.JoinValidator;
 import org.choongang.member.controllers.RequestJoin;
 import org.choongang.member.entities.Member;
 import org.choongang.member.repositories.MemberRepository;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
@@ -27,8 +26,12 @@ public class JoinService {
         // 비밀번호 BCrypt로 해시화
         String hash = encoder.encode(form.getPassword());
 
-        Member member = new ModelMapper().map(form, Member.class);
+        //Member member = new ModelMapper().map(form, Member.class);
+        Member member = new Member();
+        member.setEmail(form.getEmail());
+        member.setName(form.getName());
         member.setPassword(hash);
+        member.setUserId(form.getUserId());
 
         process(member);
     }
