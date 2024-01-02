@@ -10,6 +10,7 @@ public class MemberUtil {
         session.removeAttribute("username");
         session.removeAttribute("NotBlank_username");
         session.removeAttribute("NotBlank_password");
+        session.removeAttribute("Global_error");
     }
 
 }

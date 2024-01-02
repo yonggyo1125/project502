@@ -20,6 +20,8 @@
             </dd>
         </dl>
         <button type="submit" th:text="#{로그인}"></button>
+
+        <div class="error" th:if="${session.Global_error != null}" th:text="${session.Global_error}"></div>
     </form>
 </main>
 </html>
