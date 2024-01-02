@@ -17,10 +17,16 @@ public class MemberInfoService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Member member = memberRepository.findByEmail(username)
-                .orElseGet(() -> memberRepository.findByUserId(username).orElseThrow(MemberNotFoundException::new));
+        Member member = memberRepository.findByEmail(username) // 이메일 조회
+                .orElseGet(() -> memberRepository.findByUserId(username) // 아이디로 조회
+                        .orElseThrow(() -> new UsernameNotFoundException(username)));
 
 
-        return null;
+        return MemberInfo.builder()
+                .email(member.getEmail())
+                .userId(member.getUserId())
+                .password(member.getPassword())
+                .member(member)
+                .build();
     }
 }
