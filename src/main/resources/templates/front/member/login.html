@@ -8,7 +8,7 @@
         <dl>
             <dt th:text="#{아이디}"></dt>
             <dd>
-                <input type="text" name="username">
+                <input type="text" name="username" th:value="${session.username}">
                 <div class="error" th:if="${session.NotBlank_username != null}" th:text="${session.NotBlank_username}"></div>
             </dd>
         </dl>

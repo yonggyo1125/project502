@@ -19,6 +19,8 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
+        session.setAttribute("username", username);
+
         if (!StringUtils.hasText(username)) {
             session.setAttribute("NotBlank_username", Utils.getMessage("NotBlank.userId"));
         }
