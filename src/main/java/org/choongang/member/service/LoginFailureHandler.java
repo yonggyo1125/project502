@@ -4,6 +4,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.choongang.commons.Utils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.util.StringUtils;
@@ -19,11 +20,11 @@ public class LoginFailureHandler implements AuthenticationFailureHandler {
         String password = request.getParameter("password");
 
         if (!StringUtils.hasText(username)) {
-            session.setAttribute("NotBlank_userId", "아이디를 입력하세요.");
+            session.setAttribute("NotBlank_username", Utils.getMessage("NotBlank.userId"));
         }
 
         if (!StringUtils.hasText(password)) {
-
+            session.setAttribute("NotBlank_password", Utils.getMessage("NotBlank.password"));
         }
 
 
