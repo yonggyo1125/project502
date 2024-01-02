@@ -30,7 +30,7 @@ public interface PasswordValidator {
      * @return
      */
     default boolean numberCheck(String password) {
-
+        return password.matches(".*\\d+.*");
     }
 
     /**
@@ -40,7 +40,9 @@ public interface PasswordValidator {
      * @return
      */
     default boolean specialCharsCheck(String password) {
+        String pattern = ".*[`~!@#$%^*&()-_+=]+.*";
 
+        return password.matches(pattern);
     }
 
 }
