@@ -9,12 +9,14 @@
             <dt th:text="#{아이디}"></dt>
             <dd>
                 <input type="text" name="username">
+                <div class="error" th:if="${session.NotBlank_username != null}" th:text="${session.NotBlank_username}"></div>
             </dd>
         </dl>
         <dl>
             <dt th:text="#{비밀번호}"></dt>
             <dd>
                 <input type="password" name="password">
+                <div class="error" th:if="${session.NotBlank_password != null}" th:text="${session.NotBlank_password}"></div>
             </dd>
         </dl>
         <button type="submit" th:text="#{로그인}"></button>
