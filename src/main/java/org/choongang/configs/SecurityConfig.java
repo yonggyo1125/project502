@@ -1,5 +1,7 @@
 package org.choongang.configs;
 
+import org.choongang.member.service.LoginFailureHandler;
+import org.choongang.member.service.LoginSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,8 +20,8 @@ public class SecurityConfig {
             f.loginPage("/member/login")
                     .usernameParameter("username")
                     .passwordParameter("password")
-                    .defaultSuccessUrl("/")
-                    .failureUrl("/member/login?error=true");
+                    .successHandler(new LoginSuccessHandler())
+                    .failureHandler(new LoginFailureHandler());
         });
         /* 인증 설정 E - 로그인 */
 
