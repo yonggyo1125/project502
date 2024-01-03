@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 public class SecurityConfig {
@@ -15,7 +16,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        /* 인증 설정 S - 로그인 */
+        /* 인증 설정 S - 로그인, 로그아웃 */
         http.formLogin(f -> {
             f.loginPage("/member/login")
                     .usernameParameter("username")
@@ -23,8 +24,15 @@ public class SecurityConfig {
                     .successHandler(new LoginSuccessHandler())
                     .failureHandler(new LoginFailureHandler());
         });
-        /* 인증 설정 E - 로그인 */
 
+        http.logout(c -> {
+            c.logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
+                    .logoutSuccessUrl("/member/login");
+        });
+        /* 인증 설정 E - 로그인, 로그아웃 */
+        
+        
+        
         return http.build();
     }
 
