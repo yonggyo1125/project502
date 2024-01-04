@@ -22,6 +22,8 @@ public class ConfigSaveService {
         try {
             String jsonString = om.writeValueAsString(data);
             configs.setData(jsonString);
+            configs.setCode(code);
+
             repository.saveAndFlush(configs);
 
         } catch (JsonProcessingException e) {
