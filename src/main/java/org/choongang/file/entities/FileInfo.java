@@ -1,9 +1,6 @@
 package org.choongang.file.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +13,10 @@ import java.util.UUID;
 @Entity
 @Builder
 @NoArgsConstructor @AllArgsConstructor
+@Table(indexes = {
+        @Index(name="idx_fInfo_gid", columnList = "gid"),
+        @Index(name="idx_fInfo_gid_loc", columnList = "gid,location")
+})
 public class FileInfo extends BaseMember {
     @Id @GeneratedValue
     private Long seq; // 파일 등록 번호, 서버에 업로드하는 파일명 기준
@@ -33,5 +34,4 @@ public class FileInfo extends BaseMember {
     private String extension;
 
     private boolean done;
-
 }
