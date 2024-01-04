@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.Utils;
-import org.choongang.member.MemberUtil;
 import org.choongang.member.service.JoinService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,16 +21,17 @@ public class MemberController implements ExceptionProcessor {
 
     private final Utils utils;
     private final JoinService joinService;
-    private final MemberUtil memberUtil;
 
     @GetMapping("/join")
     public String join(@ModelAttribute RequestJoin form, Model model) {
+        commonProcess("join", model);
 
         return utils.tpl("member/join");
     }
 
     @PostMapping("/join")
-    public String joinPs(@Valid RequestJoin form, Errors errors) {
+    public String joinPs(@Valid RequestJoin form, Errors errors,Model model) {
+        commonProcess("join", model);
 
         joinService.process(form, errors);
 
@@ -44,7 +44,8 @@ public class MemberController implements ExceptionProcessor {
     }
 
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model) {
+        commonProcess("login", model);
 
         return utils.tpl("member/login");
     }
