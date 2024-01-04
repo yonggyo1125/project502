@@ -1,5 +1,6 @@
 package org.choongang.admin.confg;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.choongang.admin.config.controllers.BasicConfig;
 import org.choongang.admin.config.service.ConfigInfoService;
 import org.choongang.admin.config.service.ConfigSaveService;
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
+import java.util.Optional;
 
 @SpringBootTest
 @Transactional
@@ -33,7 +37,13 @@ public class ConfigSaveTest {
 
         saveService.save("basic", config);
 
-        BasicConfig config2 = infoService.get("basic", BasicConfig.class);
+        BasicConfig config2 = infoService.get("basic", BasicConfig.class).get();
         System.out.println(config2);
+
+        Optional<Map<String, String>> opt = infoService.get("basic", new TypeReference<>() {});
+
+        System.out.println(opt.get());
     }
+
+
 }

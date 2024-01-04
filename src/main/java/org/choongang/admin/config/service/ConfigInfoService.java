@@ -10,24 +10,26 @@ import org.choongang.admin.config.repositories.ConfigsRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ConfigInfoService {
 
     private final ConfigsRepository repository;
 
-    public <T> T get(String code, Class<T> clazz) {
+    public <T> Optional<T> get(String code, Class<T> clazz) {
         return get(code, clazz, null);
     }
 
-    public <T> T get(String code, TypeReference<T> typeReference) {
+    public <T> Optional<T> get(String code, TypeReference<T> typeReference) {
         return get(code, null, typeReference);
     }
 
-    public <T> T get(String code, Class<T> clazz, TypeReference<T> typeReference) {
+    public <T> Optional<T> get(String code, Class<T> clazz, TypeReference<T> typeReference) {
         Configs config = repository.findById(code).orElse(null);
         if (config == null || !StringUtils.hasText(config.getData())) {
-            return null;
+            return Optional.ofNullable(null);
         }
 
         ObjectMapper om = new ObjectMapper();
@@ -41,10 +43,10 @@ public class ConfigInfoService {
             } else { // Class로 처리
                 data = om.readValue(jsonString, clazz);
             }
-            return data;
+            return Optional.ofNullable(data);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            return null;
+            return Optional.ofNullable(null);
         }
     }
 }
