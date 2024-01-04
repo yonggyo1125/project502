@@ -15,11 +15,11 @@ import java.util.Optional;
 public class BasicConfigAdvice {
     private final ConfigInfoService infoService;
 
-    @ModelAttribute("basicConfig")
+    @ModelAttribute("siteConfig")
     public Map<String, String> getBasicConfig() {
         Optional<Map<String, String>> opt = infoService.get("basic", new TypeReference<>() {});
 
-        Map<String, String> config = opt.orElseGet(() -> new HashMap<String, String>());
+        Map<String, String> config = opt.orElseGet(() -> new HashMap<>());
         return config;
     }
 }

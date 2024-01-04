@@ -24,6 +24,11 @@ public class BasicConfigController implements ExceptionProcessor {
         return "config";
     }
 
+    @ModelAttribute("pageTitle")
+    public String getPageTitle() {
+        return "기본설정";
+    }
+
     @GetMapping
     public String index(Model model) {
 
