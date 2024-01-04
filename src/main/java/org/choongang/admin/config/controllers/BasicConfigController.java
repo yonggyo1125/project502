@@ -25,12 +25,21 @@ public class BasicConfigController implements ExceptionProcessor {
     }
 
     @GetMapping
-    public String index(@ModelAttribute BasicConfig config, Model model) {
+    public String index(Model model) {
+
+        BasicConfig config = infoService.get("basic", BasicConfig.class).orElseGet(BasicConfig::new);
+
+        model.addAttribute("basicConfig", config);
+
         return "admin/config/basic";
     }
 
     @PostMapping
     public String save(BasicConfig config, Model model) {
+
+        saveService.save("basic", config);
+
+        model.addAttribute("message", "저장되었습니다.");
 
         return "admin/config/basic";
     }
