@@ -32,5 +32,8 @@ public class ConfigSaveTest {
         config.setJoinTerms("회원가입 약관");
 
         saveService.save("basic", config);
+
+        BasicConfig config2 = infoService.get("basic", BasicConfig.class);
+        System.out.println(config2);
     }
 }
