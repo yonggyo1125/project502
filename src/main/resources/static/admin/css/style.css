@@ -46,5 +46,12 @@ h1 { margin: 0; padding: 0 0 20px 10px; line-height: 1; font-size: 2rem; border-
 input[type='text'],
 input[type='number'],
 input[type='email'],
-input[type='password'] { border: 1px solid #d5d5d5; height: 35px; padding: 0 10px; }
+input[type='password'] { border: 1px solid #d5d5d5; height: 35px; padding: 0 10px; width: 100%; }
+textarea { border: 1px solid #d5d5d5; min-height: 200px; padding: 10px; resize: none; width: 100%; }
+select { border: 1px solid #d5d5d5; height: 35px; }
 /* 입력 공통 E */
+
+/* 버튼 공통 S */
+.submit_btns { text-align: center; }
+.submit_btn .btn { display: inline-block; min-width: 200px; height: 45px; padding: 0 15px; border: 1px solid #222; background: #fff; font-size: 1.4rem; font-weight: 500; color: #222; border-radius: 3px; }
+/* 버튼 공통 E */
