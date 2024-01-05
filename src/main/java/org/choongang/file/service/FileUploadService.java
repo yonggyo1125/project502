@@ -35,6 +35,9 @@ public class FileUploadService {
         gid = StringUtils.hasText(gid) ? gid : UUID.randomUUID().toString();
 
         String uploadPath = fileProperties.getPath(); // 파일 업로드 기본 경로
+        String thumbPath = uploadPath + "thumbs"; // 썸네일 업로드 기본 경로
+
+        List<int[]> thumbsSize = utils.getThumbSize(); // 썸네일 사이즈
 
         List<FileInfo> uploadedFiles = new ArrayList<>(); // 업로드 성공 파일 정보 목록
 
