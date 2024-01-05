@@ -76,12 +76,12 @@ public class FileUploadService {
 
                 /* 썸네일 이미지 처리 S */
                 if (fileType.indexOf("image/") != -1 && thumbsSize != null) {
-                    File thumbDir = new File(thumbPath + dir);
+                    File thumbDir = new File(thumbPath + (seq % 10L) + "/" + seq);
                     if (!thumbDir.exists()) {
                         thumbDir.mkdirs();
                     }
                     for (int[] sizes : thumbsSize) {
-                        String thumbFileName = sizes[0] + "_" + sizes[1] + "_" + fileName;
+                        String thumbFileName = sizes[0] + "_" + sizes[1] + "_" + seq + extension;
 
                         File thumb = new File(thumbDir, thumbFileName);
 

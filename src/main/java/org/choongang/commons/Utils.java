@@ -90,7 +90,10 @@ public class Utils {
         String thumbSize = config.getThumbSize(); // \r\n
         String[] thumbsSize = thumbSize.split("\\n");
 
-        List<int[]> data = Arrays.stream(thumbsSize).map(this::toConvert).toList();
+        List<int[]> data = Arrays.stream(thumbsSize)
+                .filter(StringUtils::hasText)
+                .map(s -> s.replaceAll("\\s+", ""))
+                .map(this::toConvert).toList();
 
 
         return data;
@@ -98,7 +101,6 @@ public class Utils {
 
     private int[] toConvert(String size) {
         size = size.trim();
-
         int[] data = Arrays.stream(size.replaceAll("\\r", "").toUpperCase().split("X"))
                 .mapToInt(Integer::parseInt).toArray();
 
