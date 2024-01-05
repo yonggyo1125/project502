@@ -12,6 +12,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.data.domain.Sort.Order.asc;
@@ -95,11 +97,32 @@ public class FileInfoService {
         long dir = seq % 10L;
         String fileName = seq + fileInfo.getExtension();
 
+        /* 파일 경로, URL S */
         String filePath = fileProperties.getPath() + dir + "/" + fileName;
         String fileUrl = request.getContextPath() + fileProperties.getUrl() + dir + "/" + fileName;
 
         fileInfo.setFilePath(filePath);
         fileInfo.setFileUrl(fileUrl);
+        /* 파일 경로, URL E */
 
+        /* 썸네일 경로, URL S */
+        List<String> thumbsPath = new ArrayList<>();
+        List<String> thumbsUrl = new ArrayList<>();
+
+        String thumbDirCommon = "thumbs/" + dir + "/" + seq;
+        String thumbDir = fileProperties.getPath() + thumbDirCommon;
+        String thumbUrl = fileProperties.getUrl() + thumbDirCommon;
+
+        File _thumbDir = new File(thumbDir);
+        if (_thumbDir.exists()) {
+            for (String thumbFileName : _thumbDir.list()) {
+                thumbsPath.add(thumbDir + "/" + thumbFileName);
+                thumbsUrl.add(thumbUrl + "/" + thumbFileName);
+            }
+        } // endif
+
+        fileInfo.setThumbsPath(thumbsPath);
+        fileInfo.setThumbsUrl(thumbsUrl);
+        /* 썸네일 경로, URL E*/
     }
 }
