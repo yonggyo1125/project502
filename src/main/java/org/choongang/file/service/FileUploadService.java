@@ -1,6 +1,7 @@
 package org.choongang.file.service;
 
 import lombok.RequiredArgsConstructor;
+import org.choongang.commons.Utils;
 import org.choongang.configs.FileProperties;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.file.repositories.FileInfoRepository;
@@ -23,6 +24,7 @@ public class FileUploadService {
     private final FileProperties fileProperties;
     private final FileInfoRepository repository;
     private final FileInfoService infoService;
+    private final Utils utils;
 
     public List<FileInfo> upload(MultipartFile[] files, String gid, String location) {
         /**
@@ -81,5 +83,20 @@ public class FileUploadService {
         }
 
        return uploadedFiles;
+    }
+
+    /**
+     * 업로드 완료 처리
+     *
+     * @param gid
+     */
+    public void processDone(String gid) {
+        List<FileInfo> files = repository.findByGid(gid);
+        if (files == null) {
+            return;
+        }
+
+        files.forEach(file -> file.setDone(true));
+        repository.flush();
     }
 }

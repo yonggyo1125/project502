@@ -39,7 +39,7 @@ public class FileInfoService {
         String fileName = seq + fileInfo.getExtension();
 
         String filePath = fileProperties.getPath() + dir + "/" + fileName;
-        String fileUrl = request.getContextPath() + "/" + dir + "/" + fileName;
+        String fileUrl = request.getContextPath() + fileProperties.getUrl() + dir + "/" + fileName;
 
         fileInfo.setFilePath(filePath);
         fileInfo.setFileUrl(fileUrl);
