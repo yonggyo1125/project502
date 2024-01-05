@@ -3,6 +3,7 @@ package org.choongang.file.service;
 import com.querydsl.core.BooleanBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import net.coobird.thumbnailator.Thumbnails;
 import org.choongang.configs.FileProperties;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.file.entities.QFileInfo;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -149,6 +151,20 @@ public class FileInfoService {
         }
 
         String thumbPath = String.format("%s/%d_%d_%s", thumbDir, width, height, fileName);
+        File _thumbPath = new File(thumbPath);
+        if (!_thumbDir.exists()) { // 썸네일 이미지가 없는 경우
+            try {
+                Thumbnails.of(new File(fileInfo.getFilePath()))
+                        .size(width, height)
+                        .toFile(_thumbPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String thumbUrl = String.format("%s/%d_%d_%s", getThumbUrl(seq), width, height, fileName);
+
+        return new String[] { thumbPath, thumbUrl };
     }
 
     public String getThumbDir(long seq) {
