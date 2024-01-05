@@ -125,4 +125,24 @@ public class FileInfoService {
         fileInfo.setThumbsUrl(thumbsUrl);
         /* 썸네일 경로, URL E*/
     }
+
+    /**
+     * 파일별 특정 사이즈 썸네일 조회
+     *
+     * @param seq
+     * @param width
+     * @param height
+     * @return
+     */
+    public String[] getThumb(Long seq, int width, int height) {
+
+    }
+
+    public String getThumbDir(Long seq) {
+
+    }
+
+    public String getThumbUrl(Long seq) {
+
+    }
 }
