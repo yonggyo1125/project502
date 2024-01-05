@@ -152,7 +152,7 @@ public class FileInfoService {
 
         String thumbPath = String.format("%s/%d_%d_%s", thumbDir, width, height, fileName);
         File _thumbPath = new File(thumbPath);
-        if (!_thumbDir.exists()) { // 썸네일 이미지가 없는 경우
+        if (!_thumbPath.exists()) { // 썸네일 이미지가 없는 경우
             try {
                 Thumbnails.of(new File(fileInfo.getFilePath()))
                         .size(width, height)
