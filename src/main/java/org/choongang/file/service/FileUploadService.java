@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +32,8 @@ public class FileUploadService {
         gid = StringUtils.hasText(gid) ? gid : UUID.randomUUID().toString();
 
         String uploadPath = fileProperties.getPath(); // 파일 업로드 기본 경로
+
+        List<FileInfo> uploadedFiles = new ArrayList<>(); // 업로드 성공 파일 정보 목록
 
         for (MultipartFile file : files) {
             /* 파일 정보 저장 S */
@@ -60,17 +63,19 @@ public class FileUploadService {
                 dir.mkdir();
             }
 
-            File uploadFile = new File(dir, seq + "." + extension);
+            File uploadFile = new File(dir, seq + extension);
             try {
                 file.transferTo(uploadFile);
+                uploadedFiles.add(fileInfo); // 업로드 성공시 파일 정보 추가
+
             } catch (IOException e) {
                e.printStackTrace();
+               repository.delete(fileInfo); // 업로드 실패시에는 파일 정보 제거
+               repository.flush();
             }
             /* 파일 업로드 처리 E */
-
-
         }
 
-       return null; // 임시
+       return uploadedFiles;
     }
 }
