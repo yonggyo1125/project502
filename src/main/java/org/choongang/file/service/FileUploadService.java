@@ -27,7 +27,7 @@ public class FileUploadService {
     private final FileInfoService infoService;
     private final Utils utils;
 
-    public List<FileInfo> upload(MultipartFile[] files, String gid, String location) {
+    public List<FileInfo> upload(MultipartFile[] files, String gid, String location, boolean imageOnly) {
         /**
          * 1. 파일 정보 저장
          * 2. 서버쪽에 파일 업로드 처리
@@ -51,7 +51,11 @@ public class FileUploadService {
             String extension = fileName.substring(fileName.lastIndexOf("."));
 
             String fileType = file.getContentType(); // 파일 종류 - 예) image/..
-
+            // 이미지만 업로드 하는 경우, 이미지가 아닌 형식은 업로드 배제
+            if (imageOnly && fileType.indexOf("image/") == -1) {
+                continue;
+            }
+            
             FileInfo fileInfo = FileInfo.builder()
                     .gid(gid)
                     .location(location)
