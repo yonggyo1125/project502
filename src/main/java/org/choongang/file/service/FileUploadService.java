@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,8 +59,18 @@ public class FileUploadService {
             if (!dir.exists()) { // 디렉토리가 없으면 -> 생성
                 dir.mkdir();
             }
+
+            File uploadFile = new File(dir, seq + "." + extension);
+            try {
+                file.transferTo(uploadFile);
+            } catch (IOException e) {
+               e.printStackTrace();
+            }
             /* 파일 업로드 처리 E */
+
+
         }
 
+       return null; // 임시
     }
 }
