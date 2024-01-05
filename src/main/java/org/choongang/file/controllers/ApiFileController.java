@@ -27,5 +27,6 @@ public class ApiFileController implements ExceptionRestProcessor {
 
         List<FileInfo> uploadedFiles = uploadService.upload(files, gid, location);
 
+        return new JSONData<>(uploadedFiles);
     }
 }
