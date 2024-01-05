@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,6 +51,14 @@ public class FileUploadService {
 
             repository.saveAndFlush(fileInfo);
             /* 파일 정보 저장 E */
+
+            /* 파일 업로드 처리 S */
+            long seq = fileInfo.getSeq();
+            File dir = new File(uploadPath + (seq % 10));
+            if (!dir.exists()) { // 디렉토리가 없으면 -> 생성
+                dir.mkdir();
+            }
+            /* 파일 업로드 처리 E */
         }
 
     }
