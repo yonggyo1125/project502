@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Arrays;
+
 @Component
 @RequiredArgsConstructor
 public class CommonInterceptor implements HandlerInterceptor {
@@ -53,6 +55,15 @@ public class CommonInterceptor implements HandlerInterceptor {
     }
 
     private void loadSiteConfig(HttpServletRequest request) {
+        String[] excludes = {".js", ".css", ".png", ".jpg", ".jpeg", "gif", ".pdf", ".xls", ".xlxs", ".ppt"};
+
+        String URL = request.getRequestURI().toLowerCase();
+
+        boolean isIncluded = Arrays.stream(excludes).anyMatch(s -> URL.contains(s));
+        if (isIncluded) {
+            return;
+        }
+
         BasicConfig config = infoService.get("basic", BasicConfig.class)
                 .orElseGet(BasicConfig::new);
 
