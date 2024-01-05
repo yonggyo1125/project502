@@ -89,9 +89,19 @@ public class Utils {
         BasicConfig config = (BasicConfig)request.getAttribute("siteConfig");
         String thumbSize = config.getThumbSize(); // \r\n
         String[] thumbsSize = thumbSize.split("\\n");
-        Arrays.stream(thumbsSize).map(s -> s.replaceAll("\\r", ""))
-                .map(s -> s.toUpperCase().split("X"));
 
-        return null;
+        List<int[]> data = Arrays.stream(thumbsSize).map(this::toConvert).toList();
+
+
+        return data;
+    }
+
+    private int[] toConvert(String size) {
+        size = size.trim();
+
+        int[] data = Arrays.stream(size.replaceAll("\\r", "").toUpperCase().split("X"))
+                .mapToInt(Integer::parseInt).toArray();
+
+        return data;
     }
 }
