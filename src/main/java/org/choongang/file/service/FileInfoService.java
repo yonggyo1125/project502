@@ -68,6 +68,22 @@ public class FileInfoService {
         return items;
     }
 
+    public List<FileInfo> getList(String gid) {
+        return getList(gid, null, "ALL");
+    }
+
+    public List<FileInfo> getList(String gid, String location) {
+        return getList(gid, location, "ALL");
+    }
+
+    public List<FileInfo> getListDone(String gid) {
+        return getList(gid, null, "DONE");
+    }
+
+    public List<FileInfo> getListDone(String gid, String location) {
+        return getList(gid, location, "DONE");
+    }
+
     /**
      * 파일 추가 정보 처리
      *      - 파일 서버 경로(filePath)
