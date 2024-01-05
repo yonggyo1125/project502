@@ -33,5 +33,8 @@ public class FileInfo extends BaseMember {
     @Column(length=30)
     private String extension;
 
+    @Column(length=65)
+    private String fileType;
+
     private boolean done;
 }
