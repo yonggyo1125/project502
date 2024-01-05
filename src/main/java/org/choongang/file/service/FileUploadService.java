@@ -22,6 +22,7 @@ public class FileUploadService {
 
     private final FileProperties fileProperties;
     private final FileInfoRepository repository;
+    private final FileInfoService infoService;
 
     public List<FileInfo> upload(MultipartFile[] files, String gid, String location) {
         /**
@@ -66,6 +67,9 @@ public class FileUploadService {
             File uploadFile = new File(dir, seq + extension);
             try {
                 file.transferTo(uploadFile);
+
+                infoService.addFileInfo(fileInfo); // 파일 추가 정보 처리
+
                 uploadedFiles.add(fileInfo); // 업로드 성공시 파일 정보 추가
 
             } catch (IOException e) {
