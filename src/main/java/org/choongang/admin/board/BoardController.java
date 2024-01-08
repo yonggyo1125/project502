@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller("adminBoardController")
@@ -95,7 +96,17 @@ public class BoardController implements ExceptionProcessor {
 
         }
 
+        List<String> addCommonScript = new ArrayList<>();
+        List<String> addScript = new ArrayList<>();
+
+        if (mode.equals("add") || mode.equals("edit")) { // 게시판 등록 또는 수정
+            addCommonScript.add("ckeditor5/ckeditor");
+            addScript.add("board/form");
+        }
+
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("subMenuCode", mode);
+        model.addAttribute("addCommonScript", addCommonScript);
+        model.addAttribute("addScript", addScript);
     }
 }
