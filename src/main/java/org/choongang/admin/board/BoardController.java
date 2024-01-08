@@ -3,6 +3,7 @@ package org.choongang.admin.board;
 import org.choongang.commons.ExceptionProcessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -29,6 +30,12 @@ public class BoardController implements ExceptionProcessor {
     public String add() {
 
         return "admin/board/add";
+    }
+
+    @PostMapping("/save")
+    public String save() {
+
+        return "redirect:/admin/board";
     }
 
     /**
