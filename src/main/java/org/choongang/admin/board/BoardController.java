@@ -96,5 +96,6 @@ public class BoardController implements ExceptionProcessor {
         }
 
         model.addAttribute("pageTitle", pageTitle);
+        model.addAttribute("subMenuCode", mode);
     }
 }
