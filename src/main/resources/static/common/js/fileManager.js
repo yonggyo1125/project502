@@ -30,7 +30,8 @@ commonLib.fileManager = {
                 formData.append("file", file);
             }
 
-
+            const { ajaxLoad } = commonLib;
+            ajaxLoad("POST", "/api/file", formData, "json");
 
         } catch (err) {
             alert(err.message);

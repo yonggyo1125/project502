@@ -8,7 +8,7 @@ var commonLib = commonLib || {};
 * @param params : 요청 데이터(POST, PUT, PATCH ... )
 * @param responseType :  json : javascript 객체로 변환
 */
-commobLib.ajaxLoad = function(method, url, params, responseType) {
+commonLib.ajaxLoad = function(method, url, params, responseType) {
     method = method || "GET";
     params = params || null;
 
