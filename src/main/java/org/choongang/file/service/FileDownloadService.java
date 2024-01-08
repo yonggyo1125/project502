@@ -20,11 +20,11 @@ public class FileDownloadService {
         // 파일명 -> 2바이트 인코딩으로 변경 (윈도우즈 시스템에서 한글 깨짐 방지)
         String fileName = null;
         try {
-            fileName = new String(fileName.getBytes(), "ISO8859_1");
+            fileName = new String(data.getFileName().getBytes(), "ISO8859_1");
         } catch (UnsupportedEncodingException e) {}
 
-
-        try (FileInputStream fis = new FileInputStream(filePath);
+        File file = new File(filePath);
+        try (FileInputStream fis = new FileInputStream(file);
             BufferedInputStream bis = new BufferedInputStream(fis)) {
             OutputStream out = response.getOutputStream(); // 응답 Body에 출력
 
@@ -32,6 +32,8 @@ public class FileDownloadService {
             response.setHeader("Content-Type", "application/octet-stream");
             response.setIntHeader("Expires", 0); // 만료 시간 X
             response.setHeader("Cache-Control", "must-revalidate");
+            response.setHeader("Pragma", "public");
+            response.setHeader("Content-Length", String.valueOf(file.length()));
 
             while(bis.available() > 0) {
                 out.write(bis.read());
