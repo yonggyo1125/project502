@@ -33,7 +33,8 @@ public class BoardController implements ExceptionProcessor {
      * @return
      */
     @GetMapping
-    public String list() {
+    public String list(Model model) {
+        commonProcess("list", model);
 
         return "admin/board/list";
     }
@@ -44,7 +45,8 @@ public class BoardController implements ExceptionProcessor {
      * @return
      */
     @GetMapping("/add")
-    public String add() {
+    public String add(Model model) {
+        commonProcess("add", model);
 
         return "admin/board/add";
     }
@@ -66,7 +68,9 @@ public class BoardController implements ExceptionProcessor {
      * @return
      */
     @GetMapping("/posts")
-    public String posts() {
+    public String posts(Model model) {
+        commonProcess("posts", model);
+
         return "admin/board/posts";
     }
 
