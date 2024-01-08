@@ -31,7 +31,19 @@ commonLib.fileManager = {
             }
 
             const { ajaxLoad } = commonLib;
-            ajaxLoad("POST", "/api/file", formData, "json");
+            ajaxLoad("POST", "/api/file", formData, "json")
+                .then(res => { // 요청 성공시
+                    if (res && res.success) { // 파일 업로드 성공시
+
+                        if (typeof parent.callbackFileUpload == 'function') {
+                            parent.callbackFileUpload(res.data);
+                        }
+
+                    } else { // 파일 업로드 실패시
+                        if (res) alert(res.message);
+                    }
+                })
+                .catch(err => console.error(err));
 
         } catch (err) {
             alert(err.message);
