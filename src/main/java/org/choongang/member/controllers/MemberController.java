@@ -55,6 +55,9 @@ public class MemberController implements ExceptionProcessor {
         String pageTitle = Utils.getMessage("회원가입", "commons");
         if (mode.equals("login")) {
             pageTitle = Utils.getMessage("로그인", "commons");
+
+        } else if (mode.equals("join")) {
+
         }
 
         model.addAttribute("pageTitle", pageTitle);
