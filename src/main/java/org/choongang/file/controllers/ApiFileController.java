@@ -32,6 +32,7 @@ public class ApiFileController implements ExceptionRestProcessor {
 
     @GetMapping("/{seq}")
     public void delete(@PathVariable("seq") Long seq) {
+
         deleteService.delete(seq);
     }
 }
