@@ -32,6 +32,11 @@ public class BoardController implements ExceptionProcessor {
         return "admin/board/add";
     }
 
+    /**
+     * 게시판 등록/수정 처리
+     *
+     * @return
+     */
     @PostMapping("/save")
     public String save() {
 
