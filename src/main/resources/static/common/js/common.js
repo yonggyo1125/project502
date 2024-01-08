@@ -12,9 +12,15 @@ commonLib.ajaxLoad = function(method, url, params, responseType) {
     method = method || "GET";
     params = params || null;
 
+    const token = document.querySelector("meta[name='_csrf']").content;
+    const tokenHeader = document.querySelector("meta[name='_csrf_header']").content;
+
     return new Promise((resolve, reject) => {
-        const xhr = XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
+
         xhr.open(method, url);
+        xhr.setRequestHeader(tokenHeader, token);
+
         xhr.send(params); // 요청 body에 실릴 데이터 키=값&키=값& .... FormData 객체 (POST, PATCH, PUT)
 
         xhr.onreadystatechange = function() {
