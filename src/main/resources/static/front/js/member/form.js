@@ -21,5 +21,11 @@ function callbackFileUpload(files) {
     const domParser = new DOMParser();
     const dom = domParser.parseFromString(html, "text/html");
 
-    console.log(dom);
+    const imageTplEl = dom.querySelector(".image1_tpl_box");
+
+
+    const profileImage = document.getElementById("profile_image");
+    profileImage.innerHTML = "";
+
+    profileImage.appendChild(imageTplEl);
 }
