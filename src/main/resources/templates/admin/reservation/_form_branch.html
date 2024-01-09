@@ -16,7 +16,7 @@
             <th width="180">지점명</th>
             <td>
                 <input type="text" name="cName" th:field="*{cName}">
-                <div class="error" th:each="${#fields.errors('cName')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('cName')}" th:text="${err}"></div>
             </td>
         </tr>
         <tr>
@@ -27,23 +27,23 @@
                 <input type="text" name="address" placeholder="주소" readonly th:field="*{address}">
                 <input type="text" name="addressSub" placeholder="나머지 주소" th:field="*{addressSub}">
 
-                <div class="error" th:each="${#fields.errors('zonecode')}" th:text="${err}"></div>
-                <div class="error" th:each="${#fields.errors('address')}" th:text="${err}"></div>
-                <div class="error" th:each="${#fields.errors('addressSub')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('zonecode')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('address')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('addressSub')}" th:text="${err}"></div>
             </td>
         </tr>
         <tr>
             <th>전화번호</th>
             <td>
                 <input type="text" name="telNum" th:field="*{telNum}">
-                <div class="error" th:each="${#fields.errors('telNum')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('telNum')}" th:text="${err}"></div>
             </td>
         </tr>
         <tr>
             <th>운영시간</th>
             <td>
                 <input type="text" name="operHour" th:field="*{operHour}">
-                <div class="error" th:each="${#fields.errors('operHour')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('operHour')}" th:text="${err}"></div>
             </td>
         </tr>
     </table>
@@ -74,7 +74,7 @@
                 <input type="checkbox" name="bookYoil" value="토" id="bookYoil_7" th:field="*{bookYoil}">
                 <label for="bookYoil_7">토</label>
 
-                <div class="error" th:each="${#fields.errors('bookYoil')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('bookYoil')}" th:text="${err}"></div>
             </td>
         </tr>
         <tr>
@@ -109,7 +109,7 @@
             <th>예약불가시간</th>
             <td>
                 <textarea name="bookNotAvl" placeholder="예)09:30-10:40, 여러개는 줄 개행하여 등록" th:field="*{bookNotAvl}"></textarea>
-                <div class="error" th:each="${#fields.errors('bookNotAvl')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('bookNotAvl')}" th:text="${err}"></div>
             </td>
         </tr>
         <tr>
@@ -121,7 +121,7 @@
                 <input type="radio" name="bookHday" value="false" id="bookHday_false" th:field="*{bookHday}">
                 <label for="bookHday_false">불가능</label>
 
-                <div class="error" th:each="${#fields.errors('bookHday')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('bookHday')}" th:text="${err}"></div>
             </td>
         </tr>
         <tr>
@@ -133,7 +133,7 @@
                     ></option>
                 </select>분
 
-                <div class="error" th:each="${#fields.errors('bookBlock')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('bookBlock')}" th:text="${err}"></div>
             </td>
         </tr>
         <tr>
@@ -141,7 +141,7 @@
             <td>
                 <input type="number" name="bookCapacity" th:field="*{bookCapacity}">
 
-                <div class="error" th:each="${#fields.errors('bookCapacity')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('bookCapacity')}" th:text="${err}"></div>
             </td>
         </tr>
     </table>
