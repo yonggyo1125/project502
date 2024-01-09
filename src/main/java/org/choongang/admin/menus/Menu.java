@@ -20,6 +20,13 @@ public class Menu {
                 new MenuDetail("add", "게시판등록", "/admin/board/add"),
                 new MenuDetail("posts", "게시글관리", "/admin/board/posts")
         ));
+
+        menus.put("reservation", Arrays.asList(
+            new MenuDetail("list", "예약 현황", "/admin/reservation"),
+            new MenuDetail("branch", "지점 목록", "/admin/reservation/branch"),
+            new MenuDetail("add_branch", "지점 등록", "/admin/reservation/add_branch"),
+                new MenuDetail("holiday", "휴무일 관리", "/admin/reservation/holiday")
+        ));
     }
 
     public static List<MenuDetail> getMenus(String code) {

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="form" th:object="${requestBranch}">
+    <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+    <h2>기본 정보</h2>
+    <table class="table_cols mb30">
+        <tr th:if="*{mode == 'edit_branch' && cCode != null}">
+            <th>지점 코드</th>
+            <td>
+                <input type="hidden" name="cCode" th:field="*{cCode}">
+                <th:block th:text="*{cCode}"></th:block>
+            </td>
+        </tr>
+        <tr>
+            <th width="180">지점명</th>
+            <td>
+                <input type="text" name="cName" th:field="*{cName}">
+                <div class="error" th:each="err : ${#fields.errors('cName')}" th:text="${err}"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>주소</th>
+            <td>
+                <input type="text" name="zonecode" placeholder="우편번호" readonly th:field="*{zonecode}">
+                <button type="button" class="search_address">주소 찾기</button>
+                <input type="text" name="address" placeholder="주소" readonly th:field="*{address}">
+                <input type="text" name="addressSub" placeholder="나머지 주소" th:field="*{addressSub}">
+
+                <div class="error" th:each="err : ${#fields.errors('zonecode')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('address')}" th:text="${err}"></div>
+                <div class="error" th:each="err : ${#fields.errors('addressSub')}" th:text="${err}"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>전화번호</th>
+            <td>
+                <input type="text" name="telNum" th:field="*{telNum}">
+                <div class="error" th:each="err : ${#fields.errors('telNum')}" th:text="${err}"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>운영시간</th>
+            <td>
+                <input type="text" name="operHour" th:field="*{operHour}">
+                <div class="error" th:each="err : ${#fields.errors('operHour')}" th:text="${err}"></div>
+            </td>
+        </tr>
+    </table>
+
+    <h2>예약 설정</h2>
+    <table class="table_cols">
+        <tr>
+            <th width="180">요일 설정</th>
+            <td>
+                <input type="checkbox" name="bookYoil" value="일" id="bookYoil_1" th:field="*{bookYoil}">
+                <label for="bookYoil_1">일</label>
+
+                <input type="checkbox" name="bookYoil" value="월" id="bookYoil_2" th:field="*{bookYoil}">
+                <label for="bookYoil_2">월</label>
+
+                <input type="checkbox" name="bookYoil" value="화" id="bookYoil_3" th:field="*{bookYoil}">
+                <label for="bookYoil_3">화</label>
+
+                <input type="checkbox" name="bookYoil" value="수" id="bookYoil_4" th:field="*{bookYoil}">
+                <label for="bookYoil_4">수</label>
+
+                <input type="checkbox" name="bookYoil" value="목" id="bookYoil_5" th:field="*{bookYoil}">
+                <label for="bookYoil_5">목</label>
+
+                <input type="checkbox" name="bookYoil" value="금" id="bookYoil_6" th:field="*{bookYoil}">
+                <label for="bookYoil_6">금</label>
+
+                <input type="checkbox" name="bookYoil" value="토" id="bookYoil_7" th:field="*{bookYoil}">
+                <label for="bookYoil_7">토</label>
+
+                <div class="error" th:each="err : ${#fields.errors('bookYoil')}" th:text="${err}"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>예약가능시간</th>
+            <td>
+                <select name="bookAvlShour" th:field="*{bookAvlShour}">
+                    <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${#numbers.formatInteger(hour, 2)}"
+                            th:text="${#numbers.formatInteger(hour, 2)}"
+                    ></option>
+                </select>
+                :
+                <select name="bookAvlSmin" th:field="*{bookAvlSmin}">
+                    <option th:each="min : ${#numbers.sequence(0, 50, 10)}" th:value="${#numbers.formatInteger(min, 2)}"
+                            th:text="${#numbers.formatInteger(min, 2)}"
+                    ></option>
+                </select>
+                ~
+                <select name="bookAvlEhour" th:field="*{bookAvlEhour}">
+                    <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${#numbers.formatInteger(hour, 2)}"
+                            th:text="${#numbers.formatInteger(hour, 2)}"
+                    ></option>
+                </select>
+                :
+                <select name="bookAvlEmin" th:field="*{bookAvlEmin}">
+                    <option th:each="min : ${#numbers.sequence(0, 50, 10)}" th:value="${#numbers.formatInteger(min, 2)}"
+                            th:text="${#numbers.formatInteger(min, 2)}"
+                    ></option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>예약불가시간</th>
+            <td>
+                <textarea name="bookNotAvl" placeholder="예)09:30-10:40, 여러개는 줄 개행하여 등록" th:field="*{bookNotAvl}"></textarea>
+                <div class="error" th:each="err : ${#fields.errors('bookNotAvl')}" th:text="${err}"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>공휴일 예약</th>
+            <td>
+                <input type="radio" name="bookHday" value="true" id="bookHday_true" th:field="*{bookHday}">
+                <label for="bookHday_true">가능</label>
+
+                <input type="radio" name="bookHday" value="false" id="bookHday_false" th:field="*{bookHday}">
+                <label for="bookHday_false">불가능</label>
+
+                <div class="error" th:each="err : ${#fields.errors('bookHday')}" th:text="${err}"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>예약블록</th>
+            <td>
+                <select name="bookBlock" th:field="*{bookBlock}">
+                    <option th:each="min : ${#numbers.sequence(0, 50, 10)}" th:value="${#numbers.formatInteger(min, 2)}"
+                            th:text="${#numbers.formatInteger(min, 2)}"
+                    ></option>
+                </select>분
+
+                <div class="error" th:each="err : ${#fields.errors('bookBlock')}" th:text="${err}"></div>
+            </td>
+        </tr>
+        <tr>
+            <th>예약가능인원</th>
+            <td>
+                <input type="number" name="bookCapacity" th:field="*{bookCapacity}">
+
+                <div class="error" th:each="err : ${#fields.errors('bookCapacity')}" th:text="${err}"></div>
+            </td>
+        </tr>
+    </table>
+</th:block>
+</html>
