@@ -91,7 +91,6 @@ window.addEventListener("DOMContentLoaded", function() {
            fileEl.type="file";
            fileEl.multiple = true; // 여러개 파일을 선택 가능하게
 
-
             const imageOnly = this.dataset.imageOnly == 'true';
             fileEl.imageOnly = imageOnly;
             fileEl.location = this.dataset.location;
