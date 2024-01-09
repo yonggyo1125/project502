@@ -4,5 +4,10 @@
 * @params files : 업로드 한 파일 정보 목록
 */
 function callbackFileUpload(files) {
-    console.log(files);
+    if (!files || files.length == 0) {
+        return;
+    }
+
+    const file = files[0];
+
 }
