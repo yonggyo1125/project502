@@ -20,6 +20,8 @@ function callbackFileUpload(files) {
         return;
     }
 
+
+
     for (const file of files) {
        const editor = file.location == 'html_bottom' ? editor2 : editor1;
        editor.execute('insertImage', { source: file.fileUrl });
