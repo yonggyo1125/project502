@@ -5,6 +5,7 @@
 <section layout:fragment="content">
     <h1>지점 등록</h1>
     <form name="frmSave" method="post" th:action="@{/admin/reservation/save_branch}" autocomplete="off">
+        <input type="hidden" name="mode" value="add_branch">
         <th:block th:replace="~{admin/reservation/_form_branch::form}"></th:block>
 
         <div class="submit_btns">
