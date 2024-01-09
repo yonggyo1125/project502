@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="form">
+    <h2>기본 정보</h2>
+    <table class="table_cols">
+        <tr>
+            <th>지점명</th>
+            <td>
+                <input type="text" name="cName">
+            </td>
+        </tr>
+        <tr>
+            <th>주소</th>
+            <td>
+                <input type="text" name="zonecode" placeholder="우편번호" readonly>
+                <button type="button" class="search_address">주소 찾기</button>
+                <input type="text" name="address" placeholder="주소" readonly>
+                <input type="text" name="addressSub" placeholder="나머지 주소">
+            </td>
+        </tr>
+
+    </table>
+</th:block>
+</html>
