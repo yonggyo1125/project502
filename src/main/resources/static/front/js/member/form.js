@@ -10,5 +10,16 @@ function callbackFileUpload(files) {
 
     const file = files[0];
 
+    let html = document.getElementById("image1_tpl").innerHTML;
 
+    const imageUrl = file.thumbsUrl.length > 0 ? file.thumbsUrl.pop() : file.fileUrl;
+    const seq = file.seq;
+
+    html = html.replace(/\[seq\]/g, seq)
+                .replace(/\[imageUrl\]/g, imageUrl);
+
+    const domParser = new DOMParser();
+    const dom = domParser.parseFromString(html, "text/html");
+
+    console.log(dom);
 }
