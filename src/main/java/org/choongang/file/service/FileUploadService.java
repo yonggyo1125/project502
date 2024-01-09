@@ -41,7 +41,7 @@ public class FileUploadService {
          * gid + location : 기 업로드된 파일 삭제 -> 새로 업로드
          */
         if (singleFile) {
-
+            deleteService.delete(gid, location);
         }
 
 

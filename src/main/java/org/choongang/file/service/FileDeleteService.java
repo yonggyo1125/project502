@@ -62,4 +62,8 @@ public class FileDeleteService {
 
         items.forEach(i -> delete(i.getSeq()));
     }
+
+    public void delete(String gid) {
+        delete(gid, null);
+    }
 }
