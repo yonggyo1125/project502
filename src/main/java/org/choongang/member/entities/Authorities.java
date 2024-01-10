@@ -14,7 +14,7 @@ public class Authorities {
 
     @ManyToOne(fetch= FetchType.LAZY)
     @JoinColumn(name="member_seq")
-    private Member member;
+    private AbstractMember member;
 
     @Enumerated(EnumType.STRING)
     @Column(length=15, nullable = false)

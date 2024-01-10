@@ -6,10 +6,8 @@ import org.choongang.member.Authority;
 import org.choongang.member.constants.Gender;
 import org.choongang.member.controllers.JoinValidator;
 import org.choongang.member.controllers.RequestJoin;
-import org.choongang.member.entities.AbstractMember;
-import org.choongang.member.entities.Authorities;
-import org.choongang.member.entities.Farmer;
-import org.choongang.member.entities.Member;
+import org.choongang.member.entities.*;
+import org.choongang.member.repositories.AddressRepository;
 import org.choongang.member.repositories.AuthoritiesRepository;
 import org.choongang.member.repositories.FarmerRepository;
 import org.choongang.member.repositories.MemberRepository;
@@ -25,6 +23,7 @@ public class JoinService {
 
     private final MemberRepository memberRepository;
     private final FarmerRepository farmerRepository;
+    private final AddressRepository addressRepository;
 
     private final AuthoritiesRepository authoritiesRepository;
     private final JoinValidator validator;
@@ -54,9 +53,6 @@ public class JoinService {
         if (mType.equals("F")) { // 농장 회원
             Farmer farmer = (Farmer) member;
             farmer.setFarmTitle(form.getFarmTitle());
-            farmer.setFarmZonecode(form.getFarmZonecode());
-            farmer.setFarmAddress(form.getFarmAddress());
-            farmer.setFarmAddressSub(form.getFarmAddressSub());
 
             processFarmer(farmer);
 
@@ -70,9 +66,20 @@ public class JoinService {
 
         // 회원 가입시에는 일반 사용자 권한 부여(USER)
         Authorities authorities = new Authorities();
-        //authorities.setMember(member);
+        authorities.setMember(member);
         authorities.setAuthority(Authority.USER);
         authoritiesRepository.saveAndFlush(authorities);
+
+        // 주소 처리
+        Address address = Address.builder()
+                .zonecode(form.getZonecode())
+                .address(form.getAddress())
+                .addressSub(form.getAddressSub())
+                .defaultAddress(true)
+                .member(member)
+                .build();
+
+        addressRepository.saveAndFlush(address);
 
         // 파일 업로드 완료 처리
         uploadService.processDone(form.getGid());

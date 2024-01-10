@@ -50,13 +50,13 @@ public class RequestJoin {
     private String farmTitle; // 농장 이름
 
     @NotBlank
-    private String farmZonecode; // 농장 우편번호
+    private String zonecode; // 우편번호
 
     @NotBlank
-    private String farmAddress; // 농장 주소
+    private String address; // 주소
 
     @NotBlank
-    private String farmAddressSub; // 농장 나머지 주소
+    private String addressSub; // 나머지 주소
 
     @NotBlank
     private String businessPermitNum;
