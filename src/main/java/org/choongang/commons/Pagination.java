@@ -81,6 +81,7 @@ public class Pagination {
                         .filter(s -> !s.contains("page="))
                         .collect(Collectors.joining("&"));
             }
+            this.baseURL = baseURL;
         }
 
         this.page = page;
@@ -90,6 +91,7 @@ public class Pagination {
         this.firstRangePage = firstRangePage;
         this.lastRangePage = lastRangePage;
         this.totalPages = totalPages;
+
     }
 
     public Pagination(int page, int total, int ranges, int limit) {
