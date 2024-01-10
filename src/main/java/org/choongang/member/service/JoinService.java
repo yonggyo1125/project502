@@ -5,6 +5,7 @@ import org.choongang.file.service.FileUploadService;
 import org.choongang.member.Authority;
 import org.choongang.member.controllers.JoinValidator;
 import org.choongang.member.controllers.RequestJoin;
+import org.choongang.member.entities.AbstractMember;
 import org.choongang.member.entities.Authorities;
 import org.choongang.member.entities.Member;
 import org.choongang.member.repositories.AuthoritiesRepository;
@@ -35,18 +36,18 @@ public class JoinService {
         String hash = encoder.encode(form.getPassword());
 
         //Member member = new ModelMapper().map(form, Member.class);
-        Member member = new Member();
+        AbstractMember member = new Member();
         member.setEmail(form.getEmail());
-        member.setUsername(form.getName());
+        member.setUsername(form.getUsername());
         member.setPassword(hash);
         member.setUserId(form.getUserId());
         member.setGid(form.getGid());
 
-        process(member);
+       // process(member);
 
         // 회원 가입시에는 일반 사용자 권한 부여(USER)
         Authorities authorities = new Authorities();
-        authorities.setMember(member);
+        //authorities.setMember(member);
         authorities.setAuthority(Authority.USER);
         authoritiesRepository.saveAndFlush(authorities);
 
@@ -56,6 +57,7 @@ public class JoinService {
     }
 
     public void process(Member member) {
+
         memberRepository.saveAndFlush(member);
     }
 }
