@@ -2,8 +2,11 @@ package org.choongang.commons;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Data
@@ -21,6 +24,7 @@ public class Pagination {
     private int nextRangePage; // 다음 구간 첫 페이지 번호
 
     private int totalPages; // 전체 페이지 갯수
+    private String baseURL; // 페이징 쿼리스트링 기본 URL
 
     /**
      *
@@ -58,6 +62,27 @@ public class Pagination {
             nextRangePage = firstRangePage + ranges;
         }
 
+        /*
+         * 쿼리스트링 값 유지 처리 - 쿼리스트링 값 중에서 page만 제외하고 다시 조합
+         *  예) ?orderStatus=CASH&name=...&page=2 -> ?orderStatus=CASH&name=...
+         *      ?page=2 -> ?
+         *      없는 경우 -> ?
+         *
+         *      &로 문자열 분리
+         *      { "orderStatus=CASH", "name=....", "page=2" }
+         */
+        if (request != null) {
+            String queryString = request.getQueryString();
+            String baseURL = "?";
+            if (StringUtils.hasText(queryString)) {
+                queryString = queryString.replace("?", "");
+
+                baseURL += Arrays.stream(queryString.split("&"))
+                        .filter(s -> !s.contains("page="))
+                        .collect(Collectors.joining("&"));
+            }
+        }
+
         this.page = page;
         this.total = total;
         this.ranges = ranges;
@@ -74,8 +99,10 @@ public class Pagination {
     public List<String[]> getPages() {
         // 0 : 페이지 번호, 1 : 페이지 URL - ?page=페이지번호
 
+
        return IntStream.rangeClosed(firstRangePage, lastRangePage)
-                .mapToObj(p -> new String[] { String.valueOf(p), "?page=" + p})
+                .mapToObj(p -> new String[] { String.valueOf(p),
+                        baseURL + "page=" + p})
                 .toList();
 
     }
