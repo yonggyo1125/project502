@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<th:block th:fragment="form">
-    <input type="hidden" name="gid" value="testgid">
+<th:block th:fragment="form" th:object="${requestBoardConfig}">
+    <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+    <input type="hidden" name="gid" th:field="*{gid}">
 
     <h2>기본 설정</h2>
     <table class="table_cols mb30">
         <tr>
             <th width="180">사용여부</th>
             <td>
-                <input type="radio" name="active" value="true" id="active_true">
+                <input type="radio" name="active" value="true" id="active_true" th:field="*{active}">
                 <label for="active_true">사용</label>
 
-                <input type="radio" name="active" value="false" id="active_false">
+                <input type="radio" name="active" value="false" id="active_false" th:field="*{active}">
                 <label for="active_false">미사용</label>
             </td>
         </tr>
         <tr>
             <th>게시판 ID</th>
-            <td>
-                <input type="text" name="bid">
+            <td th:if="*{mode != 'edit'}">
+                <input type="text" name="bid" th:field="*{bid}">
+            </td>
+            <td th:if="*{mode == 'edit'}"> <!-- 수정 -->
+                <input type="hidden" name="bid" th:field="*{bid}">
+                <th:block th:text="*{bid}"></th:block>
             </td>
         </tr>
         <tr>
