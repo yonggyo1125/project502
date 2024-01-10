@@ -21,6 +21,8 @@
             <th>게시판 ID</th>
             <td th:if="*{mode != 'edit'}">
                 <input type="text" name="bid" th:field="*{bid}">
+
+                <div class="error" th:each="err : ${#fields.errors('bid')}" th:text="${err}"></div>
             </td>
             <td th:if="*{mode == 'edit'}"> <!-- 수정 -->
                 <input type="hidden" name="bid" th:field="*{bid}">
@@ -31,6 +33,8 @@
             <th>게시판 이름</th>
             <td>
                 <input type="text" name="bName" th:field="*{bName}">
+
+                <div class="error" th:each="err : ${#fields.errors('bName')}" th:text="${err}"></div>
             </td>
         </tr>
         <tr>
