@@ -56,8 +56,8 @@ public class Pagination {
         this.total = total;
         this.ranges = ranges;
         this.limit = limit;
-        this.prevRangePage = firstRangePage;
-        this.nextRangePage = lastRangePage;
+        this.firstRangePage = firstRangePage;
+        this.lastRangePage = lastRangePage;
     }
 
     public List<String[]> getPages() {
