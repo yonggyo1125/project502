@@ -40,7 +40,7 @@ public class RequestJoin {
     @NotBlank
     private String tel;
 
-    private Gender gender = Gender.FEMALE;
+    private String gender = Gender.FEMALE.name();
 
     private LocalDate birthdate; // 생년 월일
 
