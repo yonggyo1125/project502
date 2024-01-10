@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:if="${pagination != null}" th:object="${pagination}">
+    <div class="pagination">
+        <a th:each="p : *{pages}" th:href="${p[1]}" th:text="${p[0]}"></a>
+    </div>
+</th:block>
+</html>

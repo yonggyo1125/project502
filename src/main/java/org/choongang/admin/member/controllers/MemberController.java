@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller("adminMemberController")
 @RequestMapping("/admin/member")
@@ -36,13 +37,21 @@ public class MemberController implements ExceptionProcessor {
 
     @GetMapping
     public String list(@ModelAttribute MemberSearch search, Model model) {
+        commonProcess("list", model);
 
         ListData<Member> data = infoService.getList(search);
 
         model.addAttribute("items", data.getItems()); // 목록
         model.addAttribute("pagination", data.getPagination()); // 페이징
 
-        model.addAttribute("subMenuCode", "list");
         return "admin/member/list";
+    }
+
+    private void commonProcess(String mode, Model model) {
+        mode = Objects.requireNonNullElse(mode, "list");
+        String pageTitle = "회원 목록";
+
+        model.addAttribute("subMenuCode", mode);
+        model.addAttribute("pageTitle", pageTitle);
     }
 }
