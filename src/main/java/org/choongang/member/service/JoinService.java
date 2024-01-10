@@ -37,7 +37,7 @@ public class JoinService {
         //Member member = new ModelMapper().map(form, Member.class);
         Member member = new Member();
         member.setEmail(form.getEmail());
-        member.setName(form.getName());
+        member.setUsername(form.getName());
         member.setPassword(hash);
         member.setUserId(form.getUserId());
         member.setGid(form.getGid());
