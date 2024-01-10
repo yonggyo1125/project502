@@ -1,4 +1,4 @@
-package org.choongang.admin.board;
+package org.choongang.admin.board.controllers;
 
 import org.choongang.admin.menus.Menu;
 import org.choongang.admin.menus.MenuDetail;
