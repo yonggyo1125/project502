@@ -46,7 +46,7 @@ public class BoardController implements ExceptionProcessor {
      * @return
      */
     @GetMapping("/add")
-    public String add(Model model) {
+    public String add(@ModelAttribute RequestBoardConfig config, Model model) {
         commonProcess("add", model);
 
         return "admin/board/add";
