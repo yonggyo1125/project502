@@ -23,6 +23,9 @@ public class Farmer extends AbstractMember {
     @Column(length=100)
     private String farmAddressSub; // 농장 나머지 주소
 
+    @Column(length=15)
+    private String businessPermitNum; // 사업자 번호
+
     @Transient
     private FileInfo businessPermit;
 

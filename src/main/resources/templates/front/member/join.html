@@ -44,11 +44,17 @@
         <dl>
             <dt th:text="#{회원명}"></dt>
             <dd>
-                <input type="text" name="name" th:field="*{name}">
-                <div class="error" th:each="err : ${#fields.errors('name')}" th:text="${err}"></div>
+                <input type="text" name="username" th:field="*{username}">
+                <div class="error" th:each="err : ${#fields.errors('username')}" th:text="${err}"></div>
             </dd>
         </dl>
-
+        <dl>
+            <dt th:text="#{닉네임}"></dt>
+            <dd>
+                <input type="text" name="nickname" th:field="*{nickname}">
+                <div class="error" th:each="err : ${#fields.errors('nickname')}" th:text="${err}"></div>
+            </dd>
+        </dl>
         <dl>
             <dt th:text="#{프로필_이미지}"></dt>
             <dd>
@@ -57,6 +63,10 @@
                         th:text="#{이미지_업로드}" data-image-only="true" data-single-file="true"></button>
             </dd>
         </dl>
+
+        <th:block th:replace="~{front/member/_join_member::member}"></th:block>
+
+        <th:block th:replace="~{front/member/_join_farmer::member}"></th:block>
 
         <div th:text="#{회원가입_약관}"></div>
         <div class="terms" th:utext="${@utils.nl2br(siteConfig.joinTerms)}"></div>

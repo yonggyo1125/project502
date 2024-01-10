@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import org.choongang.member.constants.Gender;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -42,6 +43,7 @@ public class RequestJoin {
 
     private String gender = Gender.FEMALE.name();
 
+    @DateTimeFormat(pattern="yyyy-MM-dd")
     private LocalDate birthdate; // 생년 월일
 
     @NotBlank
