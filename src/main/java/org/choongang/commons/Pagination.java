@@ -1,8 +1,12 @@
 package org.choongang.commons;
 
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.Data;
+
 import java.util.List;
 import java.util.stream.IntStream;
 
+@Data
 public class Pagination {
 
     private int page;
@@ -16,6 +20,8 @@ public class Pagination {
     private int prevRangePage; // 이전 구간 첫 페이지 번호
     private int nextRangePage; // 다음 구간 첫 페이지 번호
 
+    private int totalPages; // 전체 페이지 갯수
+
     /**
      *
      * @param page : 현재 페이지
@@ -23,7 +29,7 @@ public class Pagination {
      * @param ranges : 페이지 구간 갯수
      * @param limit : 1페이지 당 레코드 갯수
      */
-    public Pagination(int page, int total, int ranges, int limit) {
+    public Pagination(int page, int total, int ranges, int limit, HttpServletRequest request) {
 
         page = Utils.onlyPositiveNumber(page, 1);
         total = Utils.onlyPositiveNumber(total, 0);
@@ -58,12 +64,19 @@ public class Pagination {
         this.limit = limit;
         this.firstRangePage = firstRangePage;
         this.lastRangePage = lastRangePage;
+        this.totalPages = totalPages;
+    }
+
+    public Pagination(int page, int total, int ranges, int limit) {
+        this(page, total, ranges, limit, null);
     }
 
     public List<String[]> getPages() {
         // 0 : 페이지 번호, 1 : 페이지 URL - ?page=페이지번호
 
-        List<String[]> data = IntStream.rangeClosed()
+       return IntStream.rangeClosed(firstRangePage, lastRangePage)
+                .mapToObj(p -> new String[] { String.valueOf(p), "?page=" + p})
+                .toList();
 
     }
 }
