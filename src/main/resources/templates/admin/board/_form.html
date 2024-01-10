@@ -156,27 +156,21 @@
         <tr>
             <th width="180">글목록</th>
             <td>
-                <input type="radio" name="listAccessType" value="ALL" id="listAccessType_ALL" th:field="*{listAccessType}">
-                <label for="listAccessType_ALL">비회원+회원+관리자</label>
+                <th:block th:each="auth : ${authorities}">
+                    <input type="radio" name="listAccessType" th:value="${auth[0]}" th:id="${'listAccessType_' + auth[0]}" th:field="*{listAccessType}">
+                    <label th:for="${'listAccessType_' + auth[0]}" th:text="${auth[1]}"></label>
+                </th:block>
 
-                <input type="radio" name="listAccessType" value="MEMBER" id="listAccessType_MEMBER" th:field="*{listAccessType}">
-                <label for="listAccessType_MEMBER">회원+관리자</label>
-
-                <input type="radio" name="listAccessType" value="ADMIN" id="listAccessType_ADMIN" th:field="*{listAccessType}">
-                <label for="listAccessType_ADMIN">관리자</label>
             </td>
         </tr>
         <tr>
             <th>글보기</th>
             <td>
-                <input type="radio" name="viewAccessType" value="ALL" id="viewAccessType_ALL" th:field="*{viewAccessType}">
-                <label for="viewAccessType_ALL">비회원+회원+관리자</label>
+                <th:block th:each="auth : ${authorities}">
+                    <input type="radio" name="viewAccessType" th:value="${auth[0]}" th:id="${'viewAccessType_' + auth[0]}" th:field="*{viewAccessType}">
+                    <label th:for="${'viewAccessType_' + auth[0]}" th:text="${auth[1]}"></label>
+                </th:block>
 
-                <input type="radio" name="viewAccessType" value="MEMBER" id="viewAccessType_MEMBER" th:field="*{viewAccessType}">
-                <label for="viewAccessType_MEMBER">회원+관리자</label>
-
-                <input type="radio" name="viewAccessType" value="ADMIN" id="viewAccessType_ADMIN" th:field="*{viewAccessType}">
-                <label for="viewAccessType_ADMIN">관리자</label>
             </td>
         </tr>
         <tr>
