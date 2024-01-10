@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<th:block th:if="${pagination != null}" th:object="${pagination}">
+<th:block th:fragment="pagination" th:if="${pagination != null}" th:object="${pagination}">
     <div class="pagination">
-        <a th:each="p : *{pages}" th:href="${p[1]}" th:text="${p[0]}"></a>
+        <th:block th:if="*{prevRangePage > 0}">
+            <a th:href="${#strings.concat(baseURL, 1)}" th:text="#{처음}" class="page"></a>
+            <a th:href="${#strings.concat(baseURL, prevRangePage)}" th:text="#{이전}" class="page"></a>
+        </th:block>
+        <a th:each="p : *{pages}" th:href="${p[1]}" th:text="${p[0]}" class="page" th:classappend="${'' + pagination.page == p[0]} ? 'on'"></a>
+
     </div>
 </th:block>
 </html>
