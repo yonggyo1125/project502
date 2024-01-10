@@ -71,17 +71,19 @@ public class Pagination {
          *      &로 문자열 분리
          *      { "orderStatus=CASH", "name=....", "page=2" }
          */
+
+        String baseURL = "?";
         if (request != null) {
             String queryString = request.getQueryString();
-            String baseURL = "?";
             if (StringUtils.hasText(queryString)) {
                 queryString = queryString.replace("?", "");
 
                 baseURL += Arrays.stream(queryString.split("&"))
                         .filter(s -> !s.contains("page="))
                         .collect(Collectors.joining("&"));
+
+                baseURL = baseURL.length() > 1 ? baseURL += "&" : baseURL;
             }
-            this.baseURL = baseURL;
         }
 
         this.page = page;
@@ -91,7 +93,7 @@ public class Pagination {
         this.firstRangePage = firstRangePage;
         this.lastRangePage = lastRangePage;
         this.totalPages = totalPages;
-
+        this.baseURL = baseURL;
     }
 
     public Pagination(int page, int total, int ranges, int limit) {
