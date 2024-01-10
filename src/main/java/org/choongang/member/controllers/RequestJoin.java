@@ -58,6 +58,9 @@ public class RequestJoin {
     @NotBlank
     private String farmAddressSub; // 농장 나머지 주소
 
+    @NotBlank
+    private String businessPermitNum;
+
     @AssertTrue
     private boolean agree;
 
