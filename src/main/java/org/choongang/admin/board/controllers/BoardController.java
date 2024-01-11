@@ -1,8 +1,10 @@
 package org.choongang.admin.board.controllers;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.choongang.admin.menus.Menu;
 import org.choongang.admin.menus.MenuDetail;
+import org.choongang.board.service.config.BoardConfigSaveService;
 import org.choongang.commons.ExceptionProcessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +20,11 @@ import java.util.List;
 
 @Controller("adminBoardController")
 @RequestMapping("/admin/board")
+@RequiredArgsConstructor
 public class BoardController implements ExceptionProcessor {
+
+    private final BoardConfigSaveService configSaveService;
+    private final BoardConfigValidator configValidator;
 
     @ModelAttribute("menuCode")
     public String getMenuCode() { // 주 메뉴 코드
@@ -65,9 +71,13 @@ public class BoardController implements ExceptionProcessor {
 
         commonProcess(mode, model);
 
+        configValidator.validate(config, errors);
+
         if (errors.hasErrors()) {
             return "admin/board/" + mode;
         }
+
+        configSaveService.save(config);
 
 
         return "redirect:/admin/board";
