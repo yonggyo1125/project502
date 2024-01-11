@@ -6,29 +6,29 @@
     <h1>분류 관리</h1>
 
     <h2>분류 등록</h2>
-    <form name="frmPs" method="post" th:action="@{/admin/product/category}" target="ifrmProcess" autocomplete="off">
+    <form name="frmPs" method="post" th:action="@{/admin/product/category}" target="ifrmProcess" autocomplete="off" th:object="${requestCategory}">
         <table class="table_cols">
             <tr>
                 <th width="180">분류코드</th>
                 <td width="300">
-                    <input type="text" name="cateCd">
+                    <input type="text" name="cateCd" th:field="*{cateCd}">
                 </td>
                 <th width="180">분류명</th>
                 <td>
-                    <input type="text" name="cateNm">
+                    <input type="text" name="cateNm" th:field="*{cateNm}">
                 </td>
             </tr>
             <tr>
                 <th>진열가중치</th>
                 <td>
-                    <input type="number" name="listOrder">
+                    <input type="number" name="listOrder" th:field="*{listOrder}">
                 </td>
                 <th>사용여부</th>
                 <td>
-                    <input type="radio" name="active" value="true" id="active_true">
+                    <input type="radio" name="active" value="true" id="active_true" th:field="*{active}">
                     <label for="active_true">사용</label>
 
-                    <input type="radio" name="active" value="false" id="active_false">
+                    <input type="radio" name="active" value="false" id="active_false" th:field="*{active}">
                     <label for="active_false">미사용</label>
                 </td>
             </tr>
