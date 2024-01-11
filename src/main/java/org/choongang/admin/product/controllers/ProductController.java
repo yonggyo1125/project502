@@ -25,6 +25,8 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ProductController implements ExceptionProcessor {
 
+    private final CategoryValidator categoryValidator;
+
     @ModelAttribute("menuCode")
     public String getMenuCode() {
         return "product";
@@ -95,6 +97,8 @@ public class ProductController implements ExceptionProcessor {
     @PostMapping("/category")
     public String categoryPs(@Valid RequestCategory form, Errors errors, Model model) {
         commonProcess("category", model);
+
+        categoryValidator.validate(form, errors);
 
         if (errors.hasErrors()) {
             List<String> messages = errors.getFieldErrors()
