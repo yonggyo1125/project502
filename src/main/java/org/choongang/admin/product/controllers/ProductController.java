@@ -48,6 +48,7 @@ public class ProductController implements ExceptionProcessor {
      * @param model
      * @return
      */
+    @GetMapping("/add")
     public String add(Model model) {
         commonProcess("add", model);
 
@@ -61,6 +62,7 @@ public class ProductController implements ExceptionProcessor {
      * @param model
      * @return
      */
+    @PostMapping("/save")
     public String save(Model model) {
 
         return "redirect:/admin/product";
@@ -117,5 +119,6 @@ public class ProductController implements ExceptionProcessor {
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("addScript", addScript);
         model.addAttribute("addCommonScript", addCommonScript);
+        model.addAttribute("subMenuCode", mode);
     }
 }
