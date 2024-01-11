@@ -10,6 +10,7 @@ import org.choongang.file.entities.FileInfo;
 import org.choongang.member.Authority;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data @Builder
@@ -18,6 +19,9 @@ public class Board extends BaseMember {
     @Id
     @Column(length=30)
     private String bid; // 게시판 아이디
+
+    @Column(length=65, nullable = false)
+    private String gid = UUID.randomUUID().toString();
 
     @Column(length=60, nullable = false)
     private String bName; // 게시판 이름
