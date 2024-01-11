@@ -55,9 +55,9 @@ public class BoardConfigInfoService {
     public void addBoardInfo(Board board) {
         String gid = board.getGid();
 
-        List<FileInfo> htmlTopImages = fileInfoService.getListDone(gid, "htmlTop");
+        List<FileInfo> htmlTopImages = fileInfoService.getListDone(gid, "html_top");
 
-        List<FileInfo> htmlBottomImages = fileInfoService.getListDone(gid, "htmlBottom");
+        List<FileInfo> htmlBottomImages = fileInfoService.getListDone(gid, "html_bottom");
 
         board.setHtmlTopImages(htmlTopImages);
         board.setHtmlBottomImages(htmlBottomImages);

@@ -65,6 +65,7 @@ public class BoardController implements ExceptionProcessor {
         commonProcess("edit", model);
 
         RequestBoardConfig form = configInfoService.getForm(bid);
+        System.out.println(form);
         model.addAttribute("requestBoardConfig", form);
 
         return "admin/board/edit";
