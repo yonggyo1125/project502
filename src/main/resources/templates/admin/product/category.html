@@ -9,11 +9,11 @@
     <form name="frmPs" method="post" th:action="@{/admin/product/category}" target="ifrmProcess" autocomplete="off">
         <table class="table_cols">
             <tr>
-                <th>분류코드</th>
-                <td>
+                <th width="180">분류코드</th>
+                <td width="300">
                     <input type="text" name="cateCd">
                 </td>
-                <th>분류명</th>
+                <th width="180">분류명</th>
                 <td>
                     <input type="text" name="cateNm">
                 </td>
@@ -38,5 +38,7 @@
             <button type="submit" class="btn">등록하기</button>
         </div>
     </form>
+
+    <h2>분류 목록</h2>
 </section>
 </html>
