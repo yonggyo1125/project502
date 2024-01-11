@@ -47,7 +47,8 @@
             <thead>
                 <tr>
                     <th width="40">
-
+                        <input type="checkbox" class="checkall" data-target-name="chk" id="checkall">
+                        <label for="checkall"></label>
                     </th>
                     <th width="200">분류코드</th>
                     <th width="300">분류명</th>
@@ -59,7 +60,7 @@
             <tbody>
             <tr th:if="${items != null && !items.isEmpty()}" th:each="item, status : ${items}" th:object="${item}">
                 <td align="center">
-                    <input type="hidden" name="cateCd" th:value="*{cateCd}">
+                    <input type="hidden" th:name="${'cateCd_' + status.index}" th:value="*{cateCd}">
                     <input type="checkbox" name="chk" th:value="${status.index}" th:id="${'chk_' + status.index}">
                     <label th:for="${'chk_' + status.index}"></label>
                 </td>
