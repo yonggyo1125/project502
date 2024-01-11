@@ -7,6 +7,8 @@ import org.choongang.admin.menus.MenuDetail;
 import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.Utils;
 import org.choongang.commons.exceptions.AlertException;
+import org.choongang.product.entities.Category;
+import org.choongang.product.service.CategoryInfoService;
 import org.choongang.product.service.CategorySaveService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -28,6 +30,7 @@ public class ProductController implements ExceptionProcessor {
 
     private final CategoryValidator categoryValidator;
     private final CategorySaveService categorySaveService;
+    private final CategoryInfoService categoryInfoService;
 
 
     @ModelAttribute("menuCode")
@@ -87,6 +90,9 @@ public class ProductController implements ExceptionProcessor {
     @GetMapping("/category")
     public String category(@ModelAttribute RequestCategory form, Model model) {
         commonProcess("category", model);
+
+        List<Category> items = categoryInfoService.getList(true);
+        model.addAttribute("items", items);
 
         return "admin/product/category";
     }
