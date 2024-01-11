@@ -58,19 +58,19 @@
             </thead>
             <tbody>
             <tr th:if="${items != null && !items.isEmpty()}" th:each="item, status : ${items}" th:object="${item}">
-                <td>
+                <td align="center">
                     <input type="hidden" name="cateCd" th:value="*{cateCd}">
                     <input type="checkbox" name="chk" th:value="${status.index}" th:id="${'chk_' + status.index}">
                     <label th:for="${'chk_' + status.index}"></label>
                 </td>
-                <td th:text="*{cateCd}"></td>
+                <td th:text="*{cateCd}" align="center"></td>
                 <td>
                     <input type="text" th:name="${'cateNm_' + status.index}" th:value="*{cateNm}">
                 </td>
                 <td>
                     <input type="number" th:name="${'listOrder_' + status.index}" th:value="*{listOrder}">
                 </td>
-                <td>
+                <td align="center">
                     <input type="radio" th:name="${'active_' + status.index}" th:checked="*{active}" th:id="${'active_' + status.index}" value="true">
                     <label th:for="${'active_' + status.index}">사용</label>
 
@@ -87,6 +87,10 @@
             </tr>
             </tbody>
         </table>
+        <div class="table-actions">
+            <button type="button" class="sbtn">선택 분류 삭제</button>
+            <button type="button" class="sbtn on">선택 분류 수정</button>
+        </div>
     </form>
 
 </section>
