@@ -125,7 +125,6 @@ public class BoardConfigInfoService {
                         .or(cond2);
                 andBuilder.and(orBuilder);
             }
-
         }
 
         /* 검색 조건 처리 E */
