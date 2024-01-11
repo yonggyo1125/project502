@@ -1,11 +1,13 @@
 package org.choongang.admin.product.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.admin.menus.Menu;
 import org.choongang.admin.menus.MenuDetail;
 import org.choongang.commons.ExceptionProcessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,7 +77,7 @@ public class ProductController implements ExceptionProcessor {
      * @return
      */
     @GetMapping("/category")
-    public String category(Model model) {
+    public String category(@ModelAttribute RequestCategory form, Model model) {
         commonProcess("category", model);
 
         return "admin/product/category";
@@ -88,7 +90,7 @@ public class ProductController implements ExceptionProcessor {
      * @return
      */
     @PostMapping("/category")
-    public String categoryPs(Model model) {
+    public String categoryPs(@Valid RequestCategory form, Errors errors, Model model) {
         commonProcess("category", model);
 
         return "admin/product/category";
