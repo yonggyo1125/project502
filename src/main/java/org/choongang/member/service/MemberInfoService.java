@@ -14,6 +14,7 @@ import org.choongang.commons.Utils;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.file.service.FileInfoService;
 import org.choongang.member.controllers.MemberSearch;
+import org.choongang.member.entities.AbstractMember;
 import org.choongang.member.entities.Authorities;
 import org.choongang.member.entities.Member;
 import org.choongang.member.entities.QMember;
@@ -38,7 +39,7 @@ public class MemberInfoService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Member member = memberRepository.findByEmail(username) // 이메일 조회
+        AbstractMember member = memberRepository.findByEmail(username) // 이메일 조회
                 .orElseGet(() -> memberRepository.findByUserId(username) // 아이디로 조회
                         .orElseThrow(() -> new UsernameNotFoundException(username)));
 
