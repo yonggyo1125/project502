@@ -100,8 +100,10 @@ function callbackFileUpload(files) {
                 return;
             }
 
+            const { fileManager } = commonLib;
+
             const seq = this.dataset.fileId;
-            console.log(seq);
+            fileManager.delete(seq);
 
         });
         /* 더블 클릭시 파일 삭제 처리 E */
