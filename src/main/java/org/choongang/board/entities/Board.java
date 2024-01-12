@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.choongang.board.constants.BoardUseType;
 import org.choongang.commons.entities.BaseMember;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.member.Authority;
@@ -25,6 +26,13 @@ public class Board extends BaseMember {
 
     @Column(length=60, nullable = false)
     private String bName; // 게시판 이름
+
+    @Enumerated(EnumType.STRING)
+    @Column(length=15, nullable = false)
+    private BoardUseType useType = BoardUseType.ALL;
+
+    @Column(length=50)
+    private String schoolDomain;
 
     private boolean active; // 사용 여부
 

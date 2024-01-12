@@ -10,20 +10,21 @@
         <tr>
             <th width="180">사용구분</th>
             <td>
-                <input type="radio" name="useType" value="ALL" id="useType_ALL">
+                <input type="radio" name="useType" value="ALL" id="useType_ALL" th:field="*{useType}">
                 <label for="useType_ALL">공통</label>
 
-                <input type="radio" name="useType" value="SCHOOL" id="useType_SCHOOL">
+                <input type="radio" name="useType" value="SCHOOL" id="useType_SCHOOL" th:field="*{useType}">
                 <label for="useType_SCHOOL">학교별</label>
             </td>
         </tr>
         <tr>
             <th>학교 선택</th>
             <td>
-                <select name="schoolDomain">
+                <select name="schoolDomain" th:field="*{schoolDomain}">
                     <option value="">- 선택하세요 -</option>
                     <option th:each="school : ${@schoolUtil.getSchools()}" th:value="${school[1]}" th:text="${school[0]}"></option>
                 </select>
+                <div class="error" th:each="err : ${#fields.errors('schoolDomain')}" th:text="${err}"></div>
             </td>
         </tr>
     </table>
