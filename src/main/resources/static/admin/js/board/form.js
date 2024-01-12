@@ -22,6 +22,13 @@ window.addEventListener("DOMContentLoaded", function() {
         });
     }
     /* 이미지 본문 추가 이벤트 처리 E */
+
+    /* 드래그 앤 드롭 삭제 이벤트 처리 S */
+    const dragDropBoxes = document.querySelectorAll(".dragndrop_box.uploaded");
+    for (const el of dragDropBoxes) {
+        el.addEventListener("dblclick", (e) => deleteDragDropImage(e.currentTarget.dataset.fileId));
+    }
+    /* 드래그 앤 드롭 삭제 이벤트 처리 E */
 });
 
 /**
@@ -78,7 +85,7 @@ function callbackFileUpload(files) {
     *
     */
     function dragAndDropProcess(file) {
-        const logoBox = document.getElementById(`${file.location}_box`);
+        const logoBox = document.querySelector(`.${file.location}_box`);
 
         const imageUrl = file.thumbsUrl.length > 0 ? file.thumbsUrl.pop() : file.fileUrl;
 
@@ -96,20 +103,28 @@ function callbackFileUpload(files) {
 
 
         /* 더블 클릭시 파일 삭제 처리 S */
-        logoBox.addEventListener("dblclick", function() {
-            if (!confirm('정말 삭제하겠습니까?')) {
-                return;
-            }
-
-            const { fileManager } = commonLib;
-
-            const seq = this.dataset.fileId;
-            fileManager.delete(seq);
-
-        });
+        logoBox.addEventListener("dblclick", () => deleteDragDropImage(seq));
         /* 더블 클릭시 파일 삭제 처리 E */
     }
 }
+
+/**
+* 드래그 앤 드롭 이미지 삭제
+*
+* @param seq : 파일 등록번호
+*/
+function deleteDragDropImage(seq) {
+    if (!confirm('정말 삭제하겠습니까?')) {
+        return;
+    }
+
+    const { fileManager } = commonLib;
+
+    const seq = this.dataset.fileId;
+    fileManager.delete(seq);
+
+}
+
 
 /**
 * 에디터에 이미지 추가
@@ -127,5 +142,5 @@ function insertImage(editor, source) {
 function callbackFileDelete(seq) {
     const fileBox = document.getElementById(`file_${seq}`);
     fileBox.classList.remove('uploaded');
-    fileBox.backgroundImage = fileBox.backgroundPosition = fileBox.backgroundSize = null;
+    fileBox.style.backgroundImage = fileBox.style.backgroundPosition = fileBox.style.backgroundSize = null;
 }
