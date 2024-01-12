@@ -59,6 +59,7 @@ public class Product extends Base {
     
     private boolean useOption; // 옵션 사용 여부, true : 옵션 사용, 재고는 옵션쪽 재고 사용
 
+
     @Column(length=60)
     private String optionName; // 옵션명
 }
