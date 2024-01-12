@@ -15,6 +15,18 @@ public class Menu {
             new MenuDetail("authority", "회원권한", "/admin/member/authority")
         ));
         
+        // 상품관리
+        menus.put("product", Arrays.asList(
+                new MenuDetail("list", "상품목록", "/admin/product"),
+                new MenuDetail("add", "상품등록", "/admin/product/add"),
+                new MenuDetail("category", "상품분류", "/admin/product/category")
+        ));
+        
+        // 주문관리
+        menus.put("order", Arrays.asList(
+            new MenuDetail("list", "주문목록", "/admin/order")
+        ));
+
         menus.put("board", Arrays.asList(
                 new MenuDetail("list", "게시판목록", "/admin/board"),
                 new MenuDetail("add", "게시판등록", "/admin/board/add"),
