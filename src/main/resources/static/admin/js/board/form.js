@@ -88,6 +88,7 @@ function callbackFileUpload(files) {
         logoBox.style.backgroundSize = 'cover';
 
         logoBox.dataset.fileId = file.seq;
+        logoBox.id = `file_${file.seq}`;
 
         if (!logoBox.classList.contains('uploaded')) { // 파일이 업로드된 상태가 아닌 경우, 업로드 상태로 변경
             logoBox.classList.add('uploaded');
@@ -124,5 +125,7 @@ function insertImage(editor, source) {
 * @param seq : 파일 등록 번호
 */
 function callbackFileDelete(seq) {
-
+    const fileBox = document.getElementById(`file_${seq}`);
+    fileBox.classList.remove('uploaded');
+    fileBox.backgroundImage = fileBox.backgroundPosition = fileBox.backgroundSize = null;
 }
