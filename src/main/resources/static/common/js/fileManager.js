@@ -88,9 +88,13 @@ commonLib.fileManager = {
     delete(seq) {
         const { ajaxLoad } = commonLib;
 
-        ajaxLoad('DELETE', `/api/file/${seq}`)
+        ajaxLoad('DELETE', `/api/file/${seq}`, null, "json")
             .then(res => {
-                console.log(res);
+                if (res.success) {
+                    if (typeof parent.callbackFileDelete == 'function') {
+                        parent.callbackFileDelete(res.data);
+                    }
+                }
             })
             .catch(err => console.error(err));
     }

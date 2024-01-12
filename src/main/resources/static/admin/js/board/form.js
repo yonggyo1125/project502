@@ -117,3 +117,12 @@ function callbackFileUpload(files) {
 function insertImage(editor, source) {
     editor.execute('insertImage', { source });
 }
+
+/**
+* 파일 삭제 후 후속 처리
+*
+* @param seq : 파일 등록 번호
+*/
+function callbackFileDelete(seq) {
+
+}
