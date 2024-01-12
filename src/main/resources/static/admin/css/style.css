@@ -96,4 +96,5 @@ select { border: 1px solid #d5d5d5; height: 35px; }
 .file_tpl_box a:not(.remove) { text-decoration: underline; }
 .file_tpl_box i { padding: 0 5px; cursor: pointer; }
 
+.dragndrop_box { width: 300px; min-height: 300px; border: 2px solid #596b99; }
 /* 파일 공통 E */
