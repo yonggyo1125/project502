@@ -79,6 +79,20 @@ commonLib.fileManager = {
             alert(err.message);
             console.error(err);
         }
+    },
+    /**
+    * 파일 삭제
+    *
+    * @param seq : 파일 등록 번호
+    */
+    delete(seq) {
+        const { ajaxLoad } = commonLib;
+
+        ajaxLoad('DELETE', `/api/file/${seq}`)
+            .then(res => {
+                console.log(res);
+            })
+            .catch(err => console.error(err));
     }
 };
 
