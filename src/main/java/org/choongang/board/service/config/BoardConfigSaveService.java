@@ -2,7 +2,6 @@ package org.choongang.board.service.config;
 
 import lombok.RequiredArgsConstructor;
 import org.choongang.admin.board.controllers.RequestBoardConfig;
-import org.choongang.board.constants.BoardUseType;
 import org.choongang.board.entities.Board;
 import org.choongang.board.repositories.BoardRepository;
 import org.choongang.file.service.FileUploadService;
@@ -51,9 +50,6 @@ public class BoardConfigSaveService {
 
         board.setHtmlTop(form.getHtmlTop());
         board.setHtmlBottom(form.getHtmlBottom());
-
-        board.setUseType(BoardUseType.valueOf(form.getUseType()));
-        board.setSchoolDomain(form.getSchoolDomain());
 
         boardRepository.saveAndFlush(board);
 
