@@ -12,7 +12,7 @@ import org.choongang.commons.entities.Base;
 @NoArgsConstructor @AllArgsConstructor
 @Table(indexes =
     @Index(name="idx_pdt_opt_order", columnList = "listOrder DESC, createdAt ASC"))
-public class ProductOptions extends Base {
+public class ProductOption extends Base {
 
     @Id @GeneratedValue
     private Long seq;
