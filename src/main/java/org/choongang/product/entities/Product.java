@@ -26,6 +26,7 @@ public class Product extends Base {
     @JoinColumn(name="farmerSeq")
     private Farmer farmer; // 판매 농장주
 
+    @Column(length=100, nullable = false)
     private String name; // 상품명
 
     private int consumerPrice; // 소비자가(보이는 금액)
@@ -57,4 +58,7 @@ public class Product extends Base {
     private ProductStatus status = ProductStatus.PREPARE; // 상품 상태
     
     private boolean useOption; // 옵션 사용 여부, true : 옵션 사용, 재고는 옵션쪽 재고 사용
+
+    @Column(length=60)
+    private String optionName; // 옵션명
 }
