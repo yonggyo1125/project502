@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div class="year_month">
+        <a th:href="@{/calendar(year=${prevYear}, month=${prevMonth})}" th:text="#{이전달}"></a>
+        <span class="current">
+            <th:block th:text="${year}"></th:block>
+            <th:block th:text="#{년}"></th:block>
+
+            <th:block th:text="${#numbers.formatInteger(month, 2)}"></th:block>
+            <th:block th:text="#{월}"></th:block>
+        </span>
+        <a th:href="@{/calendar(year=${nextYear}, month=${nextMonth})}" th:text="#{다음달}"></a>
+    </div>
+    <ul class="yoils">
+        <li th:each="yoil, status : ${yoilTitles}" th:text="${yoil}" th:classappend="${status == 0 || status == 6} ? 'red'"></li>
+    </ul>
+    <ul class="days">
+        <li th:each="day : ${days}">
+            <span th:text="${day}"></span>
+        </li>
+    </ul>
+
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; }
+        ul { list-style: none; margin: 0; padding: 0; }
+        li { margin: 0; }
+        .yoils { display: flex; width: 100%; }
+        .yoils > li { width: 0; flex-grow: 1; padding: 10px; text-align: center; }
+
+        .days { display: flex; width: 100%; flex-wrap: wrap; }
+        .days > li { width: calc(100% / 7); padding: 10px; text-align: center; }
+    </style>
+</body>
+</html>
