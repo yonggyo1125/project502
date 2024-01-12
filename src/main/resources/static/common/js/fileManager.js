@@ -126,7 +126,11 @@ window.addEventListener("DOMContentLoaded", function() {
         el.addEventListener("drop", function(e) {
             e.preventDefault(); // 기본 동작 차단
 
-            console.log(e.dataTransfer.files);
+            const dataset = this.dataset;
+            const files = e.dataTransfer.files;
+
+            commonLib.fileManager.upload(files, dataset.location, dataset.imageOnly, dataset.singleFile);
+
         });
     }
     /* 드래그 앤 드롭 파일 업로드 처리 E */
