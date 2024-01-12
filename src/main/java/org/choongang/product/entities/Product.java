@@ -6,9 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.choongang.commons.entities.Base;
+import org.choongang.file.entities.FileInfo;
 import org.choongang.member.entities.Farmer;
 import org.choongang.product.constants.DiscountType;
 import org.choongang.product.constants.ProductStatus;
+
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Data @Builder
@@ -17,6 +21,9 @@ public class Product extends Base {
 
     @Id @GeneratedValue
     private Long seq; // 상품 번호
+
+    @Column(length=65)
+    private String gid = UUID.randomUUID().toString(); // 그룹 ID
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="cateCd")
@@ -62,4 +69,13 @@ public class Product extends Base {
 
     @Column(length=60)
     private String optionName; // 옵션명
+
+    @Transient
+    private List<FileInfo> mainImages; // 메인 이미지
+
+    @Transient
+    private List<FileInfo> listImages; // 목록 이미지
+
+    @Transient
+    private List<FileInfo> editorImages; // 에디터에 첨부한 이미지
 }
