@@ -120,7 +120,6 @@ function deleteDragDropImage(seq) {
 
     const { fileManager } = commonLib;
 
-    const seq = this.dataset.fileId;
     fileManager.delete(seq);
 
 }
