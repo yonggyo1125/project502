@@ -2,6 +2,7 @@ package org.choongang.admin.board.controllers;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import org.choongang.board.constants.BoardUseType;
 import org.choongang.file.entities.FileInfo;
 
 import java.util.List;
@@ -19,7 +20,11 @@ public class RequestBoardConfig {
 
     @NotBlank
     private String bName; // 게시판 이름
-
+    
+    private String useType = BoardUseType.ALL.name();
+    
+    private String schoolDomain; // 학교 이메일 도메인
+    
     private boolean active; // 사용 여부
 
     private int rowsPerPage = 20; // 1페이지 게시글 수

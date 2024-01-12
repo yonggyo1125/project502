@@ -1,6 +1,7 @@
 package org.choongang.admin.board.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.choongang.board.constants.BoardUseType;
 import org.choongang.board.repositories.BoardRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -27,6 +28,13 @@ public class BoardConfigValidator implements Validator {
         String mode = form.getMode();
         if (mode.equals("add") && StringUtils.hasText(bid) && boardRepository.existsById(bid)) {
             errors.rejectValue("bid", "Duplicated");
+        }
+
+        /* 학교별 게시판이라면 학교선택 필수 */
+        String useType = form.getUseType();
+        String schoolDomain = form.getSchoolDomain();
+        if (BoardUseType.SCHOOL == BoardUseType.valueOf(useType) && !StringUtils.hasText(schoolDomain)) {
+            errors.rejectValue("schoolDomain", "NotBlank");
         }
     }
 }
