@@ -39,6 +39,15 @@ function callbackFileUpload(files) {
     const targetBottom = document.getElementById("uploaded_files_html_bottom");
 
     for (const file of files) {
+        /* 드래그 앤 드롭 파일 처리 S */
+        if (file.location.indexOf("logo") != -1) { // location 값에 logo가 포함되어 있으면
+
+            dragAndDropProcess(file);
+
+            continue;
+        }
+        /* 드래그 앤 드롭 파일 처리 E */
+
        const editor = file.location == 'html_bottom' ? editor2 : editor1;
        const target = file.location == 'html_bottom' ? targetBottom : targetTop;
 
@@ -62,6 +71,28 @@ function callbackFileUpload(files) {
         }
 
        /* 템플릿 데이터 치환 E */
+    }
+
+    /**
+    * 드래그 앤 드롭 파일 업로드 처리
+    *
+    */
+    function dragAndDropProcess(file) {
+        const logoBox = document.getElementById(`${file.location}_box`);
+
+        const imageUrl = file.thumbsUrl.length > 0 ? file.thumbsUrl.pop() : file.fileUrl;
+
+        logoBox.style.backgroundImage = `url('${imageUrl}')`;
+        logoBox.style.backgroundRepeat = 'no-repeat';
+        logoBox.style.backgroundPosition = 'center center';
+        logoBox.style.backgroundSize = 'cover';
+
+        logoBox.dataset.file-id = file.seq;
+
+        if (!logoBox.classList.contains('uploaded')) { // 파일이 업로드된 상태가 아닌 경우, 업로드 상태로 변경
+            logoBox.classList.add('uploaded');
+        }
+
     }
 }
 
