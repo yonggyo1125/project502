@@ -49,7 +49,7 @@ public class SchoolConfigController implements ExceptionProcessor {
 
         SchoolConfig config = infoService.get("school_config", SchoolConfig.class).orElseGet(SchoolConfig::new);
 
-        model.addAttribute("config", config);
+        model.addAttribute("schoolConfig", config);
 
         return "admin/config/school";
     }
