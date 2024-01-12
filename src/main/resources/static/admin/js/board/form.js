@@ -87,12 +87,24 @@ function callbackFileUpload(files) {
         logoBox.style.backgroundPosition = 'center center';
         logoBox.style.backgroundSize = 'cover';
 
-        logoBox.dataset.file-id = file.seq;
+        logoBox.dataset.fileId = file.seq;
 
         if (!logoBox.classList.contains('uploaded')) { // 파일이 업로드된 상태가 아닌 경우, 업로드 상태로 변경
             logoBox.classList.add('uploaded');
         }
 
+
+        /* 더블 클릭시 파일 삭제 처리 S */
+        logoBox.addEventListener("dblclick", function() {
+            if (!confirm('정말 삭제하겠습니까?')) {
+                return;
+            }
+
+            const seq = this.dataset.fileId;
+            console.log(seq);
+
+        });
+        /* 더블 클릭시 파일 삭제 처리 E */
     }
 }
 
