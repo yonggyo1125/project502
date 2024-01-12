@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.choongang.commons.entities.Base;
+import org.choongang.member.entities.Farmer;
 import org.choongang.product.constants.DiscountType;
 import org.choongang.product.constants.ProductStatus;
 
@@ -20,6 +21,10 @@ public class Product extends Base {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="cateCd")
     private Category category; // 상품 분류
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="farmerSeq")
+    private Farmer farmer; // 판매 농장주
 
     private String name; // 상품명
 
@@ -50,4 +55,6 @@ public class Product extends Base {
     @Enumerated(EnumType.STRING)
     @Column(length=15, nullable = false)
     private ProductStatus status = ProductStatus.PREPARE; // 상품 상태
+    
+    private boolean useOption; // 옵션 사용 여부, true : 옵션 사용, 재고는 옵션쪽 재고 사용
 }
