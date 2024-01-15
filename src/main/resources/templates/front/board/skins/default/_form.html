@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<th:block th:fragment="form">
-    <input type="hidden" name="bid" th:value="${board.bid}">
-    <input type="hidden" name="gid">
+<th:block th:fragment="form" th:object="${requestBoard}">
+    <input type="hidden" name="bid" th:field="*{bid}">
+    <input type="hidden" name="gid" th:field="*{gid}">
+
+    <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
 
     <dl>
         <dt th:text="#{작성자}"></dt>
         <dd>
-            <input type="text" name="poster">
+            <input type="text" name="poster" th:field="*{poster}">
+            <div class="error" th:each="err : ${#fields.errors('poster')}" th:text="${err}"></div>
         </dd>
     </dl>
     <dl>
         <dt th:text="#{비밀번호}"></dt>
         <dd>
-            <input type="password" name="guestPw" th:placeholder="#{글수정_삭제_비밀번호_입력}">
+            <input type="password" name="guestPw" th:placeholder="#{글수정_삭제_비밀번호_입력}" th:field="*{guestPw}">
+            <div class="error" th:each="err : ${#fields.errors('guestPw')}" th:text="${err}"></div>
         </dd>
     </dl>
     <dl>
@@ -21,14 +25,18 @@
         <dd>
             <input type="checkbox" name="notice" id="notice">
             <label for="notice" th:text="#{공지글}"></label>
-            <input type="text" name="subject">
+            <input type="text" name="subject" th:field="*{subject}">
+
+            <div class="error" th:each="err : ${#fields.errors('subject')}" th:text="${err}"></div>
         </dd>
     </dl>
 
     <dl>
         <dt th:text="#{내용}"></dt>
         <dd>
-            <textarea name="content" id="content"></textarea>
+            <textarea name="content" id="content" th:field="*{content}"></textarea>
+
+            <div class="error" th:each="err : ${#fields.errors('content')}" th:text="${err}"></div>
 
             <button type="button" class="upload_files" data-location="editor" data-image-only="true" th:text="#{이미지_추가}"></button>
             <div class="uploaded_files" id="editor_files"></div>
