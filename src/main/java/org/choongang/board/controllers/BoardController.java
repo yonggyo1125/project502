@@ -31,6 +31,7 @@ public class BoardController implements ExceptionProcessor {
      */
     @GetMapping("/list/{bid}")
     public String list(@PathVariable("bid") String bid, Model model) {
+        commonProcess(bid, "list", model);
 
         return utils.tpl("board/list");
     }
@@ -44,6 +45,7 @@ public class BoardController implements ExceptionProcessor {
      */
     @GetMapping("/view/{seq}")
     public String view(@PathVariable("seq") Long seq, Model model) {
+        commonProcess(seq, "view", model);
 
         return utils.tpl("board/view");
     }
@@ -57,6 +59,7 @@ public class BoardController implements ExceptionProcessor {
      */
     @GetMapping("/write/{bid}")
     public String write(@PathVariable("bid") String bid, Model model) {
+        commonProcess(bid, "write", model);
 
         return utils.tpl("board/write");
     }
@@ -70,6 +73,7 @@ public class BoardController implements ExceptionProcessor {
      */
     @GetMapping("/update/{seq}")
     public String update(@PathVariable("seq") Long seq, Model model) {
+        commonProcess(seq, "update", model);
 
         return utils.tpl("board/update");
     }
@@ -87,7 +91,7 @@ public class BoardController implements ExceptionProcessor {
     }
 
     /**
-     * 게시판의 공통 처리
+     * 게시판의 공통 처리 - 글목록, 글쓰기 등 게시판 ID가 있는 경우
      *
      * @param bid : 게시판 ID
      * @param mode
@@ -101,5 +105,17 @@ public class BoardController implements ExceptionProcessor {
 
         model.addAttribute("board", board);
         /* 게시판 설정 처리 E */
+    }
+
+    /**
+     * 게시판 공통 처리 : 게시글 보기, 게시글 수정 - 게시글 번호가 있는 경우
+     *      - 게시글 조회 -> 게시판 설정
+     *
+     * @param seq
+     * @param mode
+     * @param model
+     */
+    private void commonProcess(Long seq, String mode, Model model) {
+
     }
 }
