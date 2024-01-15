@@ -58,7 +58,8 @@ function callbackFileUpload(files) {
 
         targetEl.appendChild(fileBox);
 
-        const insertImageEl = dom.querySelector(".insert_image");
+        const insertImageEl = fileBox.querySelector(".insert_image");
+
         if (insertImageEl) insertImageEl.addEventListener("click", () => insertImage(file.fileUrl));
     }
 
