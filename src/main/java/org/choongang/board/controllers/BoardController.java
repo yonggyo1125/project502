@@ -7,10 +7,14 @@ import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/board")
@@ -98,12 +102,51 @@ public class BoardController implements ExceptionProcessor {
      * @param model
      */
     private void commonProcess(String bid, String mode, Model model) {
+
+        mode = StringUtils.hasText(mode) ? mode : "list";
+
+        List<String> addCommonScript = new ArrayList<>();
+        List<String> addScript = new ArrayList<>();
+
+        List<String> addCommonCss = new ArrayList<>();
+        List<String> addCss = new ArrayList<>();
+
         /* 게시판 설정 처리 S */
         board = configInfoService.get(bid);
 
+        // 스킨별 css, js 추가
+        String skin = board.getSkin();
+        addCss.add("board/skin_" + skin);
+        addScript.add("board/skin_" + skin);
 
         model.addAttribute("board", board);
         /* 게시판 설정 처리 E */
+
+        String pageTitle = board.getBName(); // 게시판명이 기본 타이틀 
+
+        if (mode.equals("write") || mode.equals("update")) { // 쓰기 또는 수정
+            if (board.isUseEditor()) { // 에디터 사용하는 경우
+                addCommonScript.add("ckeditor5/ckeditor");
+            }
+
+            // 이미지 또는 파일 첨부를 사용하는 경우
+            if (board.isUseUploadImage() || board.isUseUploadFile()) {
+                addCommonScript.add("fileManager");
+            }
+
+            addScript.add("board/form");
+
+            pageTitle += " ";
+            pageTitle += mode.equals("update") ?  Utils.getMessage("글수정", "commons") :  Utils.getMessage("글쓰기", "commons");
+        }
+
+
+
+        model.addAttribute("addCommonCss", addCommonCss);
+        model.addAttribute("addCss", addCss);
+        model.addAttribute("addCommonScript", addCommonScript);
+        model.addAttribute("addScript", addScript);
+        model.addAttribute("pageTitle", pageTitle);
     }
 
     /**
