@@ -72,5 +72,7 @@ function callbackFileUpload(files) {
 *
 */
 function callbackFileDelete(seq) {
+    const fileBox = document.getElementById(`file_${seq}`);
+    fileBox.parentElement.removeChild(fileBox);
 
 }
