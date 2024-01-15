@@ -8,6 +8,9 @@
 
     <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
 
+    <dl th:if="${!#strings.isEmpty(board.category)}">
+
+    </dl>
     <dl>
         <dt th:text="#{작성자}"></dt>
         <dd>

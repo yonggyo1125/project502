@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 import org.choongang.commons.entities.BaseMember;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.member.Authority;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -84,4 +87,21 @@ public class Board extends BaseMember {
 
     @Transient
     private List<FileInfo> htmlBottomImages; // 게시판 하단 Bottom 이미지
+
+    /**
+     * 분류 List 형태로 변환
+     *
+     * @return
+     */
+    public List<String> getCategories() {
+        List<String> categories = new ArrayList<>();
+
+        if (StringUtils.hasText(category)) {
+            categories = Arrays.stream(category.trim().split("\\n"))
+                    .map(s -> s.trim().replaceAll("\\r", ""))
+                    .toList();
+        }
+
+        return categories;
+    }
 }
