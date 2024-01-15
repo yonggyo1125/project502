@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <th:block th:fragment="form" th:object="${requestBoard}">
     <input type="hidden" name="bid" th:field="*{bid}">
     <input type="hidden" name="gid" th:field="*{gid}">
@@ -13,7 +15,7 @@
             <div class="error" th:each="err : ${#fields.errors('poster')}" th:text="${err}"></div>
         </dd>
     </dl>
-    <dl>
+    <dl sec:authorize="isAnonymous()">
         <dt th:text="#{비밀번호}"></dt>
         <dd>
             <input type="password" name="guestPw" th:placeholder="#{글수정_삭제_비밀번호_입력}" th:field="*{guestPw}">
@@ -23,8 +25,10 @@
     <dl>
         <dt th:text="#{제목}"></dt>
         <dd>
-            <input type="checkbox" name="notice" id="notice">
-            <label for="notice" th:text="#{공지글}"></label>
+            <th:block sec:authorize="hasAnyAuthority('ADMIN', 'MANAGER')">
+                <input type="checkbox" name="notice" id="notice">
+                <label for="notice" th:text="#{공지글}"></label>
+            </th:block>
             <input type="text" name="subject" th:field="*{subject}">
 
             <div class="error" th:each="err : ${#fields.errors('subject')}" th:text="${err}"></div>
@@ -38,11 +42,13 @@
 
             <div class="error" th:each="err : ${#fields.errors('content')}" th:text="${err}"></div>
 
-            <button type="button" class="upload_files" data-location="editor" data-image-only="true" th:text="#{이미지_추가}"></button>
-            <div class="uploaded_files" id="editor_files"></div>
+            <th:block th:if="${board.useEditor && board.useUploadImage}">
+                <button type="button" class="upload_files" data-location="editor" data-image-only="true" th:text="#{이미지_추가}"></button>
+                <div class="uploaded_files" id="editor_files"></div>
+            </th:block>
         </dd>
     </dl>
-    <dl>
+    <dl th:if="${board.useUploadFile}">
         <dt th:text="#{파일첨부}"></dt>
         <dd>
             <button type="button" class="upload_files" data-location="attach" th:text="#{파일선택}"></button>
