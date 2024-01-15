@@ -27,6 +27,8 @@ public class BoardController implements ExceptionProcessor {
     private final BoardConfigInfoService configInfoService;
     private final FileInfoService fileInfoService;
 
+    private final BoardFormValidator boardFormValidator;
+
     private final MemberUtil memberUtil;
     private final Utils utils;
 
@@ -104,6 +106,8 @@ public class BoardController implements ExceptionProcessor {
         String bid = form.getBid();
         String mode = form.getMode();
         commonProcess(bid, mode, model);
+
+        boardFormValidator.validate(form, errors);
 
         if (errors.hasErrors()) {
             String gid = form.getGid();
