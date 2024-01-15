@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class BoardController implements ExceptionProcessor {
 
-    private BoardConfigInfoService configInfoService;
+    private final BoardConfigInfoService configInfoService;
 
     private final Utils utils;
 
