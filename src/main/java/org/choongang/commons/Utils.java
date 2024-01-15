@@ -137,4 +137,24 @@ public class Utils {
     public static int onlyPositiveNumber(int num, int replace) {
         return num < 1 ? replace : num;
     }
+
+    /**
+     * 요청 데이터 단일 조회 편의 함수
+     *
+     * @param name
+     * @return
+     */
+    public String getParam(String name) {
+        return request.getParameter(name);
+    }
+
+    /**
+     * 요청 데이터 복수개 조회 편의 함수
+     *
+     * @param name
+     * @return
+     */
+    public String[] getParams(String name) {
+        return request.getParameterValues(name);
+    }
 }
