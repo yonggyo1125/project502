@@ -99,9 +99,8 @@ public class BoardController implements ExceptionProcessor {
      */
     private void commonProcess(String bid, String mode, Model model) {
         /* 게시판 설정 처리 S */
-        if (board == null) {
-            board = configInfoService.get(bid);
-        }
+        board = configInfoService.get(bid);
+
 
         model.addAttribute("board", board);
         /* 게시판 설정 처리 E */
