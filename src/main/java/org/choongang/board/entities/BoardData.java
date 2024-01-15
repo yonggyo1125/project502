@@ -1,14 +1,22 @@
 package org.choongang.board.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.choongang.commons.entities.Base;
 import org.choongang.member.entities.Member;
 
 import java.util.UUID;
 
 @Data
+@Builder
 @Entity
+@NoArgsConstructor @AllArgsConstructor
+@Table(indexes = {
+        @Index(name="idx_boardData_basic", columnList = "notice DESC, createdAt DESC")
+})
 public class BoardData extends Base {
     @Id @GeneratedValue
     private Long seq;
