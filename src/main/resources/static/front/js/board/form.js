@@ -5,6 +5,13 @@ window.addEventListener("DOMContentLoaded", function() {
         loadEditor("content", 450)
             .then(editor => window.editor = editor);
     } // 에디터 사용 E
+
+    /* 이미지 본문 추가 이벤트 처리 S */
+    const insertImages = document.getElementsByClassName("insert_image");
+    for (const el of insertImages) {
+        el.addEventListener("click", (e) => insertImage(e.dataset.url));
+    }
+    /* 이미지 본문 추가 이벤트 처리 E */
 });
 
 
@@ -50,6 +57,9 @@ function callbackFileUpload(files) {
         const fileBox = dom.querySelector(".file_tpl_box");
 
         targetEl.appendChild(fileBox);
+
+        const insertImageEl = dom.querySelector(".insert_image");
+        if (insertImageEl) insertImageEl.addEventListener("click", () => insertImage(file.fileUrl));
     }
 
     if (imageUrls.length > 0) insertImage(imageUrls);
