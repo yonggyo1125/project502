@@ -7,6 +7,13 @@
             <a th:href="@{/board/write/{bid}(bid=${board.bid})}" th:text="#{글쓰기}" class="write_btn"></a>
         </div>
 
+        <th:block th:if="${!#strings.isEmpty(board.htmlTop)}" th:utext="${board.htmlTop}"></th:block>
+
+        <div class="total">
+            Total : <th:block
+                th:text="${pagination.total >= 1000 ? #numbers.formatInteger(pagination.total, 3, 'COMMA') : pagination.total}"></th:block>
+        </div>
+
         <ul class="items">
             <li th:if="${items == null || items.isEmpty()}" class="no_data"
                th:text="#{조회된_게시글이_없습니다.}"></li>
@@ -55,6 +62,9 @@
         <!--// list_search -->
 
         <th:block th:replace="~{common/_pagination::pagination}"></th:block>
+
+        <th:block th:if="${!#strings.isEmpty(board.htmlBottom)}" th:utext="${board.htmlBottom}"></th:block>
+
     </div>
     <!--// board_list -->
 </th:block>
