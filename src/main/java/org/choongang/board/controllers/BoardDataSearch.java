@@ -2,6 +2,8 @@ package org.choongang.board.controllers;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class BoardDataSearch {
     private int page = 1;
@@ -18,4 +20,6 @@ public class BoardDataSearch {
      */
     private String sopt; // 검색 옵션
     private String skey; // 검색 키워드
+
+    private List<String> bid; // 게시판 ID
 }
