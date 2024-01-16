@@ -11,10 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.controllers.BoardDataSearch;
 import org.choongang.board.controllers.RequestBoard;
-import org.choongang.board.entities.Board;
-import org.choongang.board.entities.BoardData;
-import org.choongang.board.entities.BoardView;
-import org.choongang.board.entities.QBoardData;
+import org.choongang.board.entities.*;
 import org.choongang.board.repositories.BoardDataRepository;
 import org.choongang.board.repositories.BoardViewRepository;
 import org.choongang.board.service.config.BoardConfigInfoService;
@@ -205,12 +202,25 @@ public class BoardInfoService {
      */
     public void updateViewCount(Long seq) {
 
-        int uid = memberUtil.isLogin() ?
+        BoardData data = boardDataRepository.findById(seq).orElse(null);
+        if (data == null) return;
+
+        try {
+            int uid = memberUtil.isLogin() ?
                     memberUtil.getMember().getSeq().intValue() : utils.guestUid();
 
-        BoardView boardView = new BoardView(seq, uid);
+            BoardView boardView = new BoardView(seq, uid);
 
-        boardViewRepository.saveAndFlush(boardView);
+            boardViewRepository.saveAndFlush(boardView);
+        } catch (Exception e) {}
+
+        // 조회수 카운팅 -> 게시글에 업데이트
+        QBoardView bv = QBoardView.boardView;
+        int viewCount = (int)boardViewRepository.count(bv.seq.eq(seq));
+
+        data.setViewCount(viewCount);
+
+        boardViewRepository.flush();
 
     }
 }
