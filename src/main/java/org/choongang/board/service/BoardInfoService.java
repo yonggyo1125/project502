@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.entities.BoardData;
 import org.choongang.board.repositories.BoardDataRepository;
+import org.choongang.commons.ListData;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.file.service.FileInfoService;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,16 @@ public class BoardInfoService {
         addBoardData(boardData);
 
         return boardData;
+    }
+
+    /**
+     * 게시판 목록
+     *
+     * @param bid
+     * @return
+     */
+    public ListData<BoardData> getList(String bid) {
+
     }
 
     /**
