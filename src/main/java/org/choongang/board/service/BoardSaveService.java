@@ -3,8 +3,10 @@ package org.choongang.board.service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.controllers.RequestBoard;
+import org.choongang.board.entities.Board;
 import org.choongang.board.entities.BoardData;
 import org.choongang.board.repositories.BoardDataRepository;
+import org.choongang.board.repositories.BoardRepository;
 import org.choongang.file.service.FileUploadService;
 import org.choongang.member.MemberUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +17,7 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class BoardSaveService {
 
+    private final BoardRepository boardRepository;
     private final BoardDataRepository boardDataRepository;
     private final FileUploadService fileUploadService;
     private final MemberUtil memberUtil;
@@ -38,6 +41,9 @@ public class BoardSaveService {
             data.setIp(request.getRemoteAddr());
             data.setUa(request.getHeader("User-Agent"));
             data.setMember(memberUtil.getMember());
+
+            Board board = boardRepository.findById(form.getBid()).orElse(null);
+            data.setBoard(board);
         }
 
         data.setPoster(form.getPoster());
