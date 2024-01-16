@@ -128,7 +128,7 @@ public class BoardController implements ExceptionProcessor {
         BoardData boardData = boardSaveService.save(form);
 
         String redirectURL = "redirect:/board/";
-        redirectURL += board.getLocationAfterWriting() == "view" ? "view/" + boardData.getSeq() : "list/" + form.getBid();
+        redirectURL += board.getLocationAfterWriting().equals("view") ? "view/" + boardData.getSeq() : "list/" + form.getBid();
 
         return redirectURL;
     }
