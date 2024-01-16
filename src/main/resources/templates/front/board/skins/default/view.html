@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="default" th:object="${boardData}">
    <div class="board_view layout_width">
+        <h1>
+            <a th:href="@{/board/list/{bid}(bid=${board.bid})}" th:text="${board.bName}"></a>
+        </h1>
        <div class="subject">
            <span th:if="*{!#strings.isEmpty(category)}" class="category"
                  th:text="*{'[' + category + ']'}"></span>
