@@ -192,7 +192,7 @@ public class BoardController implements ExceptionProcessor {
      * 게시판 공통 처리 : 게시글 보기, 게시글 수정 - 게시글 번호가 있는 경우
      *      - 게시글 조회 -> 게시판 설정
      *
-     * @param seq
+     * @param seq : 게시글 번호
      * @param mode
      * @param model
      */
