@@ -13,14 +13,17 @@ import org.choongang.board.controllers.BoardDataSearch;
 import org.choongang.board.controllers.RequestBoard;
 import org.choongang.board.entities.Board;
 import org.choongang.board.entities.BoardData;
+import org.choongang.board.entities.BoardView;
 import org.choongang.board.entities.QBoardData;
 import org.choongang.board.repositories.BoardDataRepository;
+import org.choongang.board.repositories.BoardViewRepository;
 import org.choongang.board.service.config.BoardConfigInfoService;
 import org.choongang.commons.ListData;
 import org.choongang.commons.Pagination;
 import org.choongang.commons.Utils;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.file.service.FileInfoService;
+import org.choongang.member.MemberUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -33,11 +36,14 @@ public class BoardInfoService {
 
     private final EntityManager em;
     private final BoardDataRepository boardDataRepository;
+    private final BoardViewRepository boardViewRepository;
+
     private final BoardConfigInfoService configInfoService;
 
     private final FileInfoService fileInfoService;
     private final HttpServletRequest request;
 
+    private final MemberUtil memberUtil;
     private final Utils utils;
 
 
@@ -189,5 +195,22 @@ public class BoardInfoService {
 
         boardData.setEditorFiles(editorFiles);
         boardData.setAttachFiles(attachFiles);
+    }
+
+
+    /**
+     * 게시글 조회수 업데이트
+     *
+     * @param seq : 게시글 번호
+     */
+    public void updateViewCount(Long seq) {
+
+        int uid = memberUtil.isLogin() ?
+                    memberUtil.getMember().getSeq().intValue() : utils.guestUid();
+
+        BoardView boardView = new BoardView(seq, uid);
+
+        boardViewRepository.saveAndFlush(boardView);
+
     }
 }
