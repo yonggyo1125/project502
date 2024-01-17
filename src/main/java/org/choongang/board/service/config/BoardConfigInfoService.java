@@ -8,6 +8,7 @@ import org.choongang.admin.board.controllers.BoardSearch;
 import org.choongang.admin.board.controllers.RequestBoardConfig;
 import org.choongang.board.entities.Board;
 import org.choongang.board.entities.QBoard;
+import org.choongang.board.repositories.BoardDataRepository;
 import org.choongang.board.repositories.BoardRepository;
 import org.choongang.commons.ListData;
 import org.choongang.commons.Pagination;
@@ -30,6 +31,7 @@ import static org.springframework.data.domain.Sort.Order.desc;
 @RequiredArgsConstructor
 public class BoardConfigInfoService {
     private final BoardRepository boardRepository;
+    private final BoardDataRepository boardDataRepository;
     private final FileInfoService fileInfoService;
     private final HttpServletRequest request;
 
@@ -94,6 +96,7 @@ public class BoardConfigInfoService {
 
         /* 검색 조건 처리 S */
         String bid = search.getBid();
+        List<String> bids = search.getBids();
         String bName = search.getBName();
 
         String sopt = search.getSopt();
@@ -104,6 +107,11 @@ public class BoardConfigInfoService {
             andBuilder.and(board.bid.contains(bid.trim()));
         }
 
+        // 게시판 ID 여러개 조회
+        if (bids != null && !bids.isEmpty()) {
+            andBuilder.and(board.bid.in(bids));
+        }
+
         if (!isAll) { // 노출 상태인 게시판 만 조회
             andBuilder.and(board.active.eq(true));
         }
@@ -111,6 +119,7 @@ public class BoardConfigInfoService {
         if (StringUtils.hasText(bName)) { // 게시판 명
             andBuilder.and(board.bName.contains(bName.trim()));
         }
+
 
         // 조건별 키워드 검색
         if (StringUtils.hasText(skey)) {
@@ -160,6 +169,21 @@ public class BoardConfigInfoService {
         QBoard board = QBoard.board;
 
         List<Board> items = (List<Board>)boardRepository.findAll(board.active.eq(true), Sort.by(desc("listOrder"), desc("createdAt")));
+
+        return items;
+    }
+
+    /**
+     * 사용자가 이용한 게시판 정보
+     *
+     * @param userId
+     * @return
+     */
+    public List<Board> getUserBoardsInfo(String userId) {
+        List<String> bids = boardDataRepository.getUserBoards(userId);
+
+        QBoard board = QBoard.board;
+        List<Board> items = (List<Board>)boardRepository.findAll(board.bid.in(bids), Sort.by(desc("createdAt")));
 
         return items;
     }
