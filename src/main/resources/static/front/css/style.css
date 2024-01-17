@@ -15,3 +15,10 @@ img { border: 0; }
 .pagination .page.on { background: #596b99; color: #fff; }
 .pagination .page + .page { margin-left: 3px; }
 /* 페이징 공통 E */
+
+/* 헤더 공통 S */
+header { }
+header nav { background: #596b99; }
+header nav > .inner a { display: inline-block; height: 45px; line-height: 45px; padding: 0 25px; min-width: 120px; text-align: center; color: #fff; font-size: 1.35rem; }
+header nav > .inner a:hover { background: #222; }
+/* 헤더 공통 S */

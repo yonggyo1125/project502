@@ -112,6 +112,10 @@ public class BoardAuthService {
             return;
         }
 
+        if (!board.isActive()) { // 미노출 게시판
+            throw new UnAuthorizedException();
+        }
+
         boolean accessible = false;
         Authority target = Authority.ALL;
         if (mode.equals("write") || mode.equals("update")) { // 글쓰기 페이지
