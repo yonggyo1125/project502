@@ -172,6 +172,23 @@ public class BoardController implements ExceptionProcessor {
     }
 
     /**
+     * 비회원 글수정, 글삭제 비밀번호 확인
+     *
+     * @param password
+     * @param model
+     * @return
+     */
+    @PostMapping("/password")
+    public String passwordCheck(
+            @RequestParam(name="password", required = false) String password, Model model) {
+        boardAuthService.validate(password);
+
+        model.addAttribute("script", "parent.location.reload();");
+
+        return "common/_execute_script";
+    }
+
+    /**
      * 게시판의 공통 처리 - 글목록, 글쓰기 등 게시판 ID가 있는 경우
      *
      * @param bid : 게시판 ID
