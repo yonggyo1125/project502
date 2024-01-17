@@ -6,10 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.entities.Board;
 import org.choongang.board.entities.BoardData;
-import org.choongang.board.service.BoardDeleteService;
-import org.choongang.board.service.BoardInfoService;
-import org.choongang.board.service.BoardSaveService;
-import org.choongang.board.service.GuestPasswordCheckException;
+import org.choongang.board.service.*;
 import org.choongang.board.service.config.BoardConfigInfoService;
 import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.ListData;
@@ -40,6 +37,7 @@ public class BoardController implements ExceptionProcessor {
     private final BoardSaveService boardSaveService;
     private final BoardInfoService boardInfoService;
     private final BoardDeleteService boardDeleteService;
+    private final BoardAuthService boardAuthService;
 
     private final MemberUtil memberUtil;
     private final Utils utils;
@@ -241,6 +239,9 @@ public class BoardController implements ExceptionProcessor {
      * @param model
      */
     private void commonProcess(Long seq, String mode, Model model) {
+        // 글수정, 글삭제 권한 체크
+        boardAuthService.check(mode, seq);
+
         boardData = boardInfoService.get(seq);
 
         String bid = boardData.getBoard().getBid();
