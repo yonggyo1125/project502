@@ -207,6 +207,9 @@ public class BoardController implements ExceptionProcessor {
 
         /* 게시판 설정 처리 S */
         board = configInfoService.get(bid);
+        
+        // 접근 권한 체크
+        boardAuthService.accessCheck(mode, board);
 
         // 스킨별 css, js 추가
         String skin = board.getSkin();
