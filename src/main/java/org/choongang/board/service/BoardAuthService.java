@@ -63,8 +63,8 @@ public class BoardAuthService {
         String mode = (String)session.getAttribute("mode");
         Long seq = (Long)session.getAttribute("seq");
         mode = StringUtils.hasText(mode) ? mode : "update";
-
-        if (mode.equals("update")) { // 비회원 게시글
+        String key = null;
+        if (mode.equals("update") || mode.equals("delete")) { // 비회원 게시글
             BoardData data = infoService.get(seq);
 
             boolean match = encoder.matches(password, data.getGuestPw());
@@ -72,8 +72,18 @@ public class BoardAuthService {
                 throw new AlertException(Utils.getMessage("Mismatch.password"), HttpStatus.BAD_REQUEST);
             }
 
-        } else if (mode.equals("comment_update")) { // 비회원 댓글
-            
+            key = "guest_confirmed_" + seq;
+
+        } else if (mode.equals("comment_update") || mode.equals("comment_delete")) { // 비회원 댓글
+
+
+            key = "guest_comment_confirmed_" + seq;
         }
+
+        // 비밀번호 인증 성공 처리
+        session.setAttribute(key, true);
+
+        session.removeAttribute("mode");
+        session.removeAttribute("seq");
     }
 }
