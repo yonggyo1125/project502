@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.entities.Board;
 import org.choongang.board.entities.BoardData;
+import org.choongang.board.service.BoardDeleteService;
 import org.choongang.board.service.BoardInfoService;
 import org.choongang.board.service.BoardSaveService;
 import org.choongang.board.service.config.BoardConfigInfoService;
@@ -34,6 +35,7 @@ public class BoardController implements ExceptionProcessor {
     private final BoardFormValidator boardFormValidator;
     private final BoardSaveService boardSaveService;
     private final BoardInfoService boardInfoService;
+    private final BoardDeleteService boardDeleteService;
 
     private final MemberUtil memberUtil;
     private final Utils utils;
@@ -156,6 +158,15 @@ public class BoardController implements ExceptionProcessor {
         redirectURL += board.getLocationAfterWriting().equals("view") ? "view/" + boardData.getSeq() : "list/" + form.getBid();
 
         return redirectURL;
+    }
+
+    @GetMapping("/delete/{seq}")
+    public String delete(@PathVariable("seq") Long seq, Model model) {
+        commonProcess(seq, "delete", model);
+
+        boardDeleteService.delete(seq);
+
+        return "redirect:/board/list/" + board.getBid();
     }
 
     /**
