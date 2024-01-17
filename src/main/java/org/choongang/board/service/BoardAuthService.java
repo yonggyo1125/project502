@@ -8,6 +8,7 @@ import org.choongang.commons.exceptions.AlertException;
 import org.choongang.commons.exceptions.UnAuthorizedException;
 import org.choongang.member.entities.Member;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -17,6 +18,8 @@ public class BoardAuthService {
 
     private final BoardInfoService infoService;
     private final HttpSession session;
+    private final PasswordEncoder encoder;
+
 
     /**
      * 게시글 관련 권한 체크
@@ -59,5 +62,18 @@ public class BoardAuthService {
 
         String mode = (String)session.getAttribute("mode");
         Long seq = (Long)session.getAttribute("seq");
+        mode = StringUtils.hasText(mode) ? mode : "update";
+
+        if (mode.equals("update")) { // 비회원 게시글
+            BoardData data = infoService.get(seq);
+
+            boolean match = encoder.matches(password, data.getGuestPw());
+            if (!match) {
+                throw new AlertException(Utils.getMessage("Mismatch.password"), HttpStatus.BAD_REQUEST);
+            }
+
+        } else if (mode.equals("comment_update")) { // 비회원 댓글
+            
+        }
     }
 }
