@@ -159,7 +159,7 @@ public class BoardConfigInfoService {
     public List<Board> getList() {
         QBoard board = QBoard.board;
 
-        List<Board> items = (List<Board>)boardRepository.findAll(board.active.eq(true), Sort.by(desc("notice"), desc("createdAt")));
+        List<Board> items = (List<Board>)boardRepository.findAll(board.active.eq(true), Sort.by(desc("listOrder"), desc("createdAt")));
 
         return items;
     }
