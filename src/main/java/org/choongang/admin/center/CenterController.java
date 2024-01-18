@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.choongang.admin.menus.Menu;
 import org.choongang.admin.menus.MenuDetail;
 import org.choongang.center.service.CenterInfoService;
+import org.choongang.center.service.CenterSaveService;
 import org.choongang.commons.ExceptionProcessor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,8 @@ import java.util.Objects;
 public class CenterController implements ExceptionProcessor {
 
     private final CenterInfoService centerInfoService;
+    private final CenterSaveService centerSaveService;
+
 
     @ModelAttribute("menuCode") //getMenyCode의 리턴값을 Model 객체와 바인딩
     public String getMenuCode() {
@@ -85,6 +88,8 @@ public class CenterController implements ExceptionProcessor {
         if (errors.hasErrors()) {
             return "admin/center/" + mode;
         }
+
+        centerSaveService.save(form);
 
         return "redirect:/admin/center/info_center";
     }
