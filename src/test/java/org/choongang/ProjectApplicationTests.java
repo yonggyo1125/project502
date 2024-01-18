@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 @SpringBootTest
 class ProjectApplicationTests {
 
@@ -28,6 +31,21 @@ class ProjectApplicationTests {
 		authorities.setAuthority(Authority.ADMIN);
 
 		authoritiesRepository.saveAndFlush(authorities);
+	}
+
+	@Test
+	void test2() {
+		String str = "09:00-18:00";
+		Pattern pattern = Pattern.compile("(\\d{2}):(\\d{2})-(\\d{2}):(\\d{2})");
+
+		Matcher matcher = pattern.matcher(str);
+
+
+		System.out.println(matcher.find());
+		System.out.println(matcher.group(1));
+		System.out.println(matcher.group(2));
+		System.out.println(matcher.group(3));
+		System.out.println(matcher.group(4));
 	}
 
 }

@@ -6,7 +6,7 @@
 <section layout:fragment="content">
     <h1>센터 정보 수정</h1>
     <form name="frmSave" method="post" th:action="@{/admin/center/save_center}" autocomplete="off">
-        <input type="hidden" name="mode" value="add_center">
+        <input type="hidden" name="mode" value="edit_center">
 
         <th:block th:replace="~{admin/center/_form_center::form}"></th:block>
 

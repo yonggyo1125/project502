@@ -7,30 +7,49 @@
 
 <section layout:fragment="content">
     <h1>헌혈의집 센터 목록</h1>
-    <button>등록</button>
-    <table>
+    <table class="table_rows">
         <thead>
             <tr>
-                <th>센터코드</th>
-                <th>센터명</th>
-                <th>주소</th>
-                <th>전화번호</th>
-                <th>운영시간</th>
-                <th>수정</th>
-                <th>삭제</th>
+                <th width="40">
+                    <input type="checkbox" class="checkall" id="checkall" data-target-name="chk">
+                    <label for="checkall"></label>
+                </th>
+                <th width="100">센터코드</th>
+                <th>센터정보</th>
+                <th width="350">예약설정</th>
+                <th width="250"></th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="center : ${centerInfoList}">
-                <td th:text="${center.cCode}"></td>
-                <td th:text="${center.cName}"></td>
-                <td th:text="${center.address}"></td>
-                <td th:text="${center.telNum}"></td>
-                <td th:text="${center.operHour}"></td>
-                <td><button onclick="location.href = 'http://3.38.34.228:3000/admin/center/edit_center'">수정</button></td>
-                <td><button onclick="location.href = ''">삭제</button></td>
+            <tr th:if="${items == null || items.isEmpty()}">
+                <td colspan="5">조회된 센터가 없습니다.</td>
+            </tr>
+            <tr th:unless="${items == null || items.isEmpty()}" th:each="item, status : ${items}" th:object="${item}">
+                <td>
+                    <input type="checkbox" name="chk" th:value="${status.index}" th:id="${'chk_' + status.index}">
+                    <label th:for="${'chk_' + status.index}"></label>
+                </td>
+                <td th:text="*{cCode}"></td>
+                <td>
+                    <div th:text="*{cName}"></div>
+                    <div th:text="*{'전화번호 : ' + telNum}"></div>
+                    <div th:text="*{'운영시간 : ' + operHour}"></div>
+                </td>
+                <td>
+
+                </td>
+                <td>
+                    <a th:href="@{/admin/center/edit_center/{cCode}(cCode=*{cCode})}" class="sbtn">
+                        <i class="xi-pen"></i> 정보수정
+                    </a>
+                    <a th:href="@{/center/{cCode}(cCode=*{cCode})}" class="sbtn on" target="_blank">
+                         미리보기
+                    </a>
+                </td>
             </tr>
         </tbody>
     </table>
+
+    <th:block th:replace="~{common/_pagination::pagination}"></th:block>
 </section>
 </html>

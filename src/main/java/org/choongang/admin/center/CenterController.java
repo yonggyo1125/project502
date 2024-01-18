@@ -4,16 +4,16 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.admin.menus.Menu;
 import org.choongang.admin.menus.MenuDetail;
+import org.choongang.center.controllers.CenterSearch;
+import org.choongang.center.entities.CenterInfo;
 import org.choongang.center.service.CenterInfoService;
 import org.choongang.center.service.CenterSaveService;
 import org.choongang.commons.ExceptionProcessor;
+import org.choongang.commons.ListData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +43,13 @@ public class CenterController implements ExceptionProcessor {
      * 센터 목록
      */
     @GetMapping
-    public String list(Model model) {   // Model 객체: Controller에서 생성된 데이터를 담아 View로 전달할 때 사용
+    public String list(@ModelAttribute CenterSearch search, Model model) {   // Model 객체: Controller에서 생성된 데이터를 담아 View로 전달할 때 사용
         commonProcess("list", model);
+
+        ListData<CenterInfo> data = centerInfoService.getList(search);
+
+        model.addAttribute("items", data.getItems());
+        model.addAttribute("pagination", data.getPagination());
 
         return "admin/center/list";
     }
@@ -66,10 +71,13 @@ public class CenterController implements ExceptionProcessor {
      * @param model
      * @return
      */
-    @GetMapping("/edit_center")
-    public String editCenter(@ModelAttribute RequestCenter form, Model model) {  // Model 객체를 통해 form 파라미터의 값들을 Getter, Setter, 생성자를 통해 주입, 전달
-
+    @GetMapping("/edit_center/{cCode}")
+    public String editCenter(@PathVariable("cCode") Long cCode, Model model) {  // Model 객체를 통해 form 파라미터의 값들을 Getter, Setter, 생성자를 통해 주입, 전달
         commonProcess("edit_center", model);
+
+        RequestCenter form = centerInfoService.getForm(cCode);
+
+        model.addAttribute("requestCenter", form);
 
         return "admin/center/edit_center";
     }
