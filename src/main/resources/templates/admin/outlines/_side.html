@@ -11,6 +11,10 @@
             <i class="xi-pen"></i> 게시판 관리
         </a>
 
+        <a th:href="@{/admin/center}" th:classappend="${menuCode} == 'center' ? 'on'">
+            <i class="xi-tint"></i> 센터 관리
+        </a>
+
         <a th:href="@{/admin/reservation}" th:classappend="${menuCode} == 'reservation' ? 'on'">
             <i class="xi-tint"></i> 예약 관리
         </a>

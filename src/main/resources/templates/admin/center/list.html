@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layouts/main}">
+
+<!-- 왜 화면이 안 뜰까...-->
+
+<section layout:fragment="content">
+    <h1>헌혈의집 센터 목록</h1>
+    <button>등록</button>
+    <table>
+        <thead>
+            <tr>
+                <th>센터코드</th>
+                <th>센터명</th>
+                <th>주소</th>
+                <th>전화번호</th>
+                <th>운영시간</th>
+                <th>수정</th>
+                <th>삭제</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="center : ${centerInfoList}">
+                <td th:text="${center.cCode}"></td>
+                <td th:text="${center.cName}"></td>
+                <td th:text="${center.address}"></td>
+                <td th:text="${center.telNum}"></td>
+                <td th:text="${center.operHour}"></td>
+                <td><button onclick="location.href = 'http://3.38.34.228:3000/admin/center/edit_center'">수정</button></td>
+                <td><button onclick="location.href = ''">삭제</button></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+</html>

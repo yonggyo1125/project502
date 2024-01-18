@@ -21,10 +21,13 @@ public class Menu {
                 new MenuDetail("posts", "게시글관리", "/admin/board/posts")
         ));
 
+        menus.put("center", Arrays.asList(
+            new MenuDetail("list", "지점 목록", "/admin/center"),
+                new MenuDetail("add_center", "지점 등록", "/admin/center/add_center")
+        ));
+
         menus.put("reservation", Arrays.asList(
             new MenuDetail("list", "예약 현황", "/admin/reservation"),
-            new MenuDetail("branch", "지점 목록", "/admin/reservation/branch"),
-            new MenuDetail("add_branch", "지점 등록", "/admin/reservation/add_branch"),
                 new MenuDetail("holiday", "휴무일 관리", "/admin/reservation/holiday")
         ));
     }
