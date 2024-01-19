@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpSession;
 import org.choongang.board.entities.AuthCheck;
 import org.choongang.board.entities.Board;
 import org.choongang.board.entities.BoardData;
-import org.choongang.board.service.comment.CommentAuthService;
 import org.choongang.board.service.comment.CommentInfoService;
 import org.choongang.board.service.config.BoardConfigInfoService;
 import org.choongang.commons.Utils;
@@ -14,14 +13,12 @@ import org.choongang.member.Authority;
 import org.choongang.member.MemberUtil;
 import org.choongang.member.entities.Member;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
-@Primary
 public class BoardAuthService {
 
     @Autowired
@@ -56,25 +53,19 @@ public class BoardAuthService {
         }
 
         AuthCheck data = null;
-        if (this instanceof CommentAuthService) { // 댓글
+        if (mode.indexOf("comment_") != -1) { // 댓글
             data = commentInfoService.get(seq);
         } else { // 게시글
             data = infoService.get(seq);
         }
 
-        System.out.println(data);
 
-        if ((mode.equals("update") && !data.isEditable())
-                || (mode.equals("delete") && !data.isDeletable())) {
+        if ((mode.contains("update") && !data.isEditable())
+                || (mode.contains("delete") && !data.isDeletable())) {
             Member member = data.getMember();
 
             // 비회원 -> 비밀번호 확인 필요
             if (member == null) {
-
-                if (this instanceof CommentAuthService) { // 댓글
-                    mode = "comment_" + mode;
-                }
-
                 session.setAttribute("mode", mode);
                 session.setAttribute("seq", seq);
 

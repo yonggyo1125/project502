@@ -3,7 +3,7 @@ package org.choongang.board.controllers.comment;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.entities.CommentData;
-import org.choongang.board.service.comment.CommentAuthService;
+import org.choongang.board.service.BoardAuthService;
 import org.choongang.board.service.comment.CommentDeleteService;
 import org.choongang.board.service.comment.CommentSaveService;
 import org.choongang.commons.ExceptionProcessor;
@@ -27,7 +27,7 @@ public class CommentController implements ExceptionProcessor {
     private final CommentFormValidator commentFormValidator;
     private final CommentSaveService commentSaveService;
     private final CommentDeleteService commentDeleteService;
-    private final CommentAuthService commentAuthService;
+    private final BoardAuthService boardAuthService;
 
     /**
      * 댓글 저장, 수정 처리
@@ -58,7 +58,7 @@ public class CommentController implements ExceptionProcessor {
     @GetMapping("/delete/{seq}")
     public String delete(@PathVariable("seq") Long seq, Model model) {
 
-        commentAuthService.check("delete", seq);
+        boardAuthService.check("comment_delete", seq);
 
         Long boardDataSeq = commentDeleteService.delete(seq);
 
