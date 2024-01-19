@@ -39,7 +39,7 @@ public class CommentData extends Base {
     @Column(length=20)
     private String ip; // 작성자 IP 주소
 
-    @Column(length=100)
+    @Column(length=150)
     private String ua; // 작성자 User-Agent 정보
 
     private long listOrder; // 댓글 1차 정렬 기준
