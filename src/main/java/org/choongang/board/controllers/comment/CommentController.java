@@ -61,9 +61,9 @@ public class CommentController implements ExceptionProcessor {
     public String delete(@PathVariable("seq") Long seq, Model model) {
         commonProcess("delete", model);
 
-        CommentData data = commentDeleteService.delete(seq);
+        Long boardDataSeq = commentDeleteService.delete(seq);
 
-        return "redirect:/board/view/게시글번호";
+        return "redirect:/board/view/" + boardDataSeq;
     }
 
     private void commonProcess(String mode, Model model) {
