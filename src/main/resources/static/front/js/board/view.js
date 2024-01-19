@@ -11,4 +11,20 @@ window.addEventListener("DOMContentLoaded", function() {
         location.hash=`#comment_${seq}`;
     }
 
+    /* 댓글 수정 버튼 클릭 처리 S */
+    const editComments = document.getElementsByClassName("edit_comment");
+    for (const el of editComments) {
+        el.addEventListener("click", function() {
+            const seq = this.dataset.seq;
+            const targetEl = document.querySelector(`#comment_${seq} .comment`);
+            const textAreaEl = targetEl.querySelector("textarea");
+            if (textAreaEl) { // 댓글 수정 처리
+
+            } else { // TextArea 생성
+
+            }
+
+        });
+    }
+    /* 댓글 수정 버튼 클릭 처리 E */
 });
