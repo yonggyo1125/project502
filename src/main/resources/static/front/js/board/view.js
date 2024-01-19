@@ -20,6 +20,17 @@ window.addEventListener("DOMContentLoaded", function() {
             const targetEl = document.querySelector(`#comment_${seq} .comment`);
             const textAreaEl = targetEl.querySelector("textarea");
             if (textAreaEl) { // 댓글 수정 처리
+                if (!confirm('정말 수정하겠습니까?')) {
+                    return;
+                }
+
+                const content = textAreaEl.value;
+
+                const params = { seq, content };
+
+                ajaxLoad('PATCH', `/api/comment`, params, 'json')
+                    .then(res => console.log(res))
+                    .catch(err => console.error(err));
 
             } else { // TextArea 생성
                 const textArea = document.createElement("textarea");
@@ -27,8 +38,9 @@ window.addEventListener("DOMContentLoaded", function() {
                 ajaxLoad('GET', `/api/comment/${seq}`, null, 'json')
                     .then(res => {
                         if (res.success && res.data) {
-                            textarea.value = res.data.content;
-                            targetEl.appendChild(textarea);
+                            textArea.value = res.data.content;
+                            targetEl.innerHTML = "";
+                            targetEl.appendChild(textArea);
                         }
                     })
                     .catch(err => console.error(err));
