@@ -4,9 +4,9 @@ window.addEventListener("DOMContentLoaded", function() {
         const searchParams = new URLSearchParams(location.search);
 
         const seq = searchParams.get("comment_id");
-        searchParams.delete("comment_id");
+        //searchParams.delete("comment_id");
 
-        location.search = searchParams.toString();
+        //location.search = searchParams.toString();
 
         location.hash=`#comment_${seq}`;
     }

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -49,6 +51,14 @@ public class CommentController implements ExceptionProcessor {
         model.addAttribute("script", script);
 
         return "common/_execute_script";
+    }
+
+    @GetMapping("/delete/{seq}")
+    public String delete(@PathVariable("seq") Long seq, Model model) {
+        commonProcess("delete", model);
+
+
+        return "redirect:/board/view/게시글번호";
     }
 
     private void commonProcess(String mode, Model model) {
