@@ -53,4 +53,10 @@ public class CommentData extends Base implements AuthCheck {
 
     @Transient
     private boolean mine; // 소유자
+
+    @Transient
+    private boolean showEditButton; // 수정 버튼 노출 여부
+
+    @Transient
+    private boolean showDeleteButton; // 삭제 버튼 노출 여부
 }

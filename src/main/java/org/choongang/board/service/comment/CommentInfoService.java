@@ -1,6 +1,8 @@
 package org.choongang.board.service.comment;
 
 import com.querydsl.core.BooleanBuilder;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.controllers.comment.RequestComment;
 import org.choongang.board.entities.BoardData;
@@ -26,6 +28,7 @@ public class CommentInfoService {
     private final CommentDataRepository commentDataRepository;
     private final BoardDataRepository boardDataRepository;
     private final MemberUtil memberUtil;
+    private final HttpServletRequest request;
 
     /**
      * 댓글 단일 조회
@@ -81,12 +84,10 @@ public class CommentInfoService {
 
         /*
          * 1) 관리자는 댓글 수정, 삭제 제한 없음
-         * 2) 비회원 댓글 - 비밀번호 확인, editable, deletable = true
          *
          */
-        if (memberUtil.isAdmin() || _member == null) {
+        if (memberUtil.isAdmin()) {
             editable = deletable = true;
-            mine = false;
         }
 
         /**
@@ -97,6 +98,25 @@ public class CommentInfoService {
                 && _member.getUserId().equals(memberUtil.getMember().getUserId())) {
             editable = deletable = mine = true;
         }
+
+        // 비회원 -> 비회원 비밀번호가 확인 된 경우 삭제, 수정 가능
+        // 비회원 비밀번호 인증 여부 세션에 있는 guest_confirmed_게시글번호 true -> 인증
+        HttpSession session = request.getSession();
+        String key = "guest_comment_confirmed_" + data.getSeq();
+        Boolean guestConfirmed = (Boolean)session.getAttribute(key);
+        if (_member == null && guestConfirmed != null && guestConfirmed) {
+            editable = true;
+            deletable = true;
+            mine = true;
+        }
+
+        // 수정 버튼 노출 여부
+        // 관리자 - 노출, 회원 게시글 - 직접 작성한 게시글, 비회원
+        boolean showEditButton = memberUtil.isAdmin() || mine || _member == null;
+        boolean showDeleteButton = showEditButton;
+
+        data.setShowEditButton(showEditButton);
+        data.setShowDeleteButton(showDeleteButton);
 
         data.setEditable(editable);
         data.setDeletable(deletable);
