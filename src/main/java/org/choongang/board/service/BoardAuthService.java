@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import org.choongang.board.entities.AuthCheck;
 import org.choongang.board.entities.Board;
 import org.choongang.board.entities.BoardData;
+import org.choongang.board.entities.CommentData;
 import org.choongang.board.service.comment.CommentInfoService;
 import org.choongang.board.service.config.BoardConfigInfoService;
 import org.choongang.commons.Utils;
@@ -103,7 +104,12 @@ public class BoardAuthService {
             key = "guest_confirmed_" + seq;
 
         } else if (mode.equals("comment_update") || mode.equals("comment_delete")) { // 비회원 댓글
+            CommentData data = commentInfoService.get(seq);
 
+            boolean match = encoder.matches(password, data.getGuestPw());
+            if (!match) {
+                throw new AlertException(Utils.getMessage("Mismatch.password"), HttpStatus.BAD_REQUEST);
+            }
 
             key = "guest_comment_confirmed_" + seq;
         }
