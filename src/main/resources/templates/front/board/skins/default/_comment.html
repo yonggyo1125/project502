@@ -9,7 +9,7 @@
         </div>
 
         <ul class="comment_items">
-            <li class="item" th:each="comment : *{comments}" th:object="${comment}">
+            <li class="item" th:each="comment : *{comments}" th:object="${comment}" th:id="*{'comment_' + seq}">
                 <div class="comment_top">
                     <div>
                         <th:block th:text="*{commenter}"></th:block>

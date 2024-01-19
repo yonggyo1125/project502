@@ -26,7 +26,7 @@ public class CommentSaveService {
     private final PasswordEncoder encoder;
     private final HttpServletRequest request;
 
-    public void save(RequestComment form) {
+    public CommentData save(RequestComment form) {
 
         String mode = form.getMode();
         Long seq = form.getSeq(); // 댓글 번호
@@ -63,5 +63,7 @@ public class CommentSaveService {
         commentDataRepository.saveAndFlush(data);
 
         commentInfoService.updateCommentCount(data.getBoardData().getSeq());
+
+        return data;
     }
 }
