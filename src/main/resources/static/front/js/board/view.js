@@ -72,13 +72,18 @@ window.addEventListener("DOMContentLoaded", function() {
                                     return;
                                 }
 
+                                button.addEventListener("click", function() {
 
-
-                                ajaxLoad("GET", `/api/comment/auth_check?seq=${seq}&guestPw=${guestPw}`, null, 'json')
-                                    .then(res => console.log(res))
-                                    .catch(err = >console.error(err));
-
-                                return;
+                                    ajaxLoad("GET", `/api/comment/auth_check?seq=${seq}&guestPw=${guestPw}`, null, 'json')
+                                        .then(res => {
+                                            console.log("여기...");
+                                           //targetEl.innerHTML = "";
+                                           //textArea.value = data.content;
+                                           //targetEl.appendChild(textArea);
+                                           el.click();
+                                        })
+                                        .catch(err => console.error(err));
+                                });
                             }
 
                             textArea.value = data.content;
