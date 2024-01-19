@@ -13,6 +13,7 @@ window.addEventListener("DOMContentLoaded", function() {
 
     /* 댓글 수정 버튼 클릭 처리 S */
     const editComments = document.getElementsByClassName("edit_comment");
+    const { ajaxLoad } = commonLib;
     for (const el of editComments) {
         el.addEventListener("click", function() {
             const seq = this.dataset.seq;
@@ -21,7 +22,26 @@ window.addEventListener("DOMContentLoaded", function() {
             if (textAreaEl) { // 댓글 수정 처리
 
             } else { // TextArea 생성
+                const textArea = document.createElement("textarea");
 
+                ajaxLoad('GET', `/api/comment/${seq}`, null, 'json')
+                    .then(res => {
+                        if (res.success && res.data) {
+                            textarea.value = res.data.content;
+                            targetEl.appendChild(textarea);
+                        }
+                    })
+                    .catch(err => console.error(err));
+
+                /*
+                fetch(`/api/comment/${seq}`)
+                    .then(res => {
+                        const data = res.json();
+                        console.log(data);
+                        console.log(data.data);
+                    })
+                    .catch(err => console.error(err));
+                    */
             }
 
         });
