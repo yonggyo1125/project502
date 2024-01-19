@@ -24,12 +24,22 @@ window.addEventListener("DOMContentLoaded", function() {
                     return;
                 }
 
-                const content = textAreaEl.value;
+                let content = textAreaEl.value;
 
-                const params = { seq, content };
+                const formData = new FormData();
+                formData.append('seq', seq);
+                formData.append('content', content);
 
-                ajaxLoad('PATCH', `/api/comment`, params, 'json')
-                    .then(res => console.log(res))
+                ajaxLoad('PATCH', `/api/comment`, formData, 'json')
+                    .then(res => {
+                        if (res.success) {
+                            content = content.replace(/\n/gm, '<br>')
+                                            .replace(/\r/gm, '');
+                            targetEl.innerHTML = content;
+                        } else { // 댓글 수정 실패시
+                            alert(res.message);
+                        }
+                    })
                     .catch(err => console.error(err));
 
             } else { // TextArea 생성
@@ -41,6 +51,7 @@ window.addEventListener("DOMContentLoaded", function() {
                             textArea.value = res.data.content;
                             targetEl.innerHTML = "";
                             targetEl.appendChild(textArea);
+
                         }
                     })
                     .catch(err => console.error(err));
