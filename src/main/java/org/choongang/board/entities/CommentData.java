@@ -50,4 +50,7 @@ public class CommentData extends Base {
 
     @Transient
     private boolean deletable; // 삭제 가능 여부
+
+    @Transient
+    private boolean mine; // 소유자
 }
