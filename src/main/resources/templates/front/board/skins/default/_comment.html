@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="comment" th:if="${board.useComment}">
+    <form name="frmComment" method="post" th:action="@{/comment/save}" target="ifrmProcess" autocomplete="off">
+
+    </form>
+</th:block>
+</html>
