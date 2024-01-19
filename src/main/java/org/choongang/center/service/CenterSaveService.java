@@ -4,9 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.choongang.admin.center.RequestCenter;
 import org.choongang.center.entities.CenterInfo;
 import org.choongang.center.repositories.CenterInfoRepository;
+import org.choongang.commons.Utils;
+import org.choongang.commons.exceptions.AlertException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +19,7 @@ import java.util.stream.Collectors;
 public class CenterSaveService {
 
     private final CenterInfoRepository infoRepository;
+    private final Utils utils;
 
     public CenterInfo save(RequestCenter form) {
         String mode = form.getMode();
@@ -56,5 +61,41 @@ public class CenterSaveService {
         infoRepository.saveAndFlush(data);
 
         return data;
+    }
+
+    /**
+     * 목록 수정
+     *
+     * @param chks
+     */
+    public void saveList(List<Integer> chks) {
+        if (chks == null || chks.isEmpty()) {
+            throw new AlertException("수정할 센터를 선택하세요.", HttpStatus.BAD_REQUEST);
+        }
+
+        for (int chk : chks) {
+            Long cCode = Long.valueOf(utils.getParam("cCode_" + chk));
+            CenterInfo data = infoRepository.findById(cCode).orElse(null);
+            if (data == null) continue;
+
+            String bookYoil = Arrays.stream(utils.getParams("bookYoil_" + chk)).collect(Collectors.joining(",")); // 월,화,수
+            data.setBookYoil(bookYoil);
+
+
+            String bookAvl = String.format("%s:%s-%s:%s",
+                    utils.getParam("bookAvlShour_" + chk),
+                    utils.getParam("bookAvlSmin_" + chk),
+                    utils.getParam("bookAvlEhour_" + chk),
+                    utils.getParam("bookAvlEmin_" + chk));
+            data.setBookAvl(bookAvl);
+
+            boolean bookHday = Boolean.parseBoolean(utils.getParam("bookHday_" + chk));
+            data.setBookHday(bookHday);
+
+            int bookBlock = Integer.parseInt(utils.getParam("bookBlock_" + chk));
+            data.setBookBlock(bookBlock);
+        }
+
+        infoRepository.flush();
     }
 }

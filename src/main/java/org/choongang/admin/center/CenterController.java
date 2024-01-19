@@ -6,6 +6,7 @@ import org.choongang.admin.menus.Menu;
 import org.choongang.admin.menus.MenuDetail;
 import org.choongang.center.controllers.CenterSearch;
 import org.choongang.center.entities.CenterInfo;
+import org.choongang.center.service.CenterDeleteService;
 import org.choongang.center.service.CenterInfoService;
 import org.choongang.center.service.CenterSaveService;
 import org.choongang.commons.ExceptionProcessor;
@@ -19,14 +20,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Controller
+@Controller("adminCenterController")
 @RequestMapping("/admin/center")    //url 하나당 하나의 컨트롤러에 매핑되는 다른 핸들러 매핑과 달리 메서드 단위까지 세분화하여 적용 갸능. url, 파라미터, 헤더 등.
 @RequiredArgsConstructor
 public class CenterController implements ExceptionProcessor {
 
     private final CenterInfoService centerInfoService;
     private final CenterSaveService centerSaveService;
-
+    private final CenterDeleteService centerDeleteService;
 
     @ModelAttribute("menuCode") //getMenyCode의 리턴값을 Model 객체와 바인딩
     public String getMenuCode() {
@@ -59,6 +60,15 @@ public class CenterController implements ExceptionProcessor {
             @RequestParam(name="chk", required = false) List<Integer> chks, Model model) {
 
         centerSaveService.saveList(chks);
+
+        model.addAttribute("script", "parent.location.reload()");
+        return "common/_execute_script";
+    }
+
+    @DeleteMapping
+    public String deleteList(@RequestParam(name="chk", required = false) List<Integer> chks, Model model) {
+
+        centerDeleteService.deleteList(chks);
 
         model.addAttribute("script", "parent.location.reload()");
         return "common/_execute_script";

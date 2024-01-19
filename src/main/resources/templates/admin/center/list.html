@@ -3,12 +3,34 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{admin/layouts/main}">
 
-<!-- 왜 화면이 안 뜰까...-->
-
 <section layout:fragment="content">
+    <h1>헌혈의집 센터 관리</h1>
+    <h2>헌혈의집 센터 검색</h2>
+
+    <form name="frmSearch" method="get" th:action="@{/admin/center}" autocomplete="off" th:object="${centerSearch}">
+        <table class="table_cols mb30">
+            <tr>
+                <th>검색어</th>
+                <td>
+                    <div class="input_grp">
+                        <select name="sopt" th:field="*{sopt}">
+                            <option value="all">통합검색</option>
+                            <option value="cName">센터명</option>
+                            <option value="address">주소</option>
+                        </select>
+                        <input type="text" name="skey" th:field="*{skey}">
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="search_btn">
+            <button type="submit" class="btn">검색하기</button>
+        </div>
+    </form>
+
     <form name="frmList" method="post" th:action="@{/admin/center}" target="ifrmProcess" autocomplete="off">
         <input type="hidden" name="_method" value="PATCH">
-        <h1>헌혈의집 센터 목록</h1>
+        <h2>헌혈의집 센터 목록</h2>
         <table class="table_rows">
             <thead>
                 <tr>
@@ -28,12 +50,18 @@
                 </tr>
                 <tr th:unless="${items == null || items.isEmpty()}" th:each="item, status : ${items}" th:object="${item}">
                     <td>
+                        <input type="hidden" th:name="${'cCode_' + status.index}" th:value="*{cCode}">
                         <input type="checkbox" name="chk" th:value="${status.index}" th:id="${'chk_' + status.index}">
                         <label th:for="${'chk_' + status.index}"></label>
                     </td>
                     <td th:text="*{cCode}"></td>
                     <td>
                         <div th:text="*{cName}"></div>
+                        <div th:if="*{address != null}">
+                            <th:block th:if="*{zonecode != null}" th:text="*{'(' + zonecode + ')'}"></th:block>
+                            <th:block th:text="*{address}"></th:block>
+                            <th:block th:text="*{addressSub}"></th:block>
+                        </div>
                         <div th:text="*{'전화번호 : ' + telNum}"></div>
                         <div th:text="*{'운영시간 : ' + operHour}"></div>
                     </td>
@@ -48,7 +76,7 @@
                         </div>
                         <div>
                             예약가능 시간 :
-                            <select th:name="${'bookAvlShour_' + status}">
+                            <select th:name="${'bookAvlShour_' + status.index}">
                                 <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${#numbers.formatInteger(hour, 2)}"
                                         th:text="${#numbers.formatInteger(hour, 2)}"
                                  ></option>
