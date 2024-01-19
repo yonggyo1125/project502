@@ -3,6 +3,16 @@
 <th:block th:fragment="comment" th:if="${board.useComment}">
     <form th:replace="~{front/board/skins/default/_comment_form::form}"></form>
 
+    <th:block th:object="${boardData}" th:if="*{comments != null && !comments.isEmpty()}">
+        <div class="total">
+            Total : <th:block th:text="*{commentCount >= 1000 ? #numbers.formatInteger(commentCount, 3, 'COMMA') : commentCount}"></th:block>
+        </div>
 
+        <ul class="items">
+            <li class="item" th:each="comment : *{comments}" th:object="${comment}">
+
+            </li>
+        </ul>
+    </th:block>
 </th:block>
 </html>
