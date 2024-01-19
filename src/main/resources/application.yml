@@ -44,6 +44,10 @@ spring:
     livereload:
       enabled: true
 
+  jackson:
+    serialization:
+      failOnEmptyBeans: false
+
 # 로거 설정
 logging:
   level:
