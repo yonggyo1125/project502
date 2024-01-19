@@ -16,7 +16,7 @@ public class CenterSaveService {
 
     private final CenterInfoRepository infoRepository;
 
-    public void save(RequestCenter form) {
+    public CenterInfo save(RequestCenter form) {
         String mode = form.getMode();
         Long cCode = form.getCCode();
 
@@ -54,5 +54,7 @@ public class CenterSaveService {
         data.setBookCapacity(form.getBookCapacity());
 
         infoRepository.saveAndFlush(data);
+
+        return data;
     }
 }

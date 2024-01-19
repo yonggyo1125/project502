@@ -54,6 +54,16 @@ public class CenterController implements ExceptionProcessor {
         return "admin/center/list";
     }
 
+    @PatchMapping
+    public String editList(
+            @RequestParam(name="chk", required = false) List<Integer> chks, Model model) {
+
+        centerSaveService.saveList(chks);
+
+        model.addAttribute("script", "parent.location.reload()");
+        return "common/_execute_script";
+    }
+
     /**
      * 센터 등록 - 등록 & 수정 통합 개발
      * @param model
@@ -97,14 +107,18 @@ public class CenterController implements ExceptionProcessor {
             return "admin/center/" + mode;
         }
 
-        centerSaveService.save(form);
+        CenterInfo data = centerSaveService.save(form);
 
-        return "redirect:/admin/center/info_center";
+        return "redirect:/admin/center/info_center/" + data.getCCode();
     }
 
-    @GetMapping("/info_center")
-    public String infoCenter(Model model) {
+    @GetMapping("/info_center/{cCode}")
+    public String infoCenter(@PathVariable("cCode") Long cCode, Model model) {
         commonProcess("info_center", model);
+
+        CenterInfo data = centerInfoService.get(cCode);
+
+        model.addAttribute("centerInfo", data);
 
         return "admin/center/info_center";
     }

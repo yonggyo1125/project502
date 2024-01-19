@@ -6,50 +6,106 @@
 <!-- 왜 화면이 안 뜰까...-->
 
 <section layout:fragment="content">
-    <h1>헌혈의집 센터 목록</h1>
-    <table class="table_rows">
-        <thead>
-            <tr>
-                <th width="40">
-                    <input type="checkbox" class="checkall" id="checkall" data-target-name="chk">
-                    <label for="checkall"></label>
-                </th>
-                <th width="100">센터코드</th>
-                <th>센터정보</th>
-                <th width="350">예약설정</th>
-                <th width="250"></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:if="${items == null || items.isEmpty()}">
-                <td colspan="5">조회된 센터가 없습니다.</td>
-            </tr>
-            <tr th:unless="${items == null || items.isEmpty()}" th:each="item, status : ${items}" th:object="${item}">
-                <td>
-                    <input type="checkbox" name="chk" th:value="${status.index}" th:id="${'chk_' + status.index}">
-                    <label th:for="${'chk_' + status.index}"></label>
-                </td>
-                <td th:text="*{cCode}"></td>
-                <td>
-                    <div th:text="*{cName}"></div>
-                    <div th:text="*{'전화번호 : ' + telNum}"></div>
-                    <div th:text="*{'운영시간 : ' + operHour}"></div>
-                </td>
-                <td>
+    <form name="frmList" method="post" th:action="@{/admin/center}" target="ifrmProcess" autocomplete="off">
+        <input type="hidden" name="_method" value="PATCH">
+        <h1>헌혈의집 센터 목록</h1>
+        <table class="table_rows">
+            <thead>
+                <tr>
+                    <th width="40">
+                        <input type="checkbox" class="checkall" id="checkall" data-target-name="chk">
+                        <label for="checkall"></label>
+                    </th>
+                    <th width="100">센터코드</th>
+                    <th>센터정보</th>
+                    <th width="350">예약설정</th>
+                    <th width="250"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${items == null || items.isEmpty()}">
+                    <td colspan="5">조회된 센터가 없습니다.</td>
+                </tr>
+                <tr th:unless="${items == null || items.isEmpty()}" th:each="item, status : ${items}" th:object="${item}">
+                    <td>
+                        <input type="checkbox" name="chk" th:value="${status.index}" th:id="${'chk_' + status.index}">
+                        <label th:for="${'chk_' + status.index}"></label>
+                    </td>
+                    <td th:text="*{cCode}"></td>
+                    <td>
+                        <div th:text="*{cName}"></div>
+                        <div th:text="*{'전화번호 : ' + telNum}"></div>
+                        <div th:text="*{'운영시간 : ' + operHour}"></div>
+                    </td>
+                    <td>
+                        <div>
+                            요일 :
 
-                </td>
-                <td>
-                    <a th:href="@{/admin/center/edit_center/{cCode}(cCode=*{cCode})}" class="sbtn">
-                        <i class="xi-pen"></i> 정보수정
-                    </a>
-                    <a th:href="@{/center/{cCode}(cCode=*{cCode})}" class="sbtn on" target="_blank">
-                         미리보기
-                    </a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                            <th:block th:each="yoil : ${@calendar.getYoils()}">
+                                <input type="checkbox" th:name="${'bookYoil_' + status.index }" th:value="${yoil}" th:id="${'bookYoil_' + status.index}" th:checked="${item.bookYoil.contains(yoil)}">
+                                <label th:for="${'bookYoil_' + status.index}" th:text="${yoil}"></label>
+                            </th:block>
+                        </div>
+                        <div>
+                            예약가능 시간 :
+                            <select th:name="${'bookAvlShour_' + status}">
+                                <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${#numbers.formatInteger(hour, 2)}"
+                                        th:text="${#numbers.formatInteger(hour, 2)}"
+                                 ></option>
+                            </select>
+                            :
+                            <select th:name="${'bookAvlSmin_' + status.index}">
+                                <option th:each="min : ${#numbers.sequence(0, 50, 10)}" th:value="${#numbers.formatInteger(min, 2)}"
+                                        th:text="${#numbers.formatInteger(min, 2)}"
+                                ></option>
+                            </select>
+                            ~
+                            <select th:name="${'bookAvlEhour_' + status.index}">
+                                <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${#numbers.formatInteger(hour, 2)}"
+                                        th:text="${#numbers.formatInteger(hour, 2)}"
+                                ></option>
+                            </select>
+                            :
+                            <select th:name="${'bookAvlEmin_' + status.index}">
+                                <option th:each="min : ${#numbers.sequence(0, 50, 10)}" th:value="${#numbers.formatInteger(min, 2)}"
+                                        th:text="${#numbers.formatInteger(min, 2)}"
+                                ></option>
+                            </select>
+                        </div>
+                        <div>
+                            공휴일 예약 :
+                            <input type="radio" th:name="${'bookHday_' + status.index}" value="true" th:id="${'bookHday_true_' + status.index}" th:checked="*{bookHday}">
+                            <label th:for="${'bookHday_true_' + status.index}">가능</label>
 
-    <th:block th:replace="~{common/_pagination::pagination}"></th:block>
+                            <input type="radio" th:name="${'bookHday_' + status.index}" value="false" th:id="${'bookHday_false_' + status.index}" th:checked="*{!bookHday}">
+                            <label th:for="${'bookHday_false_' + status.index}">불가능</label>
+                        </div>
+                        <div>
+                            예약 블록 :
+                            <select th:name="${'bookBlock_' + status.index}">
+                                <option th:each="min : ${#numbers.sequence(0, 50, 10)}" th:value="${min}"
+                                        th:text="${#numbers.formatInteger(min, 2)}"
+                                        th:selected="${item.bookBlock == min}"
+                                ></option>
+                            </select>분
+                        </div>
+                    </td>
+                    <td>
+                        <a th:href="@{/admin/center/edit_center/{cCode}(cCode=*{cCode})}" class="sbtn">
+                            <i class="xi-pen"></i> 정보수정
+                        </a>
+                        <a th:href="@{/center/{cCode}(cCode=*{cCode})}" class="sbtn on" target="_blank">
+                             미리보기
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="table_actions">
+            <button type="button" class="sbtn form_action" data-form-name="frmList" data-mode="delete">선택 센터 삭제</button>
+            <button type="button" class="sbtn on form_action" data-form-name="frmList" data-mode="edit">선택 센터 수정</button>
+        </div>
+        <th:block th:replace="~{common/_pagination::pagination}"></th:block>
+    </form>
 </section>
 </html>
