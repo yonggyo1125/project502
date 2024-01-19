@@ -3,8 +3,8 @@ package org.choongang.board.controllers.comment;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.entities.CommentData;
+import org.choongang.board.service.comment.CommentAuthService;
 import org.choongang.board.service.comment.CommentDeleteService;
-import org.choongang.board.service.comment.CommentInfoService;
 import org.choongang.board.service.comment.CommentSaveService;
 import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.Utils;
@@ -27,7 +27,7 @@ public class CommentController implements ExceptionProcessor {
     private final CommentFormValidator commentFormValidator;
     private final CommentSaveService commentSaveService;
     private final CommentDeleteService commentDeleteService;
-    private final CommentInfoService commentInfoService;
+    private final CommentAuthService commentAuthService;
 
     /**
      * 댓글 저장, 수정 처리
@@ -37,8 +37,6 @@ public class CommentController implements ExceptionProcessor {
      */
     @PostMapping("/save")
     public String save(@Valid RequestComment form, Errors errors, Model model) {
-
-        commonProcess(form.getMode(), model);
 
         commentFormValidator.validate(form, errors);
 
@@ -59,14 +57,11 @@ public class CommentController implements ExceptionProcessor {
 
     @GetMapping("/delete/{seq}")
     public String delete(@PathVariable("seq") Long seq, Model model) {
-        commonProcess("delete", model);
+
+        commentAuthService.check("delete", seq);
 
         Long boardDataSeq = commentDeleteService.delete(seq);
 
         return "redirect:/board/view/" + boardDataSeq;
-    }
-
-    private void commonProcess(String mode, Model model) {
-
     }
 }

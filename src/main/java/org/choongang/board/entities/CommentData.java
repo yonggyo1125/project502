@@ -14,7 +14,7 @@ import org.choongang.member.entities.Member;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(indexes = @Index(name="idx_comment_basic", columnList = "listOrder DESC, createdAt ASC"))
-public class CommentData extends Base {
+public class CommentData extends Base implements AuthCheck {
     @Id @GeneratedValue
     private Long seq;
 

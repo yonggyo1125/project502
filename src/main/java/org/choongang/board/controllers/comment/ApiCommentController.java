@@ -2,6 +2,7 @@ package org.choongang.board.controllers.comment;
 
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.entities.CommentData;
+import org.choongang.board.service.comment.CommentAuthService;
 import org.choongang.board.service.comment.CommentInfoService;
 import org.choongang.board.service.comment.CommentSaveService;
 import org.choongang.commons.ExceptionRestProcessor;
@@ -15,6 +16,7 @@ public class ApiCommentController implements ExceptionRestProcessor {
 
     private final CommentInfoService commentInfoService;
     private final CommentSaveService commentSaveService;
+    private final CommentAuthService commentAuthService;
 
     @GetMapping("/{seq}")
     public JSONData<CommentData> getComment(@PathVariable("seq") Long seq) {
@@ -26,6 +28,8 @@ public class ApiCommentController implements ExceptionRestProcessor {
 
     @PatchMapping
     public JSONData<Object> editComment(RequestComment form) {
+
+        commentAuthService.check("update", form.getSeq());
 
         form.setMode("edit");
         commentSaveService.save(form);
