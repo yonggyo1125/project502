@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <th:block th:fragment="default" th:object="${boardData}">
    <div class="board_view layout_width">
 
@@ -44,6 +45,11 @@
            </li>
        </ul>
 
+       <div class="share_btns">
+            <button class="save_post" sec:authorize="isAuthenticated()">
+                <i class="xi-heart"></i>
+            </button>
+       </div>
 
        <div class="board_btns">
             <a th:href="@{/board/write/{bid}(bid=${board.bid})}" th:text="#{글쓰기}" class="btn"></a>
