@@ -30,6 +30,10 @@ public class BlogCreateService {
             form.setBid(blogId);
             form.setActive(true);
             form.setBName(blogTitle);
+            form.setSkin("blog");
+            form.setUseEditor(true);
+            form.setUseUploadImage(true);
+            form.setUseUploadFile(true);
 
             boardConfigSaveService.save(form);
         }
