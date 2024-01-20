@@ -74,11 +74,9 @@ public class SaveBoardDataService {
     public boolean saved(Long bSeq) {
 
         if (memberUtil.isLogin()) {
-            QSaveBoardData saveBoardData = QSaveBoardData.saveBoardData;
+            SaveBoardDataId id = new SaveBoardDataId(bSeq, memberUtil.getMember().getSeq());
 
-            Long mSeq = memberUtil.getMember().getSeq();
-
-            return saveBoardDataRepository.exists(saveBoardData.mSeq.eq(mSeq));
+            return saveBoardDataRepository.existsById(id);
         }
 
         return false;

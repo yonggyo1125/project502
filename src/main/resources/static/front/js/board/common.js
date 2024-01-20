@@ -30,13 +30,18 @@ window.addEventListener("DOMContentLoaded", function() {
     const savePosts = document.getElementsByClassName("save_post");
     for (const el of savePosts) {
         el.addEventListener("click", function() {
+            console.log("찜하기!!");
             // data-seq : 게시글 번호
             // save_post에 on 클래스가 포함되어 있는 경우 -> 찜 한 상태, on -> 찜을 아직 안한 상태
             const bSeq = this.dataset.seq;
             if (this.classList.contains('on')) { // 찜한 상태 -> 해제
                 boardLib.deleteSave(bSeq);
+
+                this.classList.remove('on');
+
             } else { // 찜을 아직 안한 상태 -> 찜하기
                 boardLib.save(bSeq);
+                this.classList.add('on');
             }
         });
     }
