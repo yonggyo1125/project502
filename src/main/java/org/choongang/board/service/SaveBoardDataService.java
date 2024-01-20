@@ -1,6 +1,7 @@
 package org.choongang.board.service;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.controllers.BoardDataSearch;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -110,6 +112,53 @@ public class SaveBoardDataService {
         QBoardData boardData = QBoardData.boardData;
         BooleanBuilder andBuilder = new BooleanBuilder();
         andBuilder.and(boardData.seq.in(bSeqs));
+
+        /* 검색 조건 처리 S */
+        String sopt = search.getSopt();
+        String skey = search.getSkey();
+
+        sopt = StringUtils.hasText(sopt) ? sopt.toUpperCase() : "ALL";
+
+        if (StringUtils.hasText(skey)) {
+            skey = skey.trim();
+
+            BooleanExpression subjectCond = boardData.subject.contains(skey); // 제목 - subject LIKE '%skey%';
+            BooleanExpression contentCond = boardData.content.contains(skey); // 내용 - content LIKE '%skey%';
+
+            if (sopt.equals("SUBJECT")) { // 제목
+
+                andBuilder.and(subjectCond);
+
+            } else if (sopt.equals("CONTENT")) { // 내용
+
+                andBuilder.and(contentCond);
+
+            } else if (sopt.equals("SUBJECT_CONTENT")) { // 제목 + 내용
+
+                BooleanBuilder orBuilder = new BooleanBuilder();
+                orBuilder.or(subjectCond)
+                        .or(contentCond);
+
+                andBuilder.and(orBuilder);
+
+            } else if (sopt.equals("POSTER")) { // 작성자 + 아이디 + 회원명
+                BooleanBuilder orBuilder = new BooleanBuilder();
+                orBuilder.or(boardData.poster.contains(skey))
+                        .or(boardData.member.userId.contains(skey))
+                        .or(boardData.member.name.contains(skey));
+
+                andBuilder.and(orBuilder);
+            }
+
+        }
+
+        // 분류 검색
+        String category = search.getCategory();
+        if (StringUtils.hasText(category)) {
+            andBuilder.and(boardData.category.eq(category.trim()));
+        }
+
+        /* 검색 조건 처리 E */
 
         Pageable pageable = PageRequest.of(page - 1, limit);
 
