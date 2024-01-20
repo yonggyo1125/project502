@@ -30,7 +30,6 @@ public class MemberUtil {
 
     public Member getMember() {
         Member member = (Member) session.getAttribute("member");
-
         return member;
     }
 

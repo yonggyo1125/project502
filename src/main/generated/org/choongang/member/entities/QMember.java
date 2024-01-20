@@ -29,10 +29,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath email = createString("email");
 
-    public final ListPath<Follower, QFollower> followers = this.<Follower, QFollower>createList("followers", Follower.class, QFollower.class, PathInits.DIRECT2);
-
-    public final ListPath<Following, QFollowing> followings = this.<Following, QFollowing>createList("followings", Following.class, QFollowing.class, PathInits.DIRECT2);
-
     public final StringPath gid = createString("gid");
 
     //inherited

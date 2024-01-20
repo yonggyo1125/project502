@@ -2,12 +2,9 @@ package org.choongang.member.service.follow;
 
 import lombok.RequiredArgsConstructor;
 import org.choongang.member.MemberUtil;
-import org.choongang.member.entities.Follower;
-import org.choongang.member.entities.Following;
+import org.choongang.member.entities.Follow;
 import org.choongang.member.entities.Member;
-import org.choongang.member.entities.QFollower;
-import org.choongang.member.repositories.FollowerRepository;
-import org.choongang.member.repositories.FollowingRepository;
+import org.choongang.member.repositories.FollowRepository;
 import org.choongang.member.repositories.MemberRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,52 +14,95 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FollowService {
 
-    private final MemberUtil memberUtil;
+    private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
-    private final FollowerRepository followerRepository;
-    private final FollowingRepository followingRepository;
+    private final MemberUtil memberUtil;
 
     /**
+     * 팔로잉
      *
-     * @param mSeq
+     * @param follower : 팔로잉할 회원
      */
-    public void following(Long mSeq) {
+    public void follow(Member follower) {
+        // 팔로잉 기능은 회원 전용 기능이므로 로그인상태가 아니라면 처리 안함
         if (!memberUtil.isLogin()) {
             return;
         }
 
-        Member member = memberUtil.getMember();
+        try {
+            Member followee = memberUtil.getMember();
 
-        Following following = new Following();
-        following.setSeq(mSeq);
-        following.setMember(member);
+            Follow follow = Follow.builder()
+                    .followee(followee)
+                    .follower(follower)
+                    .build();
 
-        followingRepository.saveAndFlush(following);
+            followRepository.saveAndFlush(follow);
+        } catch (Exception e) {e.printStackTrace();} // 동일한 follow 데이터가 있으면 Unique 제약 조건 예외가 발생하므로 무시
+    }
 
+    public void follow(Long seq) {
+        Member follower = memberRepository.findById(seq).orElse(null);
+        if (follower == null) {
+            return;
+        }
 
-        Member followerMember = memberRepository.findById(mSeq).orElse(null);
-
-        Follower follower = new Follower();
-        follower.setSeq(member.getSeq());
-        follower.setMember(followerMember);
-        followerRepository.saveAndFlush(follower);
+        follow(follower);
     }
 
     /**
-     * mSeq 회원을 팔로잉 하는 회원들
-     * @param mSeq
-     * @return
+     * 언팔로잉
+     *
+     * @param follower : 팔로잉을 취소할 회원
      */
-    public List<Member> getFollowers(Long mSeq) {
-        QFollower follower = QFollower.follower;
+    public void unfollow(Member follower) {
+        // 언팔로잉 기능은 회원 전용 기능이므로 로그인상태가 아니라면 처리 안함
+        if (!memberUtil.isLogin()) {
+            return;
+        }
 
-        //List<Follower> members = followerRepository.findAll(QFollow)
+        if (follower == null) {
+            return;
+        }
 
-        return null;
+        Member followee = memberUtil.getMember();
+
+        Follow follow = followRepository.findByFolloweeAndFollower(followee, follower);
+        followRepository.delete(follow);
+        followRepository.flush();
     }
 
-    public List<Member> getFollowees(Long mSeq) {
+    public void unfollow(Long seq) {
+        Member follower = memberRepository.findById(seq).orElse(null);
+        if (follower == null) {
+            return;
+        }
 
-        return null;
+        unfollow(follower);
+    }
+
+    /**
+     * 로그인 회원을 follow 한 회원 목록
+     * @return
+     */
+    public List<Member> getFollowers() {
+        if (!memberUtil.isLogin()) {
+            return null;
+        }
+
+        return followRepository.getFollowers(memberUtil.getMember());
+    }
+
+    /**
+     * 로그인 회원이 follow한 회원목록
+     * 
+     * @return
+     */
+    public List<Member> getFollowings() {
+        if (!memberUtil.isLogin()) {
+            return null;
+        }
+
+        return followRepository.getFollowings(memberUtil.getMember());
     }
 }
