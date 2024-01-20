@@ -107,7 +107,12 @@ public class SaveBoardDataService {
         int limit = Utils.onlyPositiveNumber(search.getLimit(), 20);
 
         Member member = memberUtil.getMember();
-        List<Long> bSeqs = saveBoardDataRepository.getBoardDataSeqs(member.getSeq());
+        //Long mSeq = member.getSeq();
+
+        // 임시
+        Long mSeq = 1L;
+
+        List<Long> bSeqs = saveBoardDataRepository.getBoardDataSeqs(mSeq);
 
         QBoardData boardData = QBoardData.boardData;
         BooleanBuilder andBuilder = new BooleanBuilder();

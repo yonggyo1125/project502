@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/mypage}">
+
+<section layout:fragment="content" class="save_post_page">
+    <h1 th:text="#{찜_게시글}"></h1>
+
+    <ul class="items">
+        <li th:if="${items == null || items.isEmpty()}" class="no_data" th:text="#{찜_게시글이_없습니다.}"></li>
+        <li th:unless="${items == null || items.isEmpty()}"
+            th:each="item : ${items}" th:object="${item}">
+            <div class="subject" th:text="*{subject}"></div>
+            <div class="content hide">
+                <th:block th:utext="*{content}"></th:block>
+            </div>
+        </li>
+    </ul>
+
+    <th:block th:replace="~{common/_pagination::pagination}"></th:block>
+</section>
+
+</html>

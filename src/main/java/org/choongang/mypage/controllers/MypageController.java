@@ -59,8 +59,6 @@ public class MypageController implements ExceptionProcessor {
         List<String> addCss = new ArrayList<>();
         List<String> addScript = new ArrayList<>();
 
-        addCss.add("mypage/style");
-
         if (mode.equals("save_post")) { // 찜한 게시글 페이지
             pageTitle = Utils.getMessage("찜_게시글", "commons");
 
