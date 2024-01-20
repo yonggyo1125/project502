@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Controller
 @RequestMapping("/mypage")
 @RequiredArgsConstructor
@@ -53,11 +56,21 @@ public class MypageController implements ExceptionProcessor {
         mode = StringUtils.hasText(mode) ? mode : "main";
         String pageTitle = Utils.getMessage("마이페이지", "commons");
 
+        List<String> addCss = new ArrayList<>();
+        List<String> addScript = new ArrayList<>();
+
+        addCss.add("mypage/style");
+
         if (mode.equals("save_post")) { // 찜한 게시글 페이지
             pageTitle = Utils.getMessage("찜_게시글", "commons");
+
+            addScript.add("board/common");
+            addScript.add("mypage/save_post");
         }
 
         model.addAttribute("pageTitle", pageTitle);
+        model.addAttribute("addCss", addCss);
+        model.addAttribute("addScript", addScript);
     }
 
 }
