@@ -32,7 +32,7 @@
         </li>
     </ul>
     <div class="list_search">
-        <form name="frmSearch" method="get" th:action="@{/mypage/save_post}" autocomplete="off" th:object="*{boardDataSearch}">
+        <form name="frmSearch" method="get" th:action="@{/mypage/save_post}" autocomplete="off" th:object="${boardDataSearch}">
             <select name="sopt" th:field="*{sopt}">
                 <option value="ALL" th:text="#{통합검색}"></option>
                 <option value="SUBJECT" th:text="#{제목}"></option>

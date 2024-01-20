@@ -34,6 +34,15 @@ public class Member extends Base {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Authorities> authorities = new ArrayList<>();
 
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Follower> followers = new ArrayList<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Following> followings = new ArrayList<>();
+
     @Transient
     private FileInfo profileImage;
 }
