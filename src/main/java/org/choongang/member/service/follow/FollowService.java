@@ -105,4 +105,22 @@ public class FollowService {
 
         return followRepository.getFollowings(memberUtil.getMember());
     }
+
+    public long getTotalFollowers() {
+
+        if (memberUtil.isLogin()) {
+            return followRepository.getTotalFollowers(memberUtil.getMember());
+        }
+
+        return 0L;
+    }
+
+    public long getTotalFollowings() {
+
+        if (memberUtil.isLogin()) {
+            return followRepository.getTotalFollowings(memberUtil.getMember());
+        }
+
+        return 0L;
+    }
 }

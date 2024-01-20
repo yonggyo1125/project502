@@ -7,12 +7,14 @@ import org.choongang.board.service.SaveBoardDataService;
 import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.ListData;
 import org.choongang.commons.Utils;
+import org.choongang.member.service.follow.FollowService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,8 @@ import java.util.List;
 public class MypageController implements ExceptionProcessor {
 
     private final SaveBoardDataService saveBoardDataService;
+    private final FollowService followService;
+
     private final Utils utils;
 
 
@@ -71,4 +75,12 @@ public class MypageController implements ExceptionProcessor {
         model.addAttribute("addScript", addScript);
     }
 
+
+    @GetMapping("/follow")
+    public String followList(@RequestParam(name="mode", defaultValue = "follower") String mode, Model model) {
+
+
+
+        return utils.tpl("mypage/follow");
+    }
 }

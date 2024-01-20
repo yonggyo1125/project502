@@ -117,4 +117,5 @@ public class FollowTest {
         List<Member> members = followService.getFollowings();
         assertEquals(2, members.size());
     }
+
 }

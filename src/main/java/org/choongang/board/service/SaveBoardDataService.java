@@ -103,14 +103,15 @@ public class SaveBoardDataService {
      */
     public ListData<BoardData> getList(BoardDataSearch search) {
 
+        if (!memberUtil.isLogin()) {
+            return new ListData<>();
+        }
+
         int page = Utils.onlyPositiveNumber(search.getPage(), 1);
         int limit = Utils.onlyPositiveNumber(search.getLimit(), 20);
 
         Member member = memberUtil.getMember();
-        //Long mSeq = member.getSeq();
-
-        // 임시
-        Long mSeq = 1L;
+        Long mSeq = member.getSeq();
 
         List<Long> bSeqs = saveBoardDataRepository.getBoardDataSeqs(mSeq);
 

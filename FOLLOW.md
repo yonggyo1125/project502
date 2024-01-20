@@ -34,18 +34,6 @@ public class Follow extends Base {
 }
 ```
 
-> member/entities/Member.java
-
-```java
-
-... 
-
-public class Member extends Base {
-    
-
-}
-```
-
 > member/repositories/FollowRepository.java
 
 ```java
@@ -345,3 +333,291 @@ public class FollowTest {
 
 이상이 없다면 다음과 같이 테스트 케이스가 통과 되어야 합니다.
 
+![image1](https://raw.githubusercontent.com/yonggyo1125/project502/master/images/follow/image1.png)
+
+
+
+## 마이페이지 : 팔로잉, 팔로워 게시글 조회
+
+> member/service/follow/FollowBoardService.java
+
+```java
+package org.choongang.member.service.follow;
+
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.choongang.board.controllers.BoardDataSearch;
+import org.choongang.board.entities.BoardData;
+import org.choongang.board.entities.QBoardData;
+import org.choongang.board.repositories.BoardDataRepository;
+import org.choongang.commons.ListData;
+import org.choongang.commons.Pagination;
+import org.choongang.commons.Utils;
+import org.choongang.member.MemberUtil;
+import org.choongang.member.entities.Member;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import java.util.List;
+
+/**
+ * 팔로잉 회원 게시글 목록 조회
+ * 팔로워 회원 게시글 목록 조회
+ */
+@Service
+@RequiredArgsConstructor
+public class FollowBoardService {
+
+    private final MemberUtil memberUtil;
+    private final FollowService followService;
+    private final BoardDataRepository boardDataRepository;
+    private final HttpServletRequest request;
+    private final EntityManager em;
+
+    /**
+     *
+     * @param mode
+     *              follower : 로그인 회원을 팔로잉 하는 회원 게시글 목록
+     *              following : 로그인 회원이 팔로잉한 회원 게시글 목록
+     * @param search
+     * @return
+     */
+    public ListData<BoardData> getList(String mode, BoardDataSearch search) {
+
+        if (!memberUtil.isLogin()) { // 미로그인 상태 목록 조회 X
+            return null;
+        }
+
+        int page = Utils.onlyPositiveNumber(search.getPage(), 1);
+        int limit = Utils.onlyPositiveNumber(search.getLimit(), 20);
+        int offset = (page - 1) * limit;
+
+        mode = StringUtils.hasText(mode) ? mode : "follower";
+        List<Member> members = mode.equals("following") ? followService.getFollowings() : followService.getFollowers();
+
+        QBoardData boardData = QBoardData.boardData;
+        BooleanBuilder andBuilder = new BooleanBuilder();
+        andBuilder.and(boardData.member.in(members));
+
+        /* 검색 조건 처리 S */
+
+        String sopt = search.getSopt();
+        String skey = search.getSkey();
+
+        sopt = StringUtils.hasText(sopt) ? sopt.toUpperCase() : "ALL";
+
+        if (StringUtils.hasText(skey)) {
+            skey = skey.trim();
+
+            BooleanExpression subjectCond = boardData.subject.contains(skey); // 제목 - subject LIKE '%skey%';
+            BooleanExpression contentCond = boardData.content.contains(skey); // 내용 - content LIKE '%skey%';
+
+            if (sopt.equals("SUBJECT")) { // 제목
+
+                andBuilder.and(subjectCond);
+
+            } else if (sopt.equals("CONTENT")) { // 내용
+
+                andBuilder.and(contentCond);
+
+            } else if (sopt.equals("SUBJECT_CONTENT")) { // 제목 + 내용
+
+                BooleanBuilder orBuilder = new BooleanBuilder();
+                orBuilder.or(subjectCond)
+                        .or(contentCond);
+
+                andBuilder.and(orBuilder);
+
+            } else if (sopt.equals("POSTER")) { // 작성자 + 아이디 + 회원명
+                BooleanBuilder orBuilder = new BooleanBuilder();
+                orBuilder.or(boardData.poster.contains(skey))
+                        .or(boardData.member.userId.contains(skey))
+                        .or(boardData.member.name.contains(skey));
+
+                andBuilder.and(orBuilder);
+            }
+
+        }
+
+        // 특정 사용자로 게시글 한정 : 마이페이지에서 활용 가능
+        String userId = search.getUserId();
+        if (StringUtils.hasText(userId)) {
+            andBuilder.and(boardData.member.userId.eq(userId));
+        }
+
+        // 게시글 분류 조회
+        String category = search.getCategory();
+        if (StringUtils.hasText(category)) {
+            category = category.trim();
+            andBuilder.and(boardData.category.eq(category));
+        }
+
+        /* 검색 조건 처리 E */
+
+        PathBuilder<BoardData> pathBuilder = new PathBuilder<>(BoardData.class, "boardData");
+        List<BoardData> items = new JPAQueryFactory(em).selectFrom(boardData)
+                .leftJoin(boardData.member)
+                .fetchJoin()
+                .where(andBuilder)
+                .offset(offset)
+                .limit(limit)
+                .orderBy(new OrderSpecifier(Order.DESC, pathBuilder.get("createdAt")))
+                .fetch();
+
+        int total = (int)boardDataRepository.count(andBuilder);
+        Pagination pagination = new Pagination(page, total, 10, limit, request);
+
+        return new ListData<>(items, pagination);
+    }
+}
+```
+
+> commons/Utils.java
+
+```java
+...
+
+public class Utils {
+    ...
+
+    public String backgroundStyle(FileInfo file, int width, int height) {
+
+        String[] data = fileInfoService.getThumb(file.getSeq(), width, height);
+        String imageUrl = data[1];
+
+        String style = String.format("background:url('%s') no-repeat center center; background-size:cover;", imageUrl);
+
+        return style;
+    }
+    
+    ...
+    
+}
+```
+
+> resources/templates/front/layouts/mypage.html 
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <meta th:if="${siteConfig.siteDescription != null}" name="description" th:content="${siteConfig.siteDescription}">
+    <meta th:if="${siteConfig.siteKeywords != null}" name="keywords" th:content="${siteConfig.siteKeywords}">
+    <title>
+        <th:block th:if="${pageTitle != null}" th:text="${pageTitle + ' - '}"></th:block>
+        <th:block th:if="${siteConfig.siteTitle != null}" th:text="${siteConfig.siteTitle}"></th:block>
+    </title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/common/css/style.css?v={v}(v=${siteConfig.cssJsVersion})}">
+    <link rel="stylesheet" type="text/css"
+          th:each="cssFile : ${addCommonCss}"
+          th:href="@{/common/css/{file}.css?v={v}(file=${cssFile}, v=${siteConfig.cssJsVersion})}">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/front/css/style.css?v={v}(v=${siteConfig.cssJsVersion})}">
+    <link rel="stylesheet" type="text/css" th:href="@{/front/css/mypage/style.css?v={v}(v=${siteConfig.cssJsVersion})}">
+
+    <link rel="stylesheet" type="text/css"
+          th:each="cssFile : ${addCss}"
+          th:href="@{/front/css/{file}.css?v={v}(file=${cssFile}, v=${siteConfig.cssJsVersion})}">
+
+    <th:block layout:fragment="addCss"></th:block>
+
+    <script th:src="@{/common/js/common.js?v={v}(v=${siteConfig.cssJsVersion})}"></script>
+    <script th:each="jsFile : ${addCommonScript}"
+            th:src="@{/common/js/{file}.js?v={v}(file=${jsFile}, v=${siteConfig.cssJsVersion})}"></script>
+
+    <script th:src="@{/front/js/common.js?v={v}(v=${siteConfig.cssJsVersion})}"></script>
+    <script th:each="jsFile : ${addScript}"
+            th:src="@{/front/js/{file}.js?v={v}(file=${jsFile}, v=${siteConfig.cssJsVersion})}"></script>
+
+    <th:block layout:fragment="addScript"></th:block>
+</head>
+<body>
+<header th:replace="~{front/outlines/header::common}"></header>
+
+<main class="mypage layout_width">
+    <aside th:replace="~{front/mypage/_side::menus}"></aside>
+    <section layout:fragment="content"></section>
+</main>
+
+<footer th:replace="~{front/outlines/footer::common}"></footer>
+<iframe name="ifrmProcess" class="dn"></iframe>
+</body>
+</html>
+```
+
+> static/front/css/mypage/style.css
+
+```css
+main { display: flex; }
+main > aside { width: 250px; background: #f8f8f8; min-height: 700px; }
+main > aside > ul { margin-top: 20px;  }
+main > aside > ul a { height: 50px; display: block;  line-height: 50px; padding: 0 30px; font-size: 1.1rem; font-weight: 500; background: #d5d5d5; }
+main > aside > ul a:hover, main > aside > ul li.on a { background: #222; color: #fff; }
+main > aside > ul li { border-top: 1px solid #222; }
+main > section { flex-grow: 1; padding: 45px; }
+main > section h1 { line-height: 1; margin-bottom: 25px; font-size: 1.5rem; }
+
+
+/* 찜 게시글 목록 */
+.save_post_page .items li { border: 1px solid #f8f8f8; border-radius: 5px; }
+.save_post_page .items li + li { margin-top: 10px; }
+.save_post_page .subject { padding: 10px 15px; cursor: pointer; }
+.save_post_page .content { margin-top: 10px; transition: all 0.5s; min-height: 300px;}
+.save_post_page .content > div { background: #f8f8f8; padding: 15px; border-radius: 5px; }
+.save_post_page .content.hide { transition: all 0.5s; }
+
+/* 마이페이지 사이드 영역 */
+aside .profile_image { width: 200px; height: 200px; border-radius: 50%; margin: 20px auto;  }
+aside .profile_box .update_profile_btn { border: 1px solid #596b99; height: 35px; text-align: center; background: #fff; color: #596b99; display: block; width: 200px; margin: 0 auto 10px; font-size: 1.15rem; line-height: 33px; border-radius: 3px;}
+aside .user_email { font-size: 1.2rem; font-weight: 500; padding: 0 25px; }
+aside .user_nm { padding: 0 25px; margin-bottom: 10px; }
+aside .follow_info { text-align: center; }
+```
+
+> resources/templates/front/mypage/_side.html
+
+```html 
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <aside th:fragment="menus">
+        <div class="profile_box" sec:authorize="isAuthenticated()">
+            <div class="profile_image" th:if="${session.member.profileImage != null}" th:style="${@utils.backgroundStyle(session.member.profileImage, 350, 350)}"></div>
+
+            <a class='update_profile_btn' th:href="@{/mypage/profile}" th:text="#{회원정보_수정}"></a>
+
+            <div class="user_email" th:text="${session.member.email}"></div>
+            <div class="user_nm" th:text="${session.member.name}"></div>
+
+            <div class="follow_info">
+                <i class="xi-users"></i>
+                <a th:href="@{/mypage/follow?mode=follower}">
+                    <span class='num' th:text="${@followService.totalFollowers}"></span> <span class="txt">followers</span>
+                </a>
+                <a th:href="@{/mypage/follow?mode=following}">
+                    <span class='num' th:text="${@followService.totalFollowings}"></span> <span class="txt">following</span>
+                </a>
+            </div>
+        </div>
+        <!--// profile_box -->
+        <ul class="menus">
+            <li>
+                <a th:href="@{/mypage/save_post}" th:text="#{찜_게시글}"></a>
+            </li>
+        </ul>
+    </aside>
+</html>
+```

@@ -1,7 +1,6 @@
 package org.choongang.member.service;
 
 import lombok.RequiredArgsConstructor;
-import org.choongang.farmer.service.BlogCreateService;
 import org.choongang.file.service.FileUploadService;
 import org.choongang.member.Authority;
 import org.choongang.member.controllers.JoinValidator;
@@ -26,7 +25,7 @@ public class JoinService {
     private final PasswordEncoder encoder;
     private final FileUploadService uploadService;
 
-    private final BlogCreateService blogCreateService;
+    //private final BlogCreateService blogCreateService;
 
     public void process(RequestJoin form, Errors errors) {
         validator.validate(form, errors);
@@ -57,8 +56,8 @@ public class JoinService {
         uploadService.processDone(form.getGid());
 
         // 농장주 회원이면 블로그 생성
-        String blogTitle = String.format("%s님 블로그", member.getName());
-        blogCreateService.create(member.getUserId(), blogTitle);
+        //String blogTitle = String.format("%s님 블로그", member.getName());
+        //blogCreateService.create(member.getUserId(), blogTitle);
 
     }
 
