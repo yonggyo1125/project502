@@ -11,3 +11,4 @@
 
 .center_view_page .reservation_box { margin-top: 100px; }
 .center_view_page .reservation_box iframe { width: 100%; height: 700px; border: 0; overflow: hidden; }
+.center_view_page h2 { border-bottom: 2px solid #222; margin-bottom: 20px; padding-bottom: 15px; line-height: 1; }

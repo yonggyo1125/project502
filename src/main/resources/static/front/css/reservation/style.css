@@ -1,0 +1,17 @@
+.year_month { text-align: center; margin-bottom: 15px; }
+.year_month .current { font-weight: 700; font-size: 2rem; line-height: 1; }
+.year_month a { display: inline-block; vertical-align: center; padding: 0 10px; font-size: 1.2rem; line-height: 1; }
+.year_month a:hover { a:text-decoration: underline; }
+
+.yoils { border: 1px solid #ccc; border-bottom: 1px solid #222; font-size: 2rem; font-weight: 500; display: flex; width: 100%; }
+.yoils > li { width: 0; flex-grow: 1; padding: 10px; text-align: center; }
+.yoils li + li { border-left: 1px solid #ccc; }
+.days { border: 1px solid #ccc; border-top: 0; display: flex; width: 100%; flex-wrap: wrap; flex-grow: 1;  }
+.days li { width: calc(100% / 7); font-size: 0.8rem;  height: 100px; }
+.days li + li { border-left: 1px solid #ccc; border-top: 1px solid #ccc;}
+.days li:nth-of-type(7n+1) { color: red; }
+.days li:nth-of-type(7n) { color: blue; }
+
+.days input[type='radio'] { display: none; }
+.days input[type='radio']+label { display: block; text-align: center; font-size: 2rem; font-weight: 500; cursor: pointer; line-height: 98px; }
+.days input[type='radio']:checked+label { background: #222; color: #fff; }

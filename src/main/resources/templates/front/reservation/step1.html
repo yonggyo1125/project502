@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/popup}">
+<main layout:fragment="content" class="reservation_step">
+
+    <form name="frmStep1" method="post" th:action="@{/reservation/step2}" autocomplete="off" th:object="${requestReservation}">
+        <h3 th:text="#{방문일자_선택}"></h3>
+
+        <div class="year_month">
+            <a th:href="@{/reservation/step1/{cCode}(cCode=*{cCode}, year=${prevYear}, month=${prevMonth}, targetId=${param.targetId})}" th:text="#{이전달}"></a>
+            <span class="current">
+                <th:block th:text="${year}"></th:block>
+                <th:block th:text="#{년}"></th:block>
+
+                <th:block th:text="${#numbers.formatInteger(month, 2)}"></th:block>
+                <th:block th:text="#{월}"></th:block>
+            </span>
+            <a th:href="@{/reservation/step1/{cCode}(cCode=*{cCode}, year=${nextYear}, month=${nextMonth}, targetId=${param.targetId})}" th:text="#{다음달}"></a>
+        </div>
+
+        <ul class="yoils">
+            <li th:each="yoil, status : ${yoilTitles}" th:text="${yoil}"></li>
+        </ul>
+        <ul class="days">
+            <li th:each="day, status : ${days}">
+                <input type="radio" name="date" th:value="${dates[status.index]}" th:id="${'day_' + status}" onclick="frmStep1.submit();">
+                <label th:for="${'day_' + status}" th:text="${day}"></label>
+            </li>
+        </ul>
+        <div class="error" th:each="err : ${#fields.errors('date')}" th:text="${err}"></div>
+        <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+    </form>
+</main>
+</html>

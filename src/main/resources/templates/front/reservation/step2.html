@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/popup}">
+<main layout:fragment="content">
+    <form name="frmStep1" method="post" th:action="@{/reservation/apply}" autocomplete="off" th:object="${requestReservation}">
+        <h3 th:text="#{방문시간_선택}"></h3>
+
+        임시 : <input type="text" name="time" th:field="*{time}">
+        <div class="error" th:each="err : ${#fields.errors('time')}" th:text="${err}"></div>
+        <br><br>
+
+        <h3 th:text="#{방문인원_선택}"></h3>
+        임시 : <input type="number" name="persons" th:field="*{persons}">
+        <div class="error" th:each="err : ${#fields.errors('persons')}" th:text="${err}"></div>
+
+        <h3 th:text="#{방문자_정보}"></h3>
+        임시
+        <textarea name="personsInfo" th:field="*{personsInfo}"></textarea>
+        <div class="error" th:each="err : ${#fields.errors('personsInfo')}" th:text="${err}"></div>
+        <br>
+        <br>
+
+        <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+        <button type="submit" th:text="#{예약하기}"></button>
+
+    </form>
+</main>
+</html>
