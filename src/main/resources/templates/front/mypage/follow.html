@@ -8,7 +8,7 @@
         <li class="item" th:unless="${items == null || items.isEmpty()}" th:each="item : ${items}" th:object="${item}">
             <div class="profile">
                 <div class="profile_image" th:if="*{profileImage != null}" th:style="*{@utils.backgroundStyle(profileImage, 80, 80)}"></div>
-                <a class="user_info" th:href="@{/mypage/follow/{userId}(userId=*{userId})}">
+                <a class="user_info" th:href="@{/mypage/follow/{userId}(userId=*{userId}, mode=${mode})}">
                     <div class="user_nm" th:text="*{#strings.concat(name, '(', userId, ')')}"></div>
                     <div class="user_email" th:text="*{email}"></div>
                 </a>

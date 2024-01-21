@@ -880,6 +880,7 @@ aside .follow_info { text-align: center; }
 public class MypageController implements ExceptionProcessor {
 
     private final SaveBoardDataService saveBoardDataService;
+    private final FollowBoardService followBoardService;
     private final FollowService followService;
 
     private final Utils utils;
@@ -898,6 +899,26 @@ public class MypageController implements ExceptionProcessor {
         model.addAttribute("mode", mode);
 
         return utils.tpl("mypage/follow");
+    }
+
+    @GetMapping("/follow/{userId}")
+    public String followBoard(@PathVariable("userId") String userId,
+                              @RequestParam(name="mode", defaultValue="follower") String mode,
+                              @ModelAttribute BoardDataSearch search, Model model) {
+
+        // 전체 조회가 아니라면 아이디별 조회
+        if (!userId.equals("all")) {
+            search.setUserId(userId);
+        } else {
+            search.setUserId(null);
+        }
+
+        ListData<BoardData> data = followBoardService.getList(mode, search);
+
+        model.addAttribute("items", data.getItems());
+        model.addAttribute("pagination", data.getPagination());
+
+        return utils.tpl("mypage/follow_board");
     }
     
     ...
@@ -940,7 +961,7 @@ public class MypageController implements ExceptionProcessor {
         <li class="item" th:unless="${items == null || items.isEmpty()}" th:each="item : ${items}" th:object="${item}">
             <div class="profile">
                 <div class="profile_image" th:if="*{profileImage != null}" th:style="*{@utils.backgroundStyle(profileImage, 80, 80)}"></div>
-                <a class="user_info" th:href="@{/mypage/follow/{userId}(userId=*{userId})}">
+                <a class="user_info" th:href="@{/mypage/follow/{userId}(userId=*{userId}, mode=${mode})}">
                     <div class="user_nm" th:text="*{#strings.concat(name, '(', userId, ')')}"></div>
                     <div class="user_email" th:text="*{email}"></div>
                 </a>
@@ -960,6 +981,51 @@ public class MypageController implements ExceptionProcessor {
 팔로우, 팔로잉 목록 적용 화면
 
 ![image3](https://raw.githubusercontent.com/yonggyo1125/project502/master/images/follow/image3.png)
+
+> resources/templates/front/mypage/follow_board.html : 팔로잉, 팔로우 회원 게시글 목록 조회 
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/mypage}">
+
+<section layout:fragment="content" class="follow_board_page">
+    <ul class="items">
+        <li class="no_data" th:if="${items == null || items.isEmpty()}" th:text="#{조회된_게시글이_없습니다.}"></li>
+        <li class="item" th:unless="${items == null || items.isEmpty()}" th:each="item : ${items}" th:object="${item}">
+            <div class="subject" th:text="*{subject}"></div>
+            <div class="content" th:utext="*{content}"></div>
+            <div class="post_info">
+                <div class="profile">
+                    <div class="profile_image" th:if="*{member.profileImage != null}" th:style="*{@utils.backgroundStyle(member.profileImage, 80, 80)}"></div>
+                    <div>
+                        <div class="user_nm" th:text="*{#strings.concat(member.name, '(', member.userId, ')')}"></div>
+                        <div class="user_email" th:text="*{member.email}"></div>
+                    </div>
+                </div>
+                <div th:text="*{#temporals.format(createdAt, 'yyyy.MM.dd HH:mm')}"></div>
+            </div>
+        </li>
+    </ul>
+
+    <th:block th:replace="~{common/_pagination::pagination}"></th:block>
+</section>
+</html>
+```
+
+> 적용 방법 
+> 
+> /mypage/follow/all?mode=following : 팔로잉하는 모든 회원의 게시글 조회 - userId 부분을 all로 고정
+> 
+> /mypage/follow/all?mode=followers : 팔로워들의 모든 회원의 게시글 조회 - userId 부분을 all로 고정
+>
+> /mypage/follow/user02?mode=following : 팔로잉 하는 회원중 user02번 회원 게시글만 조회  
+
+
+적용화면
+
+![image4](https://raw.githubusercontent.com/yonggyo1125/project502/master/images/follow/image4.png)
 
 
 # 사용자 페이지 : 팔로우, 언팔로우 기능 구현

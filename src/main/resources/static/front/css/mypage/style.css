@@ -32,3 +32,13 @@ aside .follow_info { text-align: center; }
 .follow_page .items .profile_image { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; }
 .follow_page .items .user_nm { font-size: 1.5rem; font-weight: 500; }
 .follow_page .items .user_email { font-size: 1.15rem; color: #555; }
+
+/* 팔로우 또는 팔로잉한 회원 게시글 보기 */
+.follow_board_page .item { border: 1px solid #d5d5d5; padding: 15px; border-radius: 5px; }
+.follow_board_page .item + .item { margin-top: 10px; }
+.follow_board_page .subject { border-bottom: 1px solid #222; font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; padding-bottom: 10px; }
+.follow_board_page .content { background: #f8f8f8; padding: 10px; border-radius: 3px; }
+.follow_board_page .post_info { flex-grow: 1; display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+.follow_board_page .profile_image { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; }
+.follow_board_page .user_nm { font-size: 1.5rem; font-weight: 500; }
+.follow_board_page .user_email { font-size: 1.15rem; color: #555; }

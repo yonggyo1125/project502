@@ -9,14 +9,12 @@ import org.choongang.commons.ListData;
 import org.choongang.commons.RequestPaging;
 import org.choongang.commons.Utils;
 import org.choongang.member.entities.Member;
+import org.choongang.member.service.follow.FollowBoardService;
 import org.choongang.member.service.follow.FollowService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +25,7 @@ import java.util.List;
 public class MypageController implements ExceptionProcessor {
 
     private final SaveBoardDataService saveBoardDataService;
+    private final FollowBoardService followBoardService;
     private final FollowService followService;
 
     private final Utils utils;
@@ -69,6 +68,27 @@ public class MypageController implements ExceptionProcessor {
         model.addAttribute("mode", mode);
 
         return utils.tpl("mypage/follow");
+    }
+
+
+    @GetMapping("/follow/{userId}")
+    public String followBoard(@PathVariable("userId") String userId,
+                              @RequestParam(name="mode", defaultValue="follower") String mode,
+                              @ModelAttribute BoardDataSearch search, Model model) {
+
+        // 전체 조회가 아니라면 아이디별 조회
+        if (!userId.equals("all")) {
+            search.setUserId(userId);
+        } else {
+            search.setUserId(null);
+        }
+
+        ListData<BoardData> data = followBoardService.getList(mode, search);
+
+        model.addAttribute("items", data.getItems());
+        model.addAttribute("pagination", data.getPagination());
+
+        return utils.tpl("mypage/follow_board");
     }
 
     private void commonProcess(String mode, Model model) {

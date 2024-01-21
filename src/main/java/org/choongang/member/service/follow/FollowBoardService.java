@@ -62,6 +62,7 @@ public class FollowBoardService {
         BooleanBuilder andBuilder = new BooleanBuilder();
         andBuilder.and(boardData.member.in(members));
 
+
         /* 검색 조건 처리 S */
 
         String sopt = search.getSopt();
