@@ -41,12 +41,12 @@
                     <th width="100">센터코드</th>
                     <th>센터정보</th>
                     <th width="350">예약설정</th>
-                    <th width="250"></th>
+                    <th width="270"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr th:if="${items == null || items.isEmpty()}">
-                    <td colspan="5">조회된 센터가 없습니다.</td>
+                    <td colspan="5" class="no_data">조회된 센터가 없습니다.</td>
                 </tr>
                 <tr th:unless="${items == null || items.isEmpty()}" th:each="item, status : ${items}" th:object="${item}">
                     <td>
@@ -79,24 +79,28 @@
                             <select th:name="${'bookAvlShour_' + status.index}">
                                 <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${#numbers.formatInteger(hour, 2)}"
                                         th:text="${#numbers.formatInteger(hour, 2)}"
+                                        th:selected="${item.bookAvlShour == #numbers.formatInteger(hour, 2)}"
                                  ></option>
                             </select>
                             :
                             <select th:name="${'bookAvlSmin_' + status.index}">
                                 <option th:each="min : ${#numbers.sequence(0, 50, 10)}" th:value="${#numbers.formatInteger(min, 2)}"
                                         th:text="${#numbers.formatInteger(min, 2)}"
+                                        th:selected="${item.bookAvlSmin == #numbers.formatInteger(min, 2)}"
                                 ></option>
                             </select>
                             ~
                             <select th:name="${'bookAvlEhour_' + status.index}">
                                 <option th:each="hour : ${#numbers.sequence(0, 23)}" th:value="${#numbers.formatInteger(hour, 2)}"
                                         th:text="${#numbers.formatInteger(hour, 2)}"
+                                        th:selected="${item.bookAvlEhour == #numbers.formatInteger(hour, 2)}"
                                 ></option>
                             </select>
                             :
                             <select th:name="${'bookAvlEmin_' + status.index}">
                                 <option th:each="min : ${#numbers.sequence(0, 50, 10)}" th:value="${#numbers.formatInteger(min, 2)}"
                                         th:text="${#numbers.formatInteger(min, 2)}"
+                                        th:selected="${item.bookAvlEmin == #numbers.formatInteger(min, 2)}"
                                 ></option>
                             </select>
                         </div>

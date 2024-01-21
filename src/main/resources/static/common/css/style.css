@@ -1,5 +1,12 @@
 /* 여백 공통 */
-.mb30 { margin-bottom: 30px; }
+.mb5 { margin-bottom: 5px !important; }
+.mb10 { margin-bottom: 10px !important; }
+.mb30 { margin-bottom: 30px !important; }
+
+/* 너비 공통 */
+.w200 { width: 200px !important; }
+.w150 { width: 150px !important; }
+
 
 .dn { display: none !important; }
 .hide { visibility: none !important; height: 0 !important; padding: 0 !important; margin: 0 !important; overflow: hidden !important; min-height: 0 !important; }

@@ -22,9 +22,11 @@
         <tr>
             <th>주소</th>
             <td>
-                <input type="text" name="zonecode" placeholder="우편번호" readonly th:field="*{zonecode}" id="zonecode">
-                <button type="button" class="search_address" data-zonecode-id="zonecode" data-address-id="address">주소 찾기</button>
-                <input type="text" name="address" placeholder="주소" readonly th:field="*{address}" id="address">
+                <div class="input_grp mb5">
+                    <input type="text" name="zonecode" placeholder="우편번호" readonly th:field="*{zonecode}" id="zonecode" class="w150">
+                    <button type="button" class="sbtn search_address" data-zonecode-id="zonecode" data-address-id="address">주소 찾기</button>
+                </div>
+                <input type="text" name="address" placeholder="주소" readonly th:field="*{address}" id="address" class="mb5">
                 <input type="text" name="addressSub" placeholder="나머지 주소" th:field="*{addressSub}">
 
                 <div class="error" th:each="err : ${#fields.errors('zonecode')}" th:text="${err}"></div>

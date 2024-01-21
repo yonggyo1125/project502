@@ -37,6 +37,8 @@ public class CenterInfoService {
     public CenterInfo get(Long cCode) {
         CenterInfo data = infoRepository.findById(cCode).orElseThrow(CenterNotFoundException::new);
 
+        // 센터 추가 정보
+        addCenterInfo(data);
 
         return data;
     }
@@ -49,19 +51,6 @@ public class CenterInfoService {
         if (StringUtils.hasText(bookYoil)) {
             List<String> yoils = Arrays.stream(bookYoil.split(",")).toList();
             form.setBookYoil(yoils);
-        }
-
-
-        String bookAvl = data.getBookAvl();
-        // 09:00-10:00
-
-        Pattern pattern = Pattern.compile("(\\d{2}):(\\d{2})-(\\d{2}):(\\d{2})");
-        Matcher matcher = pattern.matcher(bookAvl);
-        if (matcher.find()) {
-            form.setBookAvlShour(matcher.group(1));
-            form.setBookAvlSmin(matcher.group(2));
-            form.setBookAvlEhour(matcher.group(3));
-            form.setBookAvlEmin(matcher.group(4));
         }
 
         form.setMode("edit_center");
@@ -104,8 +93,29 @@ public class CenterInfoService {
 
         Page<CenterInfo> data = infoRepository.findAll(andBuilder, pageable);
 
+        // 센터 추가 정보 처리
+        data.getContent().forEach(this::addCenterInfo);
+
         Pagination pagination = new Pagination(page, (int)data.getTotalElements(), 10, limit, request);
 
         return new ListData<>(data.getContent(), pagination);
+    }
+
+    /**
+     * 센터 추가 정보
+     *
+     * @param data
+     */
+    private void addCenterInfo(CenterInfo data) {
+        String bookAvl = data.getBookAvl();
+
+        Pattern pattern = Pattern.compile("(\\d{2}):(\\d{2})-(\\d{2}):(\\d{2})");
+        Matcher matcher = pattern.matcher(bookAvl);
+        if (matcher.find()) {
+            data.setBookAvlShour(matcher.group(1));
+            data.setBookAvlSmin(matcher.group(2));
+            data.setBookAvlEhour(matcher.group(3));
+            data.setBookAvlEmin(matcher.group(4));
+        }
     }
 }
