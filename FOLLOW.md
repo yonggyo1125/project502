@@ -1,5 +1,49 @@
 # 팔로잉 
 
+## 회원 프로필 이미지 처리  
+
+```java
+...
+
+public class MemberInfoService implements UserDetailsService {
+    ...
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        
+        ...
+        
+        // 추가 정보 처리
+        addMemberInfo(member);
+
+        return MemberInfo.builder()
+                .email(member.getEmail())
+                .userId(member.getUserId())
+                .password(member.getPassword())
+                .member(member)
+                .authorities(authorities)
+                .build();
+      
+    }
+    
+    ...
+    
+    /**
+     * 회원 추가 정보 처리
+     *
+     * @param member
+     */
+    public void addMemberInfo(Member member) {
+        /* 프로필 이미지 처리 S */
+        List<FileInfo> files = fileInfoService.getListDone(member.getGid());
+        if (files != null && !files.isEmpty()) {
+            member.setProfileImage(files.get(0));
+        }
+        /* 프로필 이미지 처리 E */
+    }
+}
+```
+
+
 ## 엔티티 구성 
 
 > member/entities/Follow.java
@@ -167,6 +211,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
 ```java
 package org.choongang.member.service.follow;
 
+import com.querydsl.core.BooleanBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.choongang.commons.ListData;
@@ -174,6 +219,7 @@ import org.choongang.commons.RequestPaging;
 import org.choongang.member.MemberUtil;
 import org.choongang.member.entities.Follow;
 import org.choongang.member.entities.Member;
+import org.choongang.member.entities.QFollow;
 import org.choongang.member.repositories.FollowRepository;
 import org.choongang.member.repositories.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -203,6 +249,11 @@ public class FollowService {
 
         try {
             Member followee = memberUtil.getMember();
+
+            // 팔로워과 팔로잉 하는 사용자가 같을 수 없으므로 체크
+            if (follower.getUserId().equals(followee.getUserId())) {
+                return;
+            }
 
             Follow follow = Follow.builder()
                     .followee(followee)
@@ -347,10 +398,19 @@ public class FollowService {
      * @param paging
      * @return
      */
+    /**
+     * 팔로우, 팔로잉 목록
+     * @param mode : follower - 팔로워 회원 목록, following : 팔로잉 회원 목록
+     * @param paging
+     * @return
+     */
     public ListData<Member> getList(String mode, RequestPaging paging) {
         mode = StringUtils.hasText(mode) ? mode : "follower";
 
-        return mode.equals("following") ? getFollowings(paging) : getFollowers(paging);
+        ListData<Member> data = mode.equals("following") ? getFollowings(paging) : getFollowers(paging);
+        data.getItems().forEach(memberInfoService::addMemberInfo);
+
+        return data;
     }
 
     /**
@@ -364,8 +424,6 @@ public class FollowService {
             return false;
         }
 
-        System.out.println(userId);
-
         QFollow follow = QFollow.follow;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(follow.follower.userId.eq(userId))
@@ -374,7 +432,6 @@ public class FollowService {
         return followRepository.exists(builder);
     }
 }
-
 ```
 
 > src/test/java/.../member/follow/FollowTest.java : 서비스 및 레포지토리 동작 테스트 
@@ -768,6 +825,16 @@ aside .profile_box .update_profile_btn { border: 1px solid #596b99; height: 35px
 aside .user_email { font-size: 1.2rem; font-weight: 500; padding: 0 25px; }
 aside .user_nm { padding: 0 25px; margin-bottom: 10px; }
 aside .follow_info { text-align: center; }
+
+/* 팔로우, 팔로잉 페이지 */
+.follow_page .items .item + .item { border-top: 1px solid #d5d5d5; }
+.follow_page .items .item { display: flex; align-items: center; }
+.follow_page .items .item button { width: 120px; height: 40px; background: #fff; border: 1px solid #596b99; border-radius: 3px; cursor: pointer; color: #596b99; font-weight: 500; }
+.follow_page .items .item button:hover { background: #596b99; color: #fff; }
+.follow_page .items .profile { flex-grow: 1; display: flex; align-items: center; }
+.follow_page .items .profile_image { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; }
+.follow_page .items .user_nm { font-size: 1.5rem; font-weight: 500; }
+.follow_page .items .user_email { font-size: 1.15rem; color: #555; }
 ```
 
 > resources/templates/front/mypage/_side.html
@@ -819,6 +886,22 @@ public class MypageController implements ExceptionProcessor {
     
     ...
 
+
+    @GetMapping("/follow")
+    public String followList(@RequestParam(name="mode", defaultValue = "follower") String mode, RequestPaging paging, Model model) {
+        commonProcess("follow", model);
+
+        ListData<Member> data = followService.getList(mode, paging);
+
+        model.addAttribute("items", data.getItems());
+        model.addAttribute("pagination", data.getPagination());
+        model.addAttribute("mode", mode);
+
+        return utils.tpl("mypage/follow");
+    }
+    
+    ...
+    
     private void commonProcess(String mode, Model model) {
         ...
 
@@ -843,6 +926,40 @@ public class MypageController implements ExceptionProcessor {
     }
 }
 ```
+
+> resources/templates/mypage/follow.html
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{front/layouts/mypage}">
+
+<section layout:fragment="content" class="follow_page">
+    <ul class="items">
+        <li class="item" th:unless="${items == null || items.isEmpty()}" th:each="item : ${items}" th:object="${item}">
+            <div class="profile">
+                <div class="profile_image" th:if="*{profileImage != null}" th:style="*{@utils.backgroundStyle(profileImage, 80, 80)}"></div>
+                <div class="user_info">
+                    <div class="user_nm" th:text="*{#strings.concat(name, '(', userId, ')')}"></div>
+                    <div class="user_email" th:text="*{email}"></div>
+                </div>
+            </div>
+            <th:block sec:authorize="isAuthenticated()">
+                <button type="button" th:if="*{@followService.followed(userId)}" class="follow_action unfollow" th:data-user-id="*{userId}">UnFollow</button>
+                <button type="button" th:unless="*{@followService.followed(userId)}" class="follow_action" th:data-user-id="*{userId}">Follow</button>
+            </th:block>
+        </li>
+    </ul>
+
+    <th:block th:replace="~{common/_pagination::pagination}"></th:block>
+</section>
+</html>
+```
+
+팔로우, 팔로잉 목록 적용 화면
+
+![image3](https://raw.githubusercontent.com/yonggyo1125/project502/master/images/follow/image3.png)
 
 
 # 사용자 페이지 : 팔로우, 언팔로우 기능 구현

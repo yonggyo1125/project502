@@ -66,6 +66,7 @@ public class MypageController implements ExceptionProcessor {
 
         model.addAttribute("items", data.getItems());
         model.addAttribute("pagination", data.getPagination());
+        model.addAttribute("mode", mode);
 
         return utils.tpl("mypage/follow");
     }

@@ -22,3 +22,13 @@ aside .profile_box .update_profile_btn { border: 1px solid #596b99; height: 35px
 aside .user_email { font-size: 1.2rem; font-weight: 500; padding: 0 25px; }
 aside .user_nm { padding: 0 25px; margin-bottom: 10px; }
 aside .follow_info { text-align: center; }
+
+/* 팔로우, 팔로잉 페이지 */
+.follow_page .items .item + .item { border-top: 1px solid #d5d5d5; }
+.follow_page .items .item { display: flex; align-items: center; }
+.follow_page .items .item button { width: 120px; height: 40px; background: #fff; border: 1px solid #596b99; border-radius: 3px; cursor: pointer; color: #596b99; font-weight: 500; }
+.follow_page .items .item button:hover { background: #596b99; color: #fff; }
+.follow_page .items .profile { flex-grow: 1; display: flex; align-items: center; }
+.follow_page .items .profile_image { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; }
+.follow_page .items .user_nm { font-size: 1.5rem; font-weight: 500; }
+.follow_page .items .user_email { font-size: 1.15rem; color: #555; }

@@ -11,6 +11,7 @@ import org.choongang.member.entities.Member;
 import org.choongang.member.entities.QFollow;
 import org.choongang.member.repositories.FollowRepository;
 import org.choongang.member.repositories.MemberRepository;
+import org.choongang.member.service.MemberInfoService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -22,8 +23,10 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
+    private final MemberInfoService memberInfoService;
     private final MemberUtil memberUtil;
     private final HttpServletRequest request;
+
 
     /**
      * 팔로잉
@@ -38,6 +41,11 @@ public class FollowService {
 
         try {
             Member followee = memberUtil.getMember();
+
+            // 팔로워과 팔로잉 하는 사용자가 같을 수 없으므로 체크
+            if (follower.getUserId().equals(followee.getUserId())) {
+                return;
+            }
 
             Follow follow = Follow.builder()
                     .followee(followee)
@@ -185,7 +193,10 @@ public class FollowService {
     public ListData<Member> getList(String mode, RequestPaging paging) {
         mode = StringUtils.hasText(mode) ? mode : "follower";
 
-        return mode.equals("following") ? getFollowings(paging) : getFollowers(paging);
+        ListData<Member> data = mode.equals("following") ? getFollowings(paging) : getFollowers(paging);
+        data.getItems().forEach(memberInfoService::addMemberInfo);
+
+        return data;
     }
 
     /**
@@ -198,8 +209,6 @@ public class FollowService {
         if (!memberUtil.isLogin()) {
             return false;
         }
-
-        System.out.println(userId);
 
         QFollow follow = QFollow.follow;
         BooleanBuilder builder = new BooleanBuilder();
