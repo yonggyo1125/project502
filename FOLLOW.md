@@ -222,6 +222,7 @@ import org.choongang.member.entities.Member;
 import org.choongang.member.entities.QFollow;
 import org.choongang.member.repositories.FollowRepository;
 import org.choongang.member.repositories.MemberRepository;
+import org.choongang.member.service.MemberInfoService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -233,8 +234,10 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
+    private final MemberInfoService memberInfoService;
     private final MemberUtil memberUtil;
     private final HttpServletRequest request;
+
 
     /**
      * 팔로잉
@@ -392,12 +395,6 @@ public class FollowService {
         return 0L;
     }
 
-    /**
-     * 팔로우, 팔로잉 목록
-     * @param mode : follower - 팔로워 회원 목록, following : 팔로잉 회원 목록
-     * @param paging
-     * @return
-     */
     /**
      * 팔로우, 팔로잉 목록
      * @param mode : follower - 팔로워 회원 목록, following : 팔로잉 회원 목록
