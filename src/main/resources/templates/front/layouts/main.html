@@ -11,7 +11,8 @@
         <th:block th:if="${pageTitle != null}" th:text="${pageTitle + ' - '}"></th:block>
         <th:block th:if="${siteConfig.siteTitle != null}" th:text="${siteConfig.siteTitle}"></th:block>
     </title>
-
+    
+    <th:block layout:fragment="addCommonCss"></th:block>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
     <link rel="stylesheet" type="text/css" th:href="@{/common/css/style.css?v={v}(v=${siteConfig.cssJsVersion})}">
     <link rel="stylesheet" type="text/css"
@@ -25,6 +26,7 @@
 
     <th:block layout:fragment="addCss"></th:block>
 
+    <th:block layout:fragment="addCommonScript"></th:block>
     <script th:src="@{/common/js/layer.js?v={v}(v=${siteConfig.cssJsVersion})}"></script>
     <script th:src="@{/common/js/common.js?v={v}(v=${siteConfig.cssJsVersion})}"></script>
     <script th:each="jsFile : ${addCommonScript}"

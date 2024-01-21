@@ -1,18 +1,17 @@
 package org.choongang.commons;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.choongang.admin.config.controllers.BasicConfig;
+import org.choongang.admin.config.service.ConfigInfoService;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.file.service.FileInfoService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -21,6 +20,7 @@ public class Utils {
     private final HttpServletRequest request;
     private final HttpSession session;
     private final FileInfoService fileInfoService;
+    private final ConfigInfoService infoService;
 
     private static final ResourceBundle commonsBundle;
     private static final ResourceBundle validationsBundle;
@@ -195,4 +195,19 @@ public class Utils {
 
         return String.format("return confirm('%s');", message);
     }
+
+    /**
+     * API 설정 조회
+     *
+     * @param key
+     * @return
+     */
+    public String getApiConfig(String key) {
+        Map<String, String> config = infoService.get("apiConfig", new TypeReference<Map<String, String>>() {
+        }).orElse(null);
+        if (config == null) return "";
+
+        return config.getOrDefault(key, "");
+    }
+
 }

@@ -2,7 +2,56 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{front/layouts/main}">
-<main layout:fragment="content">
-    
+<th:block layout:fragment="addCommonCss">
+    <th:block th:replace="~{common/_kakao_map_script::script}"></th:block>
+</th:block>
+
+<main layout:fragment="content" class="center_view_page layout_width">
+    <form id="frmApply" name="frmApply" method="post" th:action="@{/center/apply}" autocomplete="off" th:object="${centerInfo}">
+        <input type="hidden" name="address" th:value="*{#strings.concat(address, ' ', addressSub)}" th:data-c-name="*{cName}">
+        <input type="hidden" name="cCode" th:field="*{cCode}">
+        <div class="top_box">
+            <div id="center_map"></div>
+            <div class="info_box">
+                <h1 class="center_name" th:text="*{cName}"></h1>
+
+                <dl>
+                    <dt th:text="#{주소}"></dt>
+                    <dd th:if="*{!#strings.isEmpty(address)}">
+                        <th:block th:if="*{!#strings.isEmpty(zonecode)}" th:text="*{'(' + zonecode + ')'}"></th:block>
+                        <th:block th:text="*{#strings.concat(address, ' ', addressSub)}"></th:block>
+                    </dd>
+                </dl>
+                <dl th:if="*{!#strings.isEmpty(telNum)}">
+                    <dt th:text="#{전화번호}"></dt>
+                    <dd th:text="*{telNum}"></dd>
+                </dl>
+                <dl th:if="*{!#strings.isEmpty(operHour)}">
+                    <dt th:text="#{운영시간}"></dt>
+                    <dd th:text="*{operHour}"></dd>
+                </dl>
+                <dl th:if="*{!#strings.isEmpty(bookYoil)}">
+                    <dt th:text="#{예약가능_요일}"></dt>
+                    <dd th:text="*{bookYoil}"></dd>
+                </dl>
+                <dl>
+                    <dt th:text="#{예약가능_시간}"></dt>
+                    <dd th:text="*{bookAvl}"></dd>
+                </dl>
+                <a href="#reservation_box" id="move_to_reservation" th:text="#{예약하기}"></a>
+            </div>
+            <!--// info_box -->
+
+        </div>
+        <!--// top_box -->
+
+        <div class="reservation_box" id="reservation_box">
+            <h2 th:text="#{예약신청}"></h2>
+            <iframe th:src="@{/reservation/{cCode}(cCode=*{cCode})}"></iframe>
+        </div>
+        <!--// reservation_box -->
+
+    </form>
+
 </main>
 </html>

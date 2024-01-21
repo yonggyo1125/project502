@@ -43,6 +43,7 @@ public class CenterController implements ExceptionProcessor {
         if (mode.equals("view")) {
             pageTitle = centerInfo.getCName();
             addCommonScript.add("map");
+            addScript.add("center/view");
         }
 
         model.addAttribute("pageTitle", pageTitle);

@@ -1,0 +1,13 @@
+.center_view_page { padding: 50px 0; }
+.center_view_page .top_box { display: flex; }
+.center_view_page #center_map { margin-right: 50px; }
+.center_view_page .info_box { flex-grow: 1;  }
+.center_view_page .info_box dl { margin-bottom: 10px; padding: 5px 10px; }
+.center_view_page .center_name { font-weight: 500; font-size: 2rem; border-bottom: 2px solid #222; line-height: 1; padding-bottom: 15px; margin-bottom: 25px;  padding-left: 10px; padding-top: 0; margin-top: 0; }
+
+.center_view_page dt { width: 150px; font-size: 1.55rem; }
+.center_view_page dd { font-size: 1.55rem;  }
+.center_view_page #move_to_reservation { background: #f42e3d; color: #fff; font-weight: 500; height: 50px; width: 400px; text-align: center; cursor: pointer; border-radius: 5px; display: block; line-height: 50px; margin: 30px auto 0; font-size: 2rem; }
+
+.center_view_page .reservation_box { margin-top: 100px; }
+.center_view_page .reservation_box iframe { width: 100%; height: 700px; border: 0; overflow: hidden; }
