@@ -940,10 +940,10 @@ public class MypageController implements ExceptionProcessor {
         <li class="item" th:unless="${items == null || items.isEmpty()}" th:each="item : ${items}" th:object="${item}">
             <div class="profile">
                 <div class="profile_image" th:if="*{profileImage != null}" th:style="*{@utils.backgroundStyle(profileImage, 80, 80)}"></div>
-                <div class="user_info">
+                <a class="user_info" th:href="@{/mypage/follow/{userId}(userId=*{userId})}">
                     <div class="user_nm" th:text="*{#strings.concat(name, '(', userId, ')')}"></div>
                     <div class="user_email" th:text="*{email}"></div>
-                </div>
+                </a>
             </div>
             <th:block sec:authorize="isAuthenticated()">
                 <button type="button" th:if="*{@followService.followed(userId)}" class="follow_action unfollow" th:data-user-id="*{userId}">UnFollow</button>
