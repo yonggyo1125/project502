@@ -9,7 +9,14 @@ public class Menu {
     private final static Map<String, List<MenuDetail>> menus;
 
     static {
+
         menus = new HashMap<>();
+
+        menus.put("config", Arrays.asList(
+                new MenuDetail("basic", "기본설정", "/admin/config"),
+                new MenuDetail("api", "API 설정", "/admin/config/api")
+        ));
+
         menus.put("member", Arrays.asList(
             new MenuDetail("list", "회원목록", "/admin/member"),
             new MenuDetail("authority", "회원권한", "/admin/member/authority")

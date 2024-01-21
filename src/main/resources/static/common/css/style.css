@@ -4,9 +4,10 @@
 .mb30 { margin-bottom: 30px !important; }
 
 /* 너비 공통 */
-.w200 { width: 200px !important; }
+.w100 { width: 100px !important; }
 .w150 { width: 150px !important; }
-
+.w200 { width: 200px !important; }
+.w300 { width: 300px !important; }
 
 .dn { display: none !important; }
 .hide { visibility: none !important; height: 0 !important; padding: 0 !important; margin: 0 !important; overflow: hidden !important; min-height: 0 !important; }
@@ -23,3 +24,14 @@
 .flex { display: flex; }
 .flex.sb { justify-content: space-between; }
 .flex.aic { align-items: center; }
+
+/* 정렬 공통 */
+al { text-align: left !important; }
+ar { text-align: right !important; }
+ac { text-align: center !important; }
+
+/* 팝업 공통 S */
+#layer_dim { position: fixed; z-index: 100; top: 0; left: 0; width: 100%; height: 100%; background:rgba(0, 0, 0, 0.7); cursor: pointer; }
+#layer_popup { position: fixed; z-index: 101; background: #fff; border-radius: 5px; overflow: hidden; }
+#layer_popup iframe { border: 0; }
+/* 팝업 공통 E */
