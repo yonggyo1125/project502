@@ -1,12 +1,23 @@
 package org.choongang.member.repositories;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.choongang.commons.ListData;
+import org.choongang.commons.Pagination;
+import org.choongang.commons.RequestPaging;
+import org.choongang.commons.Utils;
 import org.choongang.member.entities.Follow;
 import org.choongang.member.entities.Member;
 import org.choongang.member.entities.QFollow;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
+
+import static org.springframework.data.domain.Sort.Order.desc;
 
 public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslPredicateExecutor<Follow> {
     Follow findByFolloweeAndFollower(Member followee, Member follower);
@@ -23,6 +34,50 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
         QFollow follow = QFollow.follow;
 
         return count(follow.follower.eq(member));
+    }
+
+    // member가 follow 하는 회원 목록
+    default ListData<Member> getFollowings(Member member, RequestPaging paging, HttpServletRequest request) {
+
+        int page = Utils.onlyPositiveNumber(paging.getPage(), 1);
+        int limit = Utils.onlyPositiveNumber(paging.getLimit(), 20);
+
+        QFollow follow = QFollow.follow;
+
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(desc("createdAt")));
+
+        Page<Follow> data = findAll(follow.followee.eq(member), pageable);
+        List<Follow> follows = data.getContent();
+        List<Member> items = null;
+        if (follows != null) {
+            items = follows.stream().map(Follow::getFollower).toList();
+        }
+
+        Pagination pagination = new Pagination(page, (int)data.getTotalElements(), 10, limit);
+
+        return new ListData<>(items, pagination);
+    }
+
+    // member를 follow 하는 회원 목록
+    default ListData<Member> getFollowers(Member member, RequestPaging paging, HttpServletRequest request) {
+
+        int page = Utils.onlyPositiveNumber(paging.getPage(), 1);
+        int limit = Utils.onlyPositiveNumber(paging.getLimit(), 20);
+
+        QFollow follow = QFollow.follow;
+
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(desc("createdAt")));
+
+        Page<Follow> data = findAll(follow.follower.eq(member), pageable);
+        List<Follow> follows = data.getContent();
+        List<Member> items = null;
+        if (follows != null) {
+            items = follows.stream().map(Follow::getFollowee).toList();
+        }
+
+        Pagination pagination = new Pagination(page, (int)data.getTotalElements(), 10, limit, request);
+
+        return new ListData<>(items, pagination);
     }
 
     // member가 follow 하는 회원 목록

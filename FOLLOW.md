@@ -34,18 +34,43 @@ public class Follow extends Base {
 }
 ```
 
+> commons/RequestPaging.java
+
+```java
+package org.choongang.commons;
+
+import lombok.Data;
+
+@Data
+public class RequestPaging {
+    protected int page  = 1;
+    protected int limit = 20;
+}
+```
+
 > member/repositories/FollowRepository.java
 
 ```java
 package org.choongang.member.repositories;
 
+import jakarta.servlet.http.HttpServletRequest;
+import org.choongang.commons.ListData;
+import org.choongang.commons.Pagination;
+import org.choongang.commons.RequestPaging;
+import org.choongang.commons.Utils;
 import org.choongang.member.entities.Follow;
 import org.choongang.member.entities.Member;
 import org.choongang.member.entities.QFollow;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
 import java.util.List;
+
+import static org.springframework.data.domain.Sort.Order.desc;
 
 public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslPredicateExecutor<Follow> {
     Follow findByFolloweeAndFollower(Member followee, Member follower);
@@ -62,6 +87,50 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
         QFollow follow = QFollow.follow;
 
         return count(follow.follower.eq(member));
+    }
+
+    // member가 follow 하는 회원 목록
+    default ListData<Member> getFollowings(Member member, RequestPaging paging, HttpServletRequest request) {
+
+        int page = Utils.onlyPositiveNumber(paging.getPage(), 1);
+        int limit = Utils.onlyPositiveNumber(paging.getLimit(), 20);
+
+        QFollow follow = QFollow.follow;
+
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(desc("createdAt")));
+
+        Page<Follow> data = findAll(follow.followee.eq(member), pageable);
+        List<Follow> follows = data.getContent();
+        List<Member> items = null;
+        if (follows != null) {
+            items = follows.stream().map(Follow::getFollower).toList();
+        }
+
+        Pagination pagination = new Pagination(page, (int)data.getTotalElements(), 10, limit);
+
+        return new ListData<>(items, pagination);
+    }
+
+    // member를 follow 하는 회원 목록
+    default ListData<Member> getFollowers(Member member, RequestPaging paging, HttpServletRequest request) {
+
+        int page = Utils.onlyPositiveNumber(paging.getPage(), 1);
+        int limit = Utils.onlyPositiveNumber(paging.getLimit(), 20);
+
+        QFollow follow = QFollow.follow;
+
+        Pageable pageable = PageRequest.of(page - 1, limit, Sort.by(desc("createdAt")));
+
+        Page<Follow> data = findAll(follow.follower.eq(member), pageable);
+        List<Follow> follows = data.getContent();
+        List<Member> items = null;
+        if (follows != null) {
+            items = follows.stream().map(Follow::getFollowee).toList();
+        }
+
+        Pagination pagination = new Pagination(page, (int)data.getTotalElements(), 10, limit, request);
+
+        return new ListData<>(items, pagination);
     }
 
     // member가 follow 하는 회원 목록
@@ -98,13 +167,17 @@ public interface FollowRepository extends JpaRepository<Follow, Long>, QuerydslP
 ```java
 package org.choongang.member.service.follow;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.choongang.commons.ListData;
+import org.choongang.commons.RequestPaging;
 import org.choongang.member.MemberUtil;
 import org.choongang.member.entities.Follow;
 import org.choongang.member.entities.Member;
 import org.choongang.member.repositories.FollowRepository;
 import org.choongang.member.repositories.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -115,6 +188,7 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
     private final MemberUtil memberUtil;
+    private final HttpServletRequest request;
 
     /**
      * 팔로잉
@@ -141,6 +215,16 @@ public class FollowService {
 
     public void follow(Long seq) {
         Member follower = memberRepository.findById(seq).orElse(null);
+        if (follower == null) {
+            return;
+        }
+
+        follow(follower);
+    }
+
+    public void follow(String userId) {
+        Member follower = memberRepository.findByUserId(userId).orElse(null);
+
         if (follower == null) {
             return;
         }
@@ -179,6 +263,40 @@ public class FollowService {
         unfollow(follower);
     }
 
+    public void unfollow(String userId) {
+        Member follower = memberRepository.findByUserId(userId).orElse(null);
+        if (follower == null) {
+            return;
+        }
+
+        unfollow(follower);
+    }
+
+    /**
+     * 로그인 회원을 follow 한 회원 목록
+     * @return
+     */
+    public ListData<Member> getFollowers(RequestPaging paging) {
+        if (!memberUtil.isLogin()) {
+            return null;
+        }
+
+        return followRepository.getFollowers(memberUtil.getMember(), paging, request);
+    }
+
+    /**
+     * 로그인 회원이 follow한 회원목록
+     *
+     * @return
+     */
+    public ListData<Member> getFollowings(RequestPaging paging) {
+        if (!memberUtil.isLogin()) {
+            return null;
+        }
+
+        return followRepository.getFollowings(memberUtil.getMember(), paging, request);
+    }
+
     /**
      * 로그인 회원을 follow 한 회원 목록
      * @return
@@ -193,7 +311,7 @@ public class FollowService {
 
     /**
      * 로그인 회원이 follow한 회원목록
-     * 
+     *
      * @return
      */
     public List<Member> getFollowings() {
@@ -203,7 +321,60 @@ public class FollowService {
 
         return followRepository.getFollowings(memberUtil.getMember());
     }
+
+
+    public long getTotalFollowers() {
+
+        if (memberUtil.isLogin()) {
+            return followRepository.getTotalFollowers(memberUtil.getMember());
+        }
+
+        return 0L;
+    }
+
+    public long getTotalFollowings() {
+
+        if (memberUtil.isLogin()) {
+            return followRepository.getTotalFollowings(memberUtil.getMember());
+        }
+
+        return 0L;
+    }
+
+    /**
+     * 팔로우, 팔로잉 목록
+     * @param mode : follower - 팔로워 회원 목록, following : 팔로잉 회원 목록
+     * @param paging
+     * @return
+     */
+    public ListData<Member> getList(String mode, RequestPaging paging) {
+        mode = StringUtils.hasText(mode) ? mode : "follower";
+
+        return mode.equals("following") ? getFollowings(paging) : getFollowers(paging);
+    }
+
+    /**
+     * 팔로잉 상태인지 체크
+     *
+     * @param userId
+     * @return
+     */
+    public boolean followed(String userId) {
+        if (!memberUtil.isLogin()) {
+            return false;
+        }
+
+        System.out.println(userId);
+
+        QFollow follow = QFollow.follow;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(follow.follower.userId.eq(userId))
+                .and(follow.followee.in(memberUtil.getMember()));
+
+        return followRepository.exists(builder);
+    }
 }
+
 ```
 
 > src/test/java/.../member/follow/FollowTest.java : 서비스 및 레포지토리 동작 테스트 
@@ -211,8 +382,11 @@ public class FollowService {
 ```java
 package org.choongang.member.follow;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import org.choongang.commons.ListData;
+import org.choongang.commons.RequestPaging;
 import org.choongang.member.entities.Member;
 import org.choongang.member.repositories.FollowRepository;
 import org.choongang.member.repositories.MemberRepository;
@@ -249,11 +423,16 @@ public class FollowTest {
     private MemberRepository memberRepository;
 
     @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
     private HttpSession session;
 
     private Member member1;
     private Member member2;
     private Member member3;
+
+    private RequestPaging paging;
 
     @BeforeEach
     void init() {
@@ -278,6 +457,8 @@ public class FollowTest {
 
         followService.follow(member2);
         followService.follow(member3);
+
+        paging = new RequestPaging();
     }
 
     /**
@@ -305,30 +486,32 @@ public class FollowTest {
     @Test
     @DisplayName("테스트 시나리오2")
     void test2() {
-        List<Member> members1 = followRepository.getFollowers(member2);
-        List<Member> members2 = followRepository.getFollowers(member3);
+        ListData<Member> members1 = followRepository.getFollowers(member2, paging, request);
+        ListData<Member> members2 = followRepository.getFollowers(member3, paging, request);
 
-        assertEquals("user1", members1.get(0).getUserId());
-        assertEquals("user1", members2.get(0).getUserId());
+        assertEquals("user1", members1.getItems().get(0).getUserId());
+        assertEquals("user1", members2.getItems().get(0).getUserId());
         assertEquals(1, followRepository.getTotalFollowers(member2));
         assertEquals(1, followRepository.getTotalFollowers(member3));
     }
-    
+
     @Test
     @DisplayName("로그인 회원을 follow한 회원 목록 테스트 - followers")
     void test3() {
-        List<Member> members = followService.getFollowers();
+        ListData<Member> members = followService.getFollowers(paging);
 
-        assertEquals(0, members.size());
+        assertEquals(0, members.getItems().size());
     }
 
     @Test
     @DisplayName("로그인 회원이 follow한 회원 목록 테스트 - followings")
     void test4() {
-        List<Member> members = followService.getFollowings();
-        assertEquals(2, members.size());
+        ListData<Member> members = followService.getFollowings(paging);
+        assertEquals(2, members.getItems().size());
     }
+
 }
+
 ```
 
 이상이 없다면 다음과 같이 테스트 케이스가 통과 되어야 합니다.
@@ -621,3 +804,213 @@ aside .follow_info { text-align: center; }
     </aside>
 </html>
 ```
+
+
+
+> mypage/controllers/MypageController.java
+
+```java
+public class MypageController implements ExceptionProcessor {
+
+    private final SaveBoardDataService saveBoardDataService;
+    private final FollowService followService;
+
+    private final Utils utils;
+    
+    ...
+
+    private void commonProcess(String mode, Model model) {
+        ...
+
+        List<String> addCss = new ArrayList<>();
+        List<String> addScript = new ArrayList<>();
+
+        List<String> addCommonScript = new ArrayList<>();
+
+
+        if (mode.equals("save_post")) { // 찜한 게시글 페이지
+            pageTitle = Utils.getMessage("찜_게시글", "commons");
+
+            addScript.add("board/common");
+            addScript.add("mypage/save_post");
+        } else if (mode.equals("follow")) {
+            addCommonScript.add("follow");
+        }
+
+        ....
+        
+        model.addAttribute("addCommonScript", addCommonScript);
+    }
+}
+```
+
+
+# 사용자 페이지 : 팔로우, 언팔로우 기능 구현
+
+> member/controllers/ApiMemberController.java
+
+```java
+package org.choongang.member.controllers;
+
+import lombok.RequiredArgsConstructor;
+import org.choongang.commons.ExceptionRestProcessor;
+import org.choongang.commons.rests.JSONData;
+import org.choongang.member.service.follow.FollowService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api/member")
+@RequiredArgsConstructor
+public class ApiMemberController implements ExceptionRestProcessor {
+
+    private final FollowService followService;
+    
+    @GetMapping("/follow/{userId}")
+    public JSONData<Object> follow(@PathVariable("userId") String userId) {
+        followService.follow(userId);
+
+        return new JSONData<>();
+    }
+
+    @GetMapping("/unfollow/{userId}")
+    public JSONData<Object> unfollow(@PathVariable("userId") String userId) {
+        followService.unfollow(userId);
+
+        return new JSONData<>();
+    }
+}
+```
+
+> board/controllers/BoardController.java
+ 
+```java
+...
+
+@Controller
+@RequestMapping("/board")
+public class BoardController extends ExceptionProcessor {
+    ...
+
+    private void commonProcess(String bid, String mode, Model model) {
+
+        mode = StringUtils.hasText(mode) ? mode : "list";
+
+        List<String> addCommonScript = new ArrayList<>();
+        List<String> addScript = new ArrayList<>();
+
+        List<String> addCommonCss = new ArrayList<>();
+        List<String> addCss = new ArrayList<>();
+
+        addScript.add("board/common"); // 게시판 공통 스크립트
+        
+        addCommonScript.add("follow"); // 팔로잉, 언팔로잉
+            
+        ...
+    }
+    
+    ...
+}
+```
+
+> resources/static/common/js/follow.js
+
+```javascript
+var commonLib = commonLib || {};
+
+commonLib.followLib = {
+    /**
+    * 팔로우
+    *
+    * @param userId : 사용자 ID
+    * @param callback : 콜백 함수
+    */
+    follow(userId, callback) {
+
+        const { ajaxLoad } = commonLib;
+
+        ajaxLoad("GET", `/api/member/follow/${userId}`)
+            .then(res => {
+                if (typeof callback == 'function') {
+                    callback();
+                }
+            })
+            .catch(err => console.error(err));
+    },
+    /**
+    * 언팔로우
+    *
+    * @param userId : 사용자 ID
+    */
+    unfollow(userId, callback) {
+        const { ajaxLoad } = commonLib;
+
+        ajaxLoad("GET", `/api/member/unfollow/${userId}`)
+            .then(res => {
+                if (typeof callback == 'function') {
+                    callback();
+                }
+            })
+            .catch(err => console.error(err));
+    }
+};
+
+
+window.addEventListener("DOMContentLoaded", function() {
+    const followings = document.getElementsByClassName("follow_action");
+    const { follow, unfollow } = commonLib.followLib;
+
+    // 팔로잉, 언팔로잉 처리
+    for(const el of followings) {
+        el.addEventListener("click", function() {
+            const classList = this.classList;
+            const action = classList.contains("unfollow") ? unfollow : follow;
+            action(this.dataset.userId, function() {
+                    if (classList.contains("unfollow")) {
+                        classList.remove("unfollow")
+                        el.innerText = "Follow";
+                    } else {
+                        classList.add("unfollow");
+                        el.innerText = "UnFollow";
+                    }
+            });
+        });
+    }
+});
+```
+
+> resources/templates/front/board/skins/default/view.html
+
+```html
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<th:block th:fragment="default" th:object="${boardData}">
+   <div class="board_view layout_width">
+       ...
+       <div class="post_info">
+           <div class="left">
+               <span>
+                   <th:block th:text="#{작성자}"></th:block> :
+                   <th:block th:text="*{poster}"></th:block>
+                   <th:block th:if="*{member != null}" th:text="*{'(' + member.email + ')'}"></th:block>
+                   <th:block th:if="*{member != null}" sec:authorize="isAuthenticated()">
+                        <button type="button" th:if="*{@followService.followed(member.userId)}" class="follow_action unfollow" th:data-user-id="*{member.userId}">UnFollow</button>
+                        <button type="button" th:unless="*{@followService.followed(member.userId)}" class="follow_action" th:data-user-id="*{member.userId}">Follow</button>
+                   </th:block>
+               </span>
+               ...
+           </div>
+       </div>
+       ...
+       
+   </div>
+    ....
+</th:block>
+```
+
+게시글 보기 적용 화면
+
+![image2](https://raw.githubusercontent.com/yonggyo1125/project502/master/images/follow/image2.png)

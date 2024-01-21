@@ -1,7 +1,10 @@
 package org.choongang.member.follow;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
+import org.choongang.commons.ListData;
+import org.choongang.commons.RequestPaging;
 import org.choongang.member.entities.Member;
 import org.choongang.member.repositories.FollowRepository;
 import org.choongang.member.repositories.MemberRepository;
@@ -38,11 +41,16 @@ public class FollowTest {
     private MemberRepository memberRepository;
 
     @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
     private HttpSession session;
 
     private Member member1;
     private Member member2;
     private Member member3;
+
+    private RequestPaging paging;
 
     @BeforeEach
     void init() {
@@ -67,6 +75,8 @@ public class FollowTest {
 
         followService.follow(member2);
         followService.follow(member3);
+
+        paging = new RequestPaging();
     }
 
     /**
@@ -94,11 +104,11 @@ public class FollowTest {
     @Test
     @DisplayName("테스트 시나리오2")
     void test2() {
-        List<Member> members1 = followRepository.getFollowers(member2);
-        List<Member> members2 = followRepository.getFollowers(member3);
+        ListData<Member> members1 = followRepository.getFollowers(member2, paging, request);
+        ListData<Member> members2 = followRepository.getFollowers(member3, paging, request);
 
-        assertEquals("user1", members1.get(0).getUserId());
-        assertEquals("user1", members2.get(0).getUserId());
+        assertEquals("user1", members1.getItems().get(0).getUserId());
+        assertEquals("user1", members2.getItems().get(0).getUserId());
         assertEquals(1, followRepository.getTotalFollowers(member2));
         assertEquals(1, followRepository.getTotalFollowers(member3));
     }
@@ -106,16 +116,16 @@ public class FollowTest {
     @Test
     @DisplayName("로그인 회원을 follow한 회원 목록 테스트 - followers")
     void test3() {
-        List<Member> members = followService.getFollowers();
+        ListData<Member> members = followService.getFollowers(paging);
 
-        assertEquals(0, members.size());
+        assertEquals(0, members.getItems().size());
     }
 
     @Test
     @DisplayName("로그인 회원이 follow한 회원 목록 테스트 - followings")
     void test4() {
-        List<Member> members = followService.getFollowings();
-        assertEquals(2, members.size());
+        ListData<Member> members = followService.getFollowings(paging);
+        assertEquals(2, members.getItems().size());
     }
 
 }

@@ -1,12 +1,18 @@
 package org.choongang.member.service.follow;
 
+import com.querydsl.core.BooleanBuilder;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.choongang.commons.ListData;
+import org.choongang.commons.RequestPaging;
 import org.choongang.member.MemberUtil;
 import org.choongang.member.entities.Follow;
 import org.choongang.member.entities.Member;
+import org.choongang.member.entities.QFollow;
 import org.choongang.member.repositories.FollowRepository;
 import org.choongang.member.repositories.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -17,6 +23,7 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
     private final MemberUtil memberUtil;
+    private final HttpServletRequest request;
 
     /**
      * 팔로잉
@@ -43,6 +50,16 @@ public class FollowService {
 
     public void follow(Long seq) {
         Member follower = memberRepository.findById(seq).orElse(null);
+        if (follower == null) {
+            return;
+        }
+
+        follow(follower);
+    }
+
+    public void follow(String userId) {
+        Member follower = memberRepository.findByUserId(userId).orElse(null);
+
         if (follower == null) {
             return;
         }
@@ -81,6 +98,40 @@ public class FollowService {
         unfollow(follower);
     }
 
+    public void unfollow(String userId) {
+        Member follower = memberRepository.findByUserId(userId).orElse(null);
+        if (follower == null) {
+            return;
+        }
+
+        unfollow(follower);
+    }
+
+    /**
+     * 로그인 회원을 follow 한 회원 목록
+     * @return
+     */
+    public ListData<Member> getFollowers(RequestPaging paging) {
+        if (!memberUtil.isLogin()) {
+            return null;
+        }
+
+        return followRepository.getFollowers(memberUtil.getMember(), paging, request);
+    }
+
+    /**
+     * 로그인 회원이 follow한 회원목록
+     * 
+     * @return
+     */
+    public ListData<Member> getFollowings(RequestPaging paging) {
+        if (!memberUtil.isLogin()) {
+            return null;
+        }
+
+        return followRepository.getFollowings(memberUtil.getMember(), paging, request);
+    }
+
     /**
      * 로그인 회원을 follow 한 회원 목록
      * @return
@@ -95,7 +146,7 @@ public class FollowService {
 
     /**
      * 로그인 회원이 follow한 회원목록
-     * 
+     *
      * @return
      */
     public List<Member> getFollowings() {
@@ -105,6 +156,7 @@ public class FollowService {
 
         return followRepository.getFollowings(memberUtil.getMember());
     }
+
 
     public long getTotalFollowers() {
 
@@ -122,5 +174,38 @@ public class FollowService {
         }
 
         return 0L;
+    }
+
+    /**
+     * 팔로우, 팔로잉 목록
+     * @param mode : follower - 팔로워 회원 목록, following : 팔로잉 회원 목록
+     * @param paging
+     * @return
+     */
+    public ListData<Member> getList(String mode, RequestPaging paging) {
+        mode = StringUtils.hasText(mode) ? mode : "follower";
+
+        return mode.equals("following") ? getFollowings(paging) : getFollowers(paging);
+    }
+
+    /**
+     * 팔로잉 상태인지 체크
+     *
+     * @param userId
+     * @return
+     */
+    public boolean followed(String userId) {
+        if (!memberUtil.isLogin()) {
+            return false;
+        }
+
+        System.out.println(userId);
+
+        QFollow follow = QFollow.follow;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(follow.follower.userId.eq(userId))
+                .and(follow.followee.in(memberUtil.getMember()));
+
+        return followRepository.exists(builder);
     }
 }

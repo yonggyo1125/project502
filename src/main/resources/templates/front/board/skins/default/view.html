@@ -17,6 +17,10 @@
                    <th:block th:text="#{작성자}"></th:block> :
                    <th:block th:text="*{poster}"></th:block>
                    <th:block th:if="*{member != null}" th:text="*{'(' + member.email + ')'}"></th:block>
+                   <th:block th:if="*{member != null}" sec:authorize="isAuthenticated()">
+                        <button type="button" th:if="*{@followService.followed(member.userId)}" class="follow_action unfollow" th:data-user-id="*{member.userId}">UnFollow</button>
+                        <button type="button" th:unless="*{@followService.followed(member.userId)}" class="follow_action" th:data-user-id="*{member.userId}">Follow</button>
+                   </th:block>
                </span>
 
                <span>

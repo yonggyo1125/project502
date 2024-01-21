@@ -1,9 +1,9 @@
 package org.choongang.member.controllers;
 
 import lombok.Data;
+import org.choongang.commons.RequestPaging;
 
 @Data
-public class MemberSearch {
-    private int page = 1;
-    private int limit = 20;
+public class MemberSearch extends RequestPaging {
+
 }
