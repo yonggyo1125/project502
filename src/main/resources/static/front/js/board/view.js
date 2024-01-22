@@ -16,17 +16,47 @@ window.addEventListener("DOMContentLoaded", function() {
             if (dataset.editable == 'false') { // 비회원 댓글 -> 비밀번호 확인 필요
                 const seq = dataset.seq;
                 const commentEl = document.getElementById(`comment_${seq}`);
-                const targetEl = comemntEl.querySelector(".comment");
+                const targetEl = commentEl.querySelector(".comment");
 
-                checkRequiredPassword(seq, function() {
-                    // 수정 가능한 경우
-
-                }, function() {
+                checkRequiredPassword(seq, callbackSuccess, function() {
                     // 비번확인이 필요한 경우
+                    const passwordBox = document.createElement("input");
+                    passwordBox.type = "password";
+                    const button = document.createElement("button");
+                    const buttonText = document.createTextNode("확인");
+                    button.appendChild(buttonText);
 
+                    targetEl.innerHTML = "";
+                    targetEl.appendChild(passwordBox);
+                    targetEl.appendChild(button);
+
+                    /**
+                    * 비회원 비밀번호 확인 버튼 클릭시
+                    *
+                    */
+                    button.addEventListener("click", async function() {
+                        const guestPw = passwordBox.value.trim();
+                        if (!guestPw) {
+                            alert('비밀번호를 입력하세요.');
+                            passwordBox.focus();
+                            return;
+                        }
+
+                        const { ajaxLoad } = commonLib;
+
+                    });
                 });
             }
         });
+    }
+
+    /**
+    * 인증 성공시
+    *      textarea로 수정 노출
+    *
+    */
+    function callbackSuccess() {
+
     }
 
     /**
