@@ -14,7 +14,17 @@ window.addEventListener("DOMContentLoaded", function() {
         el.addEventListener("click", function() {
             const dataset = this.dataset;
             if (dataset.editable == 'false') { // 비회원 댓글 -> 비밀번호 확인 필요
-                checkRequiredPassword(dataset.seq);
+                const seq = dataset.seq;
+                const commentEl = document.getElementById(`comment_${seq}`);
+                const targetEl = comemntEl.querySelector(".comment");
+
+                checkRequiredPassword(seq, function() {
+                    // 수정 가능한 경우
+
+                }, function() {
+                    // 비번확인이 필요한 경우
+
+                });
             }
         });
     }
