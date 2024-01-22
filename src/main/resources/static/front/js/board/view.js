@@ -49,6 +49,7 @@ window.addEventListener("DOMContentLoaded", function() {
                     // 비번확인이 필요한 경우
                     const passwordBox = document.createElement("input");
                     passwordBox.type = "password";
+                    passwordBox.placeholder = "비밀번호 입력";
                     const button = document.createElement("button");
                     const buttonText = document.createTextNode("확인");
                     button.appendChild(buttonText);
