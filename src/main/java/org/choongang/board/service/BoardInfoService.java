@@ -174,6 +174,7 @@ public class BoardInfoService {
                 .where(andBuilder)
                 .orderBy(
                         new OrderSpecifier(Order.DESC, pathBuilder.get("notice")),
+                        new OrderSpecifier(Order.DESC, pathBuilder.get("listOrder")),
                         new OrderSpecifier(Order.DESC, pathBuilder.get("createdAt"))
                         )
                 .fetch();

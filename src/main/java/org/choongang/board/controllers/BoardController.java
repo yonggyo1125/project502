@@ -120,6 +120,15 @@ public class BoardController extends AbstractBoardController {
         return utils.tpl("board/update");
     }
 
+    @GetMapping("/reply/{seq}")
+    public String reply(@PathVariable("seq") Long parentSeq, Model model) {
+        commonProcess(parentSeq, "reply", model);
+
+
+
+        return utils.tpl("board/write");
+    }
+
     /**
      * 게시글 등록, 수정
      *
