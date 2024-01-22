@@ -1,15 +1,21 @@
 package org.choongang.reservation.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.choongang.reservation.service.ReservationDateService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.time.LocalDate;
+
 @Component
 @RequiredArgsConstructor
 public class ReservationValidator implements Validator {
+
+    private final ReservationDateService dateService;
+
     @Override
     public boolean supports(Class<?> clazz) {
         return clazz.isAssignableFrom(RequestReservation.class);
@@ -35,8 +41,17 @@ public class ReservationValidator implements Validator {
      * @param errors
      */
     private void validateStep1(RequestReservation form, Errors errors) {
-        if (form.getDate() == null) {
+        LocalDate date = form.getDate();
+        Long cCode = form.getCCode();
+
+        // 필수 항목
+        if (date == null) {
             errors.rejectValue("date", "NonNull");
+        }
+
+        // 예약 가능일자 체크
+        if (!dateService.checkAvailable(cCode, date.toString())) {
+            errors.rejectValue("date", "NotAvailable");
         }
 
     }

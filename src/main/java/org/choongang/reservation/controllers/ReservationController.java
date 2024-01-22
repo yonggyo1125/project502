@@ -26,6 +26,7 @@ public class ReservationController implements ExceptionProcessor {
 
     @ModelAttribute("requestReservation")
     public RequestReservation requestReservation() {
+
         return new RequestReservation();
     }
 

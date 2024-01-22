@@ -24,8 +24,13 @@
         </ul>
         <ul class="days">
             <li th:each="day, status : ${days}">
-                <input type="radio" name="date" th:value="${dates[status.index]}" th:id="${'day_' + status}" onclick="frmStep1.submit();">
-                <label th:for="${'day_' + status}" th:text="${day}"></label>
+                <th:block th:if="${@rDateService.checkAvailable(cCode, dates[status.index])}">
+                    <input type="radio" name="date" th:value="${dates[status.index]}" th:id="${'day_' + status.index}" onclick="frmStep1.submit();">
+                    <label th:for="${'day_' + status.index}" th:text="${day}"></label>
+                </th:block>
+                <th:block th:unless="${@rDateService.checkAvailable(cCode, dates[status.index])}">
+                    <div th:text="${day}" class="not_available"></div>
+                </th:block>
             </li>
         </ul>
         <div class="error" th:each="err : ${#fields.errors('date')}" th:text="${err}"></div>
