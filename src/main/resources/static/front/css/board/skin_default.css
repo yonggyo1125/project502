@@ -33,7 +33,10 @@
 .board_list .list_search > form > * + * { margin-left: 5px; }
 .board_list .list_search button { width: 180px; }
 .board_list .total { text-align: right; margin: 10px 10px 5px; }
-
+.board_list .depth1 { text-indent: 20px; }
+.board_list .depth2 { text-indent: 40px; }
+.board_list .depth3 { text-indent: 60px; }
+.board_list .depth4 { text-indent: 80px; }
 
 /* 댓글 */
 #frmComment { margin: 20px 0 30px; }

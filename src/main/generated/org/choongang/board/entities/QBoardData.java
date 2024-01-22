@@ -35,6 +35,8 @@ public class QBoardData extends EntityPathBase<BoardData> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final NumberPath<Integer> depth = createNumber("depth", Integer.class);
+
     public final BooleanPath editorView = createBoolean("editorView");
 
     public final StringPath gid = createString("gid");
@@ -44,6 +46,8 @@ public class QBoardData extends EntityPathBase<BoardData> {
     public final StringPath ip = createString("ip");
 
     public final NumberPath<Long> listOrder = createNumber("listOrder", Long.class);
+
+    public final StringPath listOrder2 = createString("listOrder2");
 
     public final StringPath longText1 = createString("longText1");
 

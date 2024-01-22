@@ -1,10 +1,12 @@
 package org.choongang.board.service;
 
+import com.querydsl.core.BooleanBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.controllers.RequestBoard;
 import org.choongang.board.entities.Board;
 import org.choongang.board.entities.BoardData;
+import org.choongang.board.entities.QBoardData;
 import org.choongang.board.repositories.BoardDataRepository;
 import org.choongang.board.repositories.BoardRepository;
 import org.choongang.file.service.FileUploadService;
@@ -12,6 +14,8 @@ import org.choongang.member.MemberUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +61,15 @@ public class BoardSaveService {
                             System.currentTimeMillis() :
                             getReplyListOrder(parentSeq);
             data.setListOrder(listOrder);
+
+            if (parentSeq != null) {
+                String listOrder2 = getReplyListOrder2(parentSeq);
+                int depth = StringUtils.countOccurrencesOf(listOrder2, "A");
+                data.setListOrder2(listOrder2);
+                data.setDepth(depth);
+            } else {
+                data.setListOrder2("R");
+            }
         }
 
         data.setPoster(form.getPoster());
@@ -104,6 +117,7 @@ public class BoardSaveService {
 
     /**
      * 답글 정렬 순서 번호 listOrder
+     *  부모 답글이 있는 경우 부모와 동일한 listOrder 반영
      * @param parentSeq
      * @return
      */
@@ -113,16 +127,35 @@ public class BoardSaveService {
             return System.currentTimeMillis();
         }
 
-        /**
-         * 답글이 이미 있는 경우 -> 마지막 답글 순서에서  -1
-         * 답글이 하나도 없는 경우 -> 부모 게시글 순서에서 -1
-         */
-        Long lastListOrder = boardDataRepository.getLastReplyListOrder(parentSeq);
-        if (lastListOrder == null || lastListOrder.longValue() == 0L) { // 답글이 없는 경우
-            return data.getListOrder().longValue() - 1000;
-
-        } else { // 답글이 있는 경우
-            return lastListOrder.longValue() - 1;
-        }
+        return data.getListOrder();
     }
+
+    /**
+     * 답글 2차 정렬
+     *
+     * @param parentSeq
+     * @return
+     */
+    private String getReplyListOrder2(Long parentSeq) {
+        BoardData data = boardDataRepository.findById(parentSeq).orElse(null);
+        if (data == null) {
+            return "A000";
+        }
+
+        int depth = data.getDepth() + 1;
+
+        // 같은 부모 게시글 및 동일 depth의 기 등록 listOrder2 가져오기
+        QBoardData boardData = QBoardData.boardData;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(boardData.parentSeq.eq(parentSeq))
+                .and(boardData.depth.eq(depth));
+
+        long count = boardDataRepository.count(builder);
+
+        long seqNums = 1000 + count;
+        System.out.println("----- count ---- " + count);
+        System.out.println("------ seqNums ----- " + seqNums);
+        String listOrder2 = Objects.requireNonNullElse(data.getListOrder2(), "") + "A" + seqNums;
+        return listOrder2;
+     }
 }
