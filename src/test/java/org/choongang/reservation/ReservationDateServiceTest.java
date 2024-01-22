@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -74,5 +77,12 @@ public class ReservationDateServiceTest {
         // 불가능 요일 테스트
         boolean result2 = dateService.checkAvailable(form.getCCode(), "2024-01-25");
         assertTrue(!result2);
+    }
+
+    @Test
+    void test2() {
+        List<LocalTime> times = dateService.getAvailableTimes(form.getCCode(), LocalDate.now().plusDays(2));
+
+        times.forEach(System.out::println);
     }
 }
