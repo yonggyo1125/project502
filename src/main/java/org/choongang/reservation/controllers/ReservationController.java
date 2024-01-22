@@ -5,22 +5,26 @@ import org.choongang.calendar.Calendar;
 import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.Utils;
 import org.choongang.reservation.service.ReservationApplyService;
+import org.choongang.reservation.service.ReservationDateService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/reservation")
 @RequiredArgsConstructor
-@SessionAttributes("requestReservation")
+@SessionAttributes({"requestReservation", "availableTimes"})
 public class ReservationController implements ExceptionProcessor {
 
     private final ReservationValidator reservationValidator;
     private final ReservationApplyService reservationApplyService;
+    private final ReservationDateService reservationDateService;
     private final Calendar calendar;
     private final Utils utils;
 
@@ -82,6 +86,11 @@ public class ReservationController implements ExceptionProcessor {
         }
 
         form.setMode("step2");
+
+        // 검증 성공시 -> 예약 시간대 블록 조회
+        List<LocalTime> availableTimes = reservationDateService.getAvailableTimes(form.getCCode(), form.getDate());
+
+        model.addAttribute("availableTimes", availableTimes);
 
         return utils.tpl("reservation/step2");
     }

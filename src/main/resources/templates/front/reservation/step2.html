@@ -6,7 +6,12 @@
     <form name="frmStep1" method="post" th:action="@{/reservation/apply}" autocomplete="off" th:object="${requestReservation}">
         <h3 th:text="#{방문시간_선택}"></h3>
 
-        임시 : <input type="text" name="time" th:field="*{time}">
+        <ul>
+            <li th:each="aTime, status : ${availableTimes}">
+                <input type="radio" name="time" th:value="${aTime.toString()}" th:field="*{time}" th:id="${'time_' + status.index}">
+                <label th:for="${'time_' + status.index}" th:text="${aTime.toString()}"></label>
+            </li>
+        </ul>
         <div class="error" th:each="err : ${#fields.errors('time')}" th:text="${err}"></div>
         <br><br>
 

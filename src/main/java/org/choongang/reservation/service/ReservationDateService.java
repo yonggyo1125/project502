@@ -99,10 +99,10 @@ public class ReservationDateService {
                 /* 예약 불가 블록에 있는 경우 배제 */
                 if (bookNotAvls != null) {
                     boolean notAvailable = bookNotAvls.stream()
-                                .anyMatch(t -> newTime.equals(t[0])
-                                                && newTime.isAfter(t[0])
-                                                && newTime.isBefore(t[1])
-                                                && newTime.equals(t[1]));
+                                .anyMatch(t -> (newTime.equals(t[0])
+                                                || newTime.isAfter(t[0]))
+                                                && newTime.isBefore(t[1]));
+
                     if (notAvailable) {
                         continue;
                     }
