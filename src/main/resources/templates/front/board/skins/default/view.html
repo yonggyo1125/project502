@@ -40,7 +40,9 @@
            </div>
        </div>
        <!--// post_info -->
-       <div class="content" th:utext="*{content}"></div>
+
+       <div th:if="*{editorView}" class="content" th:utext="*{content}"></div>
+       <div th:if="*{!editorView}" class="content" th:utext="*{@utils.nl2br(content)}"></div>
 
        <ul th:if="*{attachFiles != null && !attachFiles.isEmpty()}" class="downloads">
            <li th:each="file : *{attachFiles}" th:object="${file}">

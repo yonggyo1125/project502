@@ -4,14 +4,42 @@ window.addEventListener("DOMContentLoaded", function() {
         const searchParams = new URLSearchParams(location.search);
 
         const seq = searchParams.get("comment_id");
-        //searchParams.delete("comment_id");
-
-        //location.search = searchParams.toString();
 
         location.hash=`#comment_${seq}`;
     }
 
     /* 댓글 수정 버튼 클릭 처리 S */
+    const editComments = document.getElementsByClassName("edit_comment");
+    for (const el of editComments) {
+        el.addEventListener("click", function() {
+            const dataset = this.dataset;
+            if (dataset.editable == 'false') { // 비회원 댓글 -> 비밀번호 확인 필요
+                checkRequiredPassword(dataset.seq);
+            }
+        });
+    }
+
+    /**
+    * 비회원 비밀번호 필요한지 체크
+    *
+    * @param seq : 댓글 등록번호
+    * @param success : 비밀번호 검증 이미 완료 된 상태 -> 댓글 수정 textarea 노출
+    * @param failure : 비밀번호 검증 필요 -> 비밀번호 입력 항목 노출
+    */
+    async function checkRequiredPassword(seq, success, failure) {
+        try {
+            const { ajaxLoad } = commonLib;
+
+            const result = await ajaxLoad('GET', `/api/comment/auth_check?seq=${seq}`, null, 'json');
+            console.log(result);
+            success();
+        } catch (err) { // 비밀번호 검증 필요
+            console.error(err);
+            failure();
+        }
+    }
+
+    /*
     const editComments = document.getElementsByClassName("edit_comment");
     const { ajaxLoad } = commonLib;
     for (const el of editComments) {
@@ -62,32 +90,34 @@ window.addEventListener("DOMContentLoaded", function() {
                                 const buttonTxt = document.createTextNode("확인");
                                 button.appendChild(buttonTxt);
 
-                                targetEl.appendChild(passwordBox);
-                                targetEl.appendChild(button);
 
-                                const guestPw = passwordBox.value.trim();
-                                if (!guestPw) {
-                                    alert("비밀번호를 입력하세요.");
-                                    passwordBox.focus();
-                                    return;
-                                }
+
 
                                 button.addEventListener("click", function() {
 
+                                   const guestPw = passwordBox.value.trim();
+                                   if (!guestPw) {
+                                        alert("비밀번호를 입력하세요.");
+                                        passwordBox.focus();
+                                        return;
+                                   }
+
                                     ajaxLoad("GET", `/api/comment/auth_check?seq=${seq}&guestPw=${guestPw}`, null, 'json')
                                         .then(res => {
-                                            console.log("여기...");
-                                           //targetEl.innerHTML = "";
-                                           //textArea.value = data.content;
-                                           //targetEl.appendChild(textArea);
-                                           el.click();
-                                        })
-                                        .catch(err => console.error(err));
-                                });
-                            }
+                                            // 비회원 비밀번호 검증 완료 후
+                                            // textarea 노출
 
-                            textArea.value = data.content;
-                            targetEl.appendChild(textArea);
+                                        })
+                                        .catch(err => { // 비회원 비밀번호 검증 필요 : 비번 확인 항목 노출
+                                            targetEl.appendChild(passwordBox);
+                                            targetEl.appendChild(button);
+                                        });
+                                });
+
+                            } else {
+                                textArea.value = data.content;
+                                targetEl.appendChild(textArea);
+                            }
 
                         }
                     })
@@ -101,10 +131,11 @@ window.addEventListener("DOMContentLoaded", function() {
                         console.log(data.data);
                     })
                     .catch(err => console.error(err));
-                    */
+                    */ /*
             }
 
         });
     }
+    */
     /* 댓글 수정 버튼 클릭 처리 E */
 });
