@@ -22,6 +22,7 @@ import org.choongang.commons.Pagination;
 import org.choongang.commons.Utils;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.file.service.FileInfoService;
+import org.choongang.member.Authority;
 import org.choongang.member.MemberUtil;
 import org.choongang.member.entities.Member;
 import org.modelmapper.ModelMapper;
@@ -265,6 +266,28 @@ public class BoardInfoService {
         boardData.setShowDeleteButton(showDeleteButton);
 
         /* 수정, 삭제 권한 정보 처리 E */
+
+        /* 댓글 작성 권한 처리 S */
+        boolean commentable = false;
+        Board board = boardData.getBoard();
+        Authority commentAccessType = board.getCommentAccessType();
+        // 관리자이거나 전체 작성 가능이면
+        if (commentAccessType == Authority.ALL) {
+            commentable = true;
+        }
+
+        if (memberUtil.isLogin()) {
+            if (commentAccessType == Authority.USER) {
+                commentable = true;
+            }
+
+            if (commentAccessType == Authority.ADMIN && memberUtil.isAdmin()) {
+                commentable = true;
+            }
+        }
+
+        boardData.setCommentable(commentable);
+        /* 댓글 작성 권한 처리 E */
     }
 
 

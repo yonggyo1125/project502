@@ -99,6 +99,9 @@ public class BoardData extends Base implements AuthCheck {
     private boolean deletable; // 삭제 가능 여부
 
     @Transient
+    private boolean commentable; // 댓글 작성 가능 여부
+
+    @Transient
     private boolean mine; // 게시글 소유자
 
     @Transient
