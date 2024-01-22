@@ -121,10 +121,19 @@ public class BoardController extends AbstractBoardController {
     }
 
     @GetMapping("/reply/{seq}")
-    public String reply(@PathVariable("seq") Long parentSeq, Model model) {
+    public String reply(@PathVariable("seq") Long parentSeq,
+                        @ModelAttribute RequestBoard form, Model model) {
         commonProcess(parentSeq, "reply", model);
 
+        String content = boardData.getContent();
+        content = String.format("<br><br><br><br><br>===================================================<br>%s", content);
 
+        form.setContent(content);
+        form.setParentSeq(parentSeq);
+
+        if (memberUtil.isLogin()) {
+            form.setPoster(memberUtil.getMember().getName());
+        }
 
         return utils.tpl("board/write");
     }
