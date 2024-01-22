@@ -44,4 +44,11 @@ public class ApiCommentController implements ExceptionRestProcessor {
 
         return new JSONData<>();
     }
+
+    @GetMapping("/auth_validate")
+    public JSONData<Object> authValidate(@RequestParam("password") String password) {
+        boardAuthService.validate(password);
+
+        return new JSONData<>();
+    }
 }

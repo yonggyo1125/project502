@@ -13,12 +13,13 @@ window.addEventListener("DOMContentLoaded", function() {
     for (const el of editComments) {
         el.addEventListener("click", function() {
             const dataset = this.dataset;
+            const seq = dataset.seq;
+
             if (dataset.editable == 'false') { // 비회원 댓글 -> 비밀번호 확인 필요
-                const seq = dataset.seq;
                 const commentEl = document.getElementById(`comment_${seq}`);
                 const targetEl = commentEl.querySelector(".comment");
 
-                checkRequiredPassword(seq, callbackSuccess, function() {
+                checkRequiredPassword(seq, () => callbackSuccess(seq), function() {
                     // 비번확인이 필요한 경우
                     const passwordBox = document.createElement("input");
                     passwordBox.type = "password";
@@ -44,8 +45,18 @@ window.addEventListener("DOMContentLoaded", function() {
 
                         const { ajaxLoad } = commonLib;
 
+                        try {
+                            const result = await ajaxLoad('GET', `/api/comment/auth_validate?password=${guestPw}`);
+
+                            callbackSuccess(seq); // textarea 보여주고,
+
+                        } catch (err) { // 비밀번호 검증 실패시
+                            alert('비밀번호가 일치하지 않습니다.');
+                        }
                     });
                 });
+            } else { // 댓글 수정 가능 권한인 경우
+                callbackSuccess(seq);
             }
         });
     }
@@ -54,9 +65,29 @@ window.addEventListener("DOMContentLoaded", function() {
     * 인증 성공시
     *      textarea로 수정 노출
     *
+    * @param seq : 댓글 등록 번호
+    *           1) 댓글 가져오기
+    *           2) textarea 생성 : 댓글 내용
+    *
     */
-    function callbackSuccess() {
+    async function callbackSuccess(seq) {
+        try {
+            const { ajaxLoad } = commonLib;
 
+            // 댓글 가져오기
+            const result = await ajaxLoad('GET', `/api/comment/${seq}`, null, 'json');
+            const data = result.data;
+
+            const targetEl = document.querySelector(`#comment_${seq} .comment`);
+            const textarea = document.createElement("textarea");
+            textarea.value = data.content;
+
+            targetEl.innerHTML = "";
+            targetEl.appendChild(textarea);
+
+        } catch (err) {
+            console.error(err);
+        }
     }
 
     /**
