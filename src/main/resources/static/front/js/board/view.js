@@ -31,11 +31,14 @@ window.addEventListener("DOMContentLoaded", function() {
             const { ajaxLoad } = commonLib;
 
             const result = await ajaxLoad('GET', `/api/comment/auth_check?seq=${seq}`, null, 'json');
-            console.log(result);
-            success();
+
+            if (typeof success == 'function') {
+                success();
+            }
         } catch (err) { // 비밀번호 검증 필요
-            console.error(err);
-            failure();
+            if (typeof failure == 'function') {
+                failure();
+            }
         }
     }
 
