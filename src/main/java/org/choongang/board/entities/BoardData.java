@@ -1,5 +1,6 @@
 package org.choongang.board.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -107,5 +108,6 @@ public class BoardData extends Base implements AuthCheck {
     private boolean showDeleteButton; // 삭제 버튼 노출 여부
 
     @Transient
+    @JsonIgnore
     private List<CommentData> comments; // 댓글 목록
 }
