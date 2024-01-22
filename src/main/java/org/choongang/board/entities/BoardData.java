@@ -60,7 +60,7 @@ public class BoardData extends Base implements AuthCheck {
 
     private Long parentSeq; // 부모 게시글 번호 - 답글인 경우
 
-    private long listOrder; // 1차 정렬 순서 - 내림차순
+    private Long listOrder; // 1차 정렬 순서 - 내림차순
 
     @Column(length=20)
     private String ip; // IP 주소

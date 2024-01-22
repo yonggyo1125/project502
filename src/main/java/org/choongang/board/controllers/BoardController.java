@@ -128,6 +128,7 @@ public class BoardController extends AbstractBoardController {
         String content = boardData.getContent();
         content = String.format("<br><br><br><br><br>===================================================<br>%s", content);
 
+        form.setBid(board.getBid());
         form.setContent(content);
         form.setParentSeq(parentSeq);
 
