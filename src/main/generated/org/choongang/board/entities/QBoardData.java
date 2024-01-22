@@ -43,6 +43,8 @@ public class QBoardData extends EntityPathBase<BoardData> {
 
     public final StringPath ip = createString("ip");
 
+    public final NumberPath<Long> listOrder = createNumber("listOrder", Long.class);
+
     public final StringPath longText1 = createString("longText1");
 
     public final StringPath longText2 = createString("longText2");
@@ -61,6 +63,8 @@ public class QBoardData extends EntityPathBase<BoardData> {
     public final NumberPath<Long> num2 = createNumber("num2", Long.class);
 
     public final NumberPath<Long> num3 = createNumber("num3", Long.class);
+
+    public final NumberPath<Long> parentSeq = createNumber("parentSeq", Long.class);
 
     public final StringPath poster = createString("poster");
 

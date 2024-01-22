@@ -18,7 +18,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor @AllArgsConstructor
 @Table(indexes = {
-        @Index(name="idx_boardData_basic", columnList = "notice DESC, createdAt DESC")
+        @Index(name="idx_boardData_basic", columnList = "notice DESC, listOrder DESC, createdAt DESC")
 })
 public class BoardData extends Base implements AuthCheck {
     @Id @GeneratedValue
@@ -57,6 +57,10 @@ public class BoardData extends Base implements AuthCheck {
     private int commentCount; // 댓글 수
 
     private boolean editorView; // true : 에디터를 통해서 작성
+
+    private Long parentSeq; // 부모 게시글 번호 - 답글인 경우
+
+    private long listOrder; // 1차 정렬 순서 - 내림차순
 
     @Column(length=20)
     private String ip; // IP 주소
