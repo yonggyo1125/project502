@@ -63,11 +63,16 @@ public class ReservationValidator implements Validator {
      * @param errors
      */
     private void validateStep2(RequestReservation form, Errors errors) {
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "time", "NotBlank");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "personsInfo", "NotBlank");
+       if (form.getTime() == null) {
+           errors.rejectValue("time", "NonNull");
+       }
+
         int persons = form.getPersons();
         if (persons < 1) {
             errors.rejectValue("persons", "Size");
         }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "donorTel", "NotBlank");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "bookType", "NotBlank");
     }
 }

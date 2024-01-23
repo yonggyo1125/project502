@@ -20,12 +20,27 @@
         <div class="error" th:each="err : ${#fields.errors('persons')}" th:text="${err}"></div>
 
         <h3 th:text="#{방문자_정보}"></h3>
-        임시
-        <textarea name="personsInfo" th:field="*{personsInfo}"></textarea>
-        <div class="error" th:each="err : ${#fields.errors('personsInfo')}" th:text="${err}"></div>
-        <br>
-        <br>
-
+        <dl>
+            <dt th:text="#{예약자명}"></dt>
+            <dd></dd>
+        </dl>
+        <dl>
+            <dt th:text="#{전화번호}"></dt>
+            <dd>
+                <input type="text" name="donorTel" th:field="*{donorTel}">
+                <div class="error" th:each="err : ${#fields.errors('donorTel')}" th:text="${err}"></div>
+            </dd>
+        </dl>
+        <dl>
+            <dt th:text="#{헌혈_타입}"></dt>
+            <dd>
+                <th:block th:each="type, status : ${donationTypes}">
+                    <input type="radio" name="bookType" th:value="${type[0]}" th:id="${'bookType_' + status.index}" th:field="*{bookType}">
+                    <label th:for="${'bookType_' + status.index}" th:text="${type[1]}"></label>
+                </th:block>
+                <div class="error" th:each="err : ${#fields.errors('bookType')}" th:text="${err}"></div>
+            </dd>
+        </dl>
         <div class="error global" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
         <button type="submit" th:text="#{예약하기}"></button>
 
