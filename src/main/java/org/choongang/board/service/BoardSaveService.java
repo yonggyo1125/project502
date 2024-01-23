@@ -59,6 +59,13 @@ public class BoardSaveService {
                             System.currentTimeMillis() :
                             getReplyListOrder(parentSeq);
             data.setListOrder(listOrder);
+
+            if (parentSeq == null) { // 본글
+                data.setListOrder2("R");
+            } else { // 답글
+                data.setListOrder2(getReplyListOrder2(parentSeq));
+            }
+
         }
 
         data.setPoster(form.getPoster());
