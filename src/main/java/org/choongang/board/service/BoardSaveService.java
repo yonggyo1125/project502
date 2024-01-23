@@ -63,7 +63,10 @@ public class BoardSaveService {
             if (parentSeq == null) { // 본글
                 data.setListOrder2("R");
             } else { // 답글
-                data.setListOrder2(getReplyListOrder2(parentSeq));
+                String listOrder2 = getReplyListOrder2(parentSeq);
+                data.setListOrder2(listOrder2); // A의 갯수 -> depth
+                int depth = StringUtils.countOccurrencesOf(listOrder2, "A");
+                data.setDepth(depth);
             }
 
         }
