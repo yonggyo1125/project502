@@ -153,8 +153,6 @@ public class BoardSaveService {
         long count = boardDataRepository.count(builder);
 
         long seqNums = 1000 + count;
-        System.out.println("----- count ---- " + count);
-        System.out.println("------ seqNums ----- " + seqNums);
         String listOrder2 = Objects.requireNonNullElse(data.getListOrder2(), "") + "A" + seqNums;
         return listOrder2;
      }
