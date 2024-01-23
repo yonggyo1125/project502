@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("/chat")
+@RequestMapping("/chatting")
 @RequiredArgsConstructor
 public class ChatController implements ExceptionProcessor {
 

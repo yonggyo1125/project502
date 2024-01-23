@@ -6,20 +6,30 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class ChatHandler extends TextWebSocketHandler {
+
+    private static List<WebSocketSession> sessions = new ArrayList<>();
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        System.out.println("연결!");
+        sessions.add(session); // 접속자 세션 추가
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        System.out.printf("메세지 : %s%n", message.getPayload());
+
+        for (WebSocketSession s : sessions) {
+            s.sendMessage(message);
+        }
+
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        System.out.println("연결 종료!");
+        sessions.remove(session);
     }
 }
