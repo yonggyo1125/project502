@@ -1,6 +1,8 @@
 package org.choongang.reservation.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.choongang.center.entities.CenterInfo;
@@ -12,8 +14,10 @@ import org.choongang.reservation.constants.ReservationStatus;
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Reservation extends Base {
 
     @Id
@@ -43,4 +47,6 @@ public class Reservation extends Base {
     private CenterInfo center;
 
     private LocalDateTime bookDateTime;
+
+    private int capacity;
 }
