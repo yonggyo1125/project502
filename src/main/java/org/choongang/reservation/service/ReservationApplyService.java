@@ -38,6 +38,7 @@ public class ReservationApplyService {
                 .member(memberUtil.getMember())
                 .capacity(form.getPersons())
                 .status(ReservationStatus.APPLY)
+                .donorTel(form.getDonorTel())
                 .build();
 
         reservationRepository.saveAndFlush(reservation);

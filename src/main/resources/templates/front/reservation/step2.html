@@ -8,7 +8,9 @@
 
         <ul>
             <li th:each="aTime, status : ${availableTimes}">
-                <input type="radio" name="time" th:value="${aTime.toString()}" th:field="*{time}" th:id="${'time_' + status.index}">
+                <input type="radio" name="time" th:value="${aTime.toString()}" th:field="*{time}" th:id="${'time_' + status.index}" class="select_time"
+                       th:date-c-code="*{cCode}"
+                       th:data-date="*{date.toString()}">
                 <label th:for="${'time_' + status.index}" th:text="${aTime.toString()}"></label>
             </li>
         </ul>
@@ -16,7 +18,12 @@
         <br><br>
 
         <h3 th:text="#{방문인원_선택}"></h3>
-        임시 : <input type="number" name="persons" th:field="*{persons}">
+
+        <select name="persons" id="select_person">
+            <option value="0" th:text="#{선택하세요}"></option>
+        </select>
+
+
         <div class="error" th:each="err : ${#fields.errors('persons')}" th:text="${err}"></div>
 
         <h3 th:text="#{방문자_정보}"></h3>

@@ -47,7 +47,7 @@ public class ReservationController implements ExceptionProcessor {
 
     @ModelAttribute("addScript")
     public String[] addScript() {
-        return new String[] { "reservation/reservation" };
+        return new String[] { "reservation/common" };
     }
 
 
@@ -115,7 +115,7 @@ public class ReservationController implements ExceptionProcessor {
 
         status.setComplete(); // 세션 비우기
 
-        String url = request.getContextPath() + "/reservation/" + reservation.getBookCode();
+        String url = request.getContextPath() + "/SucessBooking/" + reservation.getBookCode();
         String script = String.format("parent.location.replace('%s');", url);
 
         model.addAttribute("script", script);
