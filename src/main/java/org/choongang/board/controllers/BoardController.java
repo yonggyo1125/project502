@@ -10,6 +10,7 @@ import org.choongang.board.service.BoardSaveService;
 import org.choongang.board.service.config.BoardConfigInfoService;
 import org.choongang.commons.ListData;
 import org.choongang.commons.Utils;
+import org.choongang.commons.exceptions.UnAuthorizedException;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.file.service.FileInfoService;
 import org.choongang.member.MemberUtil;
@@ -124,6 +125,9 @@ public class BoardController extends AbstractBoardController {
     public String reply(@PathVariable("seq") Long parentSeq,
                         @ModelAttribute RequestBoard form, Model model) {
         commonProcess(parentSeq, "reply", model);
+        if (!board.isUseReply()) { // 답글 사용 불가
+            throw new UnAuthorizedException();
+        }
 
         String content = boardData.getContent();
         content = String.format("<br><br><br><br><br>===================================================<br>%s", content);
