@@ -1,9 +1,11 @@
 package org.choongang.reservation.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.choongang.calendar.Calendar;
 import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.Utils;
+import org.choongang.reservation.entities.Reservation;
 import org.choongang.reservation.service.ReservationApplyService;
 import org.choongang.reservation.service.ReservationDateService;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,8 @@ public class ReservationController implements ExceptionProcessor {
     private final ReservationDateService reservationDateService;
     private final Calendar calendar;
     private final Utils utils;
+
+    private final HttpServletRequest request;
 
     @ModelAttribute("requestReservation")
     public RequestReservation requestReservation() {
@@ -107,9 +111,14 @@ public class ReservationController implements ExceptionProcessor {
         }
 
         // 예약 신청 처리
-        reservationApplyService.apply(form);
+        Reservation reservation = reservationApplyService.apply(form);
 
         status.setComplete(); // 세션 비우기
+
+        String url = request.getContextPath() + "/reservation/" + reservation.getBookCode();
+        String script = String.format("parent.location.replace('%s');", url);
+
+        model.addAttribute("script", script);
 
         return "common/_execute_script";
     }
