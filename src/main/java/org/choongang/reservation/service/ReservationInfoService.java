@@ -51,6 +51,7 @@ public class ReservationInfoService {
         LocalDateTime bookDateTime = reservation.getBookDateTime();
         form.setDate(bookDateTime.toLocalDate());
         form.setTime(bookDateTime.toLocalTime());
+        form.setPersons(reservation.getCapacity());
 
         return form;
     }

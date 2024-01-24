@@ -150,7 +150,8 @@ public class ReservationController implements ExceptionProcessor {
             pageTitle = "지점 수정";
         } else if (mode.equals("branch")) {
             pageTitle = "지점 목록";
-
+        } else if (mode.equals("edit")) {
+            pageTitle = "예약 정보 수정";
         }
 
         model.addAttribute("pageTitle", pageTitle);

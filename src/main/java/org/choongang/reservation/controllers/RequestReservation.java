@@ -15,6 +15,8 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class RequestReservation {
 
+    private Long bookCode;
+
     @NonNull
     private Long cCode; // 선터 코드
     private String mode = "step1";
