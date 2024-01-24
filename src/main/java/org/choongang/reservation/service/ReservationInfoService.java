@@ -52,6 +52,8 @@ public class ReservationInfoService {
         form.setDate(bookDateTime.toLocalDate());
         form.setTime(bookDateTime.toLocalTime());
         form.setPersons(reservation.getCapacity());
+        form.setCCode(reservation.getCenter().getCCode());
+        form.setMember(reservation.getMember());
 
         return form;
     }

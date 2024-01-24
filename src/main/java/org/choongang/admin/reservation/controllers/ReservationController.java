@@ -4,6 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.admin.menus.Menu;
 import org.choongang.admin.menus.MenuDetail;
+import org.choongang.center.controllers.CenterSearch;
+import org.choongang.center.entities.CenterInfo;
+import org.choongang.center.service.CenterInfoService;
 import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.ListData;
 import org.choongang.reservation.controllers.RequestReservation;
@@ -28,6 +31,7 @@ public class ReservationController implements ExceptionProcessor {
     private final ReservationInfoService reservationInfoService;
     private final ReservationSaveService reservationSaveService;
     private final ReservationDeleteService reservationDeleteService;
+    private final CenterInfoService centerInfoService;
 
     @ModelAttribute("menuCode")
     public String getMenuCode() {
@@ -81,6 +85,15 @@ public class ReservationController implements ExceptionProcessor {
         RequestReservation form = reservationInfoService.getForm(bookCode);
         model.addAttribute("requestReservation", form);
 
+        CenterInfo center = centerInfoService.get(form.getCCode());
+        model.addAttribute("center", center);
+
+        CenterSearch search = new CenterSearch();
+        search.setLimit(10000);
+        ListData<CenterInfo> data = centerInfoService.getList(search);
+        List<CenterInfo> centerList = data.getItems();
+        model.addAttribute("centerList", data.getItems());
+
         return "admin/reservation/edit";
     }
 
@@ -88,11 +101,11 @@ public class ReservationController implements ExceptionProcessor {
     public String save(@Valid RequestReservation form, Errors errors, Model model) {
         commonProcess("edit", model);
 
-
-
         if (errors.hasErrors()) {
             return "admin/reservation/edit";
         }
+
+        reservationSaveService.save(form);
 
         return "redirect:/admin/reservation";
     }

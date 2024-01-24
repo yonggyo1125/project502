@@ -4,5 +4,81 @@
       layout:decorate="~{admin/layouts/main}">
 <section layout:fragment="content">
     <h1>예약 정보 수정</h1>
+    <form name="frmSave" method="post" th:action="@{/admin/reservation/save}" autocomplete="off" th:object="${requestReservation}">
+        <input type="hidden" name="bookCode" th:field="*{bookCode}">
+
+        <table class="table_cols">
+            <tr>
+                <th width="180">예약번호</th>
+                <td th:text="*{bookCode}"></td>
+            </tr>
+            <tr>
+                <th>예약 상태</th>
+                <td>
+                    <select name="status" th:field="*{status}">
+                        <option th:each="s : ${reservationStatuses}" th:value="${s[0]}" th:text="${s[1]}"></option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>센터 정보</th>
+                <td>
+                    <input type="hidden" name="cCode" th:field="*{cCode}">
+                    <div th:text="${center.cName}"></div>
+                    <div th:if="${!#strings.isEmpty(center.address)}">
+                        <th:block th:if="${!#strings.isEmpty(center.zonecode)}" th:text="${'(' + center.zonecode + ')'}"></th:block>
+                        <th:block th:text="${center.address + ' ' + center.addressSub}"></th:block>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>신청회원</th>
+                <td>
+                    <th:block th:if="*{member != null}" th:text="*{member.name + '(' + member.userId + ')'}"></th:block>
+                </td>
+            </tr>
+            <tr>
+                <th>헌혈자 전화번호</th>
+                <td>
+                    <input type="text" name="donorTel" th:field="*{donorTel}">
+                    <div class="error" th:each="err : ${#fields.errors('donorTel')}" th:text="${err}"></div>
+                </td>
+            </tr>
+            <tr>
+                <th>예약일시</th>
+                <td>
+                    <div class="input_grp">
+                        <input type="date" name="date" th:field="*{date}">
+
+                        <input type="time" name="time" th:field="*{time}">
+                    </div>
+                    <div class="error" th:each="err : ${#fields.errors('date')}" th:text="${err}"></div>
+                    <div class="error" th:each="err : ${#fields.errors('time')}" th:text="${err}"></div>
+                </td>
+            </tr>
+            <tr>
+                <th>예약 인원수</th>
+                <td>
+                    <input type="number" name="persons" th:field="*{persons}">
+                    <div class="error" th:each="err : ${#fields.errors('persons')}" th:text="${err}"></div>
+                </td>
+            </tr>
+            <tr>
+                <th>헌혈 타입</th>
+                <td>
+                    <th:block th:each="type, status : ${donationTypes}">
+                        <input type="radio" name="bookType" th:value="${type[0]}" th:id="${'bookType_' + status.index}" th:field="*{bookType}">
+                        <label th:for="${'bookType_' + status.index}" th:text="${type[1]}"></label>
+                    </th:block>
+                    <div class="error" th:each="err : ${#fields.errors('bookType')}" th:text="${err}"></div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="submit_btns">
+            <button type="reset" class="btn">다시입력</button>
+            <button type="submit" class="btn">수정하기</button>
+        </div>
+    </form>
 </section>
 </html>
