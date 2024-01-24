@@ -6,6 +6,7 @@ import org.choongang.commons.Utils;
 import org.choongang.commons.exceptions.AlertRedirectException;
 import org.choongang.member.MemberUtil;
 import org.choongang.reservation.service.ReservationDateService;
+import org.choongang.reservation.service.ReservationInfoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -14,12 +15,15 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Component
 @RequiredArgsConstructor
 public class ReservationValidator implements Validator {
 
     private final ReservationDateService dateService;
+    private final ReservationInfoService infoService;
     private final HttpServletRequest request;
     private final MemberUtil memberUtil;
 
@@ -58,7 +62,7 @@ public class ReservationValidator implements Validator {
          */
         if (!memberUtil.isLogin()) {
             String url = request.getContextPath() + "/member/login?redirectURL=/center/" + cCode + "#reservation_box";
-            throw new AlertRedirectException(Utils.getMessage("Required.login", "errors"), url, "parent", HttpStatus.UNAUTHORIZED);
+                throw new AlertRedirectException(Utils.getMessage("Required.login", "errors"), url, "parent", HttpStatus.UNAUTHORIZED);
         }
 
         // 필수 항목
@@ -71,6 +75,8 @@ public class ReservationValidator implements Validator {
             errors.rejectValue("date", "NotAvailable");
         }
 
+
+
     }
 
     /**
@@ -80,12 +86,17 @@ public class ReservationValidator implements Validator {
      * @param errors
      */
     private void validateStep2(RequestReservation form, Errors errors) {
-       if (form.getTime() == null) {
+        LocalDate date = form.getDate();
+        LocalTime time = form.getTime();
+
+       if (time == null) {
            errors.rejectValue("time", "NonNull");
        }
 
+       int capacity = infoService.getAvailableCapacity(form.getCCode(), LocalDateTime.of(date, time));
+
         int persons = form.getPersons();
-        if (persons < 1) {
+        if (persons < 1 || persons > capacity) {
             errors.rejectValue("persons", "Size");
         }
 

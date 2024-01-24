@@ -6,16 +6,16 @@ import org.choongang.admin.menus.Menu;
 import org.choongang.admin.menus.MenuDetail;
 import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.ListData;
+import org.choongang.reservation.controllers.RequestReservation;
 import org.choongang.reservation.controllers.ReservationSearch;
 import org.choongang.reservation.entities.Reservation;
+import org.choongang.reservation.service.ReservationDeleteService;
 import org.choongang.reservation.service.ReservationInfoService;
+import org.choongang.reservation.service.ReservationSaveService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +26,8 @@ import java.util.Objects;
 public class ReservationController implements ExceptionProcessor {
 
     private final ReservationInfoService reservationInfoService;
+    private final ReservationSaveService reservationSaveService;
+    private final ReservationDeleteService reservationDeleteService;
 
     @ModelAttribute("menuCode")
     public String getMenuCode() {
@@ -50,6 +52,49 @@ public class ReservationController implements ExceptionProcessor {
         model.addAttribute("pagination", data.getPagination());
 
         return "admin/reservation/list";
+    }
+
+    @PatchMapping
+    public String editList(@RequestParam(name="chk", required = false) List<Integer> chks, Model model) {
+        commonProcess("list", model);
+
+        reservationSaveService.saveList(chks);
+
+        model.addAttribute("script", "parent.location.reload();");
+        return "common/_execute_script";
+    }
+
+    @DeleteMapping
+    public String deleteList(@RequestParam(name="chk", required = false) List<Integer> chks, Model model) {
+        commonProcess("list", model);
+
+        reservationDeleteService.deleteList(chks);
+
+        model.addAttribute("script", "parent.location.reload();");
+        return "common/_execute_script";
+    }
+
+    @GetMapping("/edit/{bookCode}")
+    public String edit(@PathVariable("bookCode") Long bookCode, Model model) {
+        commonProcess("edit", model);
+
+        RequestReservation form = reservationInfoService.getForm(bookCode);
+        model.addAttribute("requestReservation", form);
+
+        return "admin/reservation/edit";
+    }
+
+    @PostMapping("/save")
+    public String save(@Valid RequestReservation form, Errors errors, Model model) {
+        commonProcess("edit", model);
+
+
+
+        if (errors.hasErrors()) {
+            return "admin/reservation/edit";
+        }
+
+        return "redirect:/admin/reservation";
     }
 
     /**

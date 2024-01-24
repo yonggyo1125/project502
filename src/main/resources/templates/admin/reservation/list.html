@@ -65,9 +65,9 @@
                 </td>
                 <td th:text="*{bookCode}" align="center"></td>
                 <td>
-                    <th:block th:if="*{member != null}" th:text="*{member.name}"></th:block>
+                    <th:block th:if="*{member != null}" th:text="*{member.name + '(' + member.userId + ')'}"></th:block>
                 </td>
-                <td th:text="*{bookDateTime}" align="center"></td>
+                <td th:text="*{#temporals.format(bookDateTime, 'yyyy.MM.dd HH:mm')}" align="center"></td>
                 <td th:text="*{donorTel}" align="center"></td>
                 <td th:text="*{bookType.title}" align="center"></td>
                 <td th:text="*{center.cName}" align="center"></td>
@@ -81,7 +81,8 @@
             </tbody>
         </table>
         <div class="table_actions">
-
+            <button type="button" class="form_action sbtn" data-mode="delete" data-form-name="frmList">선택 예약 삭제</button>
+            <button type="button" class="form_action sbtn on" data-mode="edit" data-form-name="frmList">선택 예약 수정</button>
         </div>
     </form>
 </section>

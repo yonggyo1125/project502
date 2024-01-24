@@ -8,10 +8,12 @@ import org.choongang.center.service.CenterInfoService;
 import org.choongang.commons.ListData;
 import org.choongang.commons.Pagination;
 import org.choongang.commons.Utils;
+import org.choongang.reservation.controllers.RequestReservation;
 import org.choongang.reservation.controllers.ReservationSearch;
 import org.choongang.reservation.entities.QReservation;
 import org.choongang.reservation.entities.Reservation;
 import org.choongang.reservation.repositories.ReservationRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,6 +39,20 @@ public class ReservationInfoService {
         Reservation reservation = reservationRepository.findById(bookCode).orElseThrow(ReservationNotFoundException::new);
 
         return reservation;
+    }
+
+    public RequestReservation getForm(Long bookCode) {
+        Reservation reservation = get(bookCode);
+        RequestReservation form = new ModelMapper().map(reservation, RequestReservation.class);
+
+        form.setStatus(reservation.getStatus().name());
+        form.setBookType(reservation.getBookType().name());
+
+        LocalDateTime bookDateTime = reservation.getBookDateTime();
+        form.setDate(bookDateTime.toLocalDate());
+        form.setTime(bookDateTime.toLocalTime());
+
+        return form;
     }
 
     public ListData<Reservation> getList(ReservationSearch search) {

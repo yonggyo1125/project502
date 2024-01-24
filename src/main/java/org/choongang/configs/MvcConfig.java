@@ -39,6 +39,7 @@ public class MvcConfig implements WebMvcConfigurer {
 
     @Bean
     public HiddenHttpMethodFilter httpMethodFilter() {
+
         return new HiddenHttpMethodFilter();
     }
 }
