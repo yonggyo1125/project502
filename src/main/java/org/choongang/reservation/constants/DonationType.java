@@ -24,4 +24,8 @@ public enum DonationType {
                 new String[] { TYPE_B.name(), TYPE_B.title}
         );
     }
+
+    public String getTitle() {
+        return title;
+    }
 }
