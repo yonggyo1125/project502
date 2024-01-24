@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.choongang.commons.exceptions.AlertBackException;
 import org.choongang.commons.exceptions.AlertException;
+import org.choongang.commons.exceptions.AlertRedirectException;
 import org.choongang.commons.exceptions.CommonException;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -31,6 +32,12 @@ public interface ExceptionProcessor {
 
             if (e instanceof AlertBackException) { // history.back(); 실행
                 script += "history.back();";
+            }
+
+            if (e instanceof AlertRedirectException) { // 페이지 이동
+                AlertRedirectException alertRedirectException = (AlertRedirectException) e;
+
+                script += String.format("%s.location.replace('%s');", alertRedirectException.getTarget(), alertRedirectException.getRedirectUrl());
             }
 
             model.addAttribute("script", script);
