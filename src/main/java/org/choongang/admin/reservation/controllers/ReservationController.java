@@ -1,9 +1,14 @@
 package org.choongang.admin.reservation.controllers;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.choongang.admin.menus.Menu;
 import org.choongang.admin.menus.MenuDetail;
 import org.choongang.commons.ExceptionProcessor;
+import org.choongang.commons.ListData;
+import org.choongang.reservation.controllers.ReservationSearch;
+import org.choongang.reservation.entities.Reservation;
+import org.choongang.reservation.service.ReservationInfoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -17,7 +22,10 @@ import java.util.Objects;
 
 @Controller("adminReservationController")
 @RequestMapping("/admin/reservation")
+@RequiredArgsConstructor
 public class ReservationController implements ExceptionProcessor {
+
+    private final ReservationInfoService reservationInfoService;
 
     @ModelAttribute("menuCode")
     public String getMenuCode() {
@@ -33,8 +41,13 @@ public class ReservationController implements ExceptionProcessor {
      * 예약 현황 / 예약 관리
      */
     @GetMapping
-    public String list(Model model) {
+    public String list(@ModelAttribute ReservationSearch search, Model model) {
         commonProcess("list", model);
+
+        ListData<Reservation> data = reservationInfoService.getList(search);
+
+        model.addAttribute("items", data.getItems());
+        model.addAttribute("pagination", data.getPagination());
 
         return "admin/reservation/list";
     }

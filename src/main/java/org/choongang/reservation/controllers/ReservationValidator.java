@@ -41,6 +41,9 @@ public class ReservationValidator implements Validator {
      * @param errors
      */
     private void validateStep1(RequestReservation form, Errors errors) {
+
+
+
         LocalDate date = form.getDate();
         Long cCode = form.getCCode();
 
