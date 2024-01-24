@@ -1,7 +1,12 @@
 package org.choongang.reservation.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.choongang.commons.Utils;
+import org.choongang.commons.exceptions.AlertRedirectException;
+import org.choongang.member.MemberUtil;
 import org.choongang.reservation.service.ReservationDateService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
@@ -15,6 +20,8 @@ import java.time.LocalDate;
 public class ReservationValidator implements Validator {
 
     private final ReservationDateService dateService;
+    private final HttpServletRequest request;
+    private final MemberUtil memberUtil;
 
     @Override
     public boolean supports(Class<?> clazz) {
@@ -42,10 +49,17 @@ public class ReservationValidator implements Validator {
      */
     private void validateStep1(RequestReservation form, Errors errors) {
 
-
-
         LocalDate date = form.getDate();
         Long cCode = form.getCCode();
+
+        /**
+         * 회원 전용 - 비회원 :
+         * 로그인이 필요한 서비스입니다. -> 로그인 페이지 -> 로그인 완료 후 -> 예약 페이지
+         */
+        if (!memberUtil.isLogin()) {
+            String url = request.getContextPath() + "/member/login?redirectURL=/center/" + cCode + "#reservation_box";
+            throw new AlertRedirectException(Utils.getMessage("Required.login", "errors"), url, "parent", HttpStatus.UNAUTHORIZED);
+        }
 
         // 필수 항목
         if (date == null) {
