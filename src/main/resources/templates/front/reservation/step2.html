@@ -2,14 +2,14 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{front/layouts/popup}">
-<main layout:fragment="content">
+<main layout:fragment="content" class="reservation_step2">
     <form name="frmStep1" method="post" th:action="@{/reservation/apply}" autocomplete="off" th:object="${requestReservation}">
         <h3 th:text="#{방문시간_선택}"></h3>
 
-        <ul>
+        <ul class="select_time">
             <li th:each="aTime, status : ${availableTimes}">
                 <input type="radio" name="time" th:value="${aTime.toString()}" th:field="*{time}" th:id="${'time_' + status.index}" class="select_time"
-                       th:date-c-code="*{cCode}"
+                       th:data-c-code="*{cCode}"
                        th:data-date="*{date.toString()}">
                 <label th:for="${'time_' + status.index}" th:text="${aTime.toString()}"></label>
             </li>
