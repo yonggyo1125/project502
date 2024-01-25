@@ -132,16 +132,18 @@ public class Utils {
 
     public String backgroundStyle(FileInfo file, int width, int height) {
 
-        if (file == null) {
+        try {
+
+            String[] data = fileInfoService.getThumb(file.getSeq(), width, height);
+            String imageUrl = data[1];
+
+            String style = String.format("background:url('%s') no-repeat center center; background-size:cover;", imageUrl);
+
+            return style;
+        } catch (Exception e) {
+            e.printStackTrace();
             return "";
         }
-
-        String[] data = fileInfoService.getThumb(file.getSeq(), width, height);
-        String imageUrl = data[1];
-
-        String style = String.format("background:url('%s') no-repeat center center; background-size:cover;", imageUrl);
-
-        return style;
     }
 
     /**
