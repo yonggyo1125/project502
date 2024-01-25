@@ -1,5 +1,6 @@
 package org.choongang.mypage.controllers;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.board.controllers.BoardDataSearch;
 import org.choongang.board.entities.BoardData;
@@ -8,12 +9,14 @@ import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.ListData;
 import org.choongang.commons.RequestPaging;
 import org.choongang.commons.Utils;
+import org.choongang.member.MemberUtil;
 import org.choongang.member.entities.Member;
 import org.choongang.member.service.follow.FollowBoardService;
 import org.choongang.member.service.follow.FollowService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -27,6 +30,8 @@ public class MypageController implements ExceptionProcessor {
     private final SaveBoardDataService saveBoardDataService;
     private final FollowBoardService followBoardService;
     private final FollowService followService;
+
+    private final MemberUtil memberUtil;
 
     private final Utils utils;
 
@@ -92,15 +97,24 @@ public class MypageController implements ExceptionProcessor {
     }
 
     @GetMapping("/profile")
-    public String profile(Model model) {
+    public String profile(@ModelAttribute RequestProfile form, Model model) {
         commonProcess("profile", model);
+
+        Member member = memberUtil.getMember();
+        form.setName(member.getName());
 
         return utils.tpl("mypage/profile");
     }
 
     @PostMapping("/profile")
-    public String updateProfile(Model model) {
+    public String updateProfile(@Valid RequestProfile form, Errors errors, Model model) {
         commonProcess("profile", model);
+
+        if (errors.hasErrors()) {
+            return utils.tpl("mypage/profile");
+        }
+
+
 
         return "redirect:/mypage";
     }
