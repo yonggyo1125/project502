@@ -102,6 +102,7 @@ public class MypageController implements ExceptionProcessor {
 
         Member member = memberUtil.getMember();
         form.setName(member.getName());
+        form.setProfileImage(member.getProfileImage());
 
         return utils.tpl("mypage/profile");
     }
