@@ -16,12 +16,19 @@ function callbackFileUpload(files) {
     const deleteIcon = document.createElement("i");
     deleteIcon.className="xi-close";
     deleteLink.href=`/file/delete/${file.seq}`;
-    deleteLink.onclick = "return confirm('정말 삭제하겠습니까?');";
+    deleteLink.onclick = (e) => {
+        if (!confirm('정말 삭제하겠습니까?')) {
+            e.preventDefault();
+        }
+    };
+
+    deleteLink.target="ifrmProcess";
 
     deleteLink.appendChild(deleteIcon);
 
     const img = new Image();
     img.src=file.fileUrl;
+    img.width=250;
 
     profileImage.appendChild(deleteLink);
     profileImage.appendChild(img);
@@ -33,5 +40,6 @@ function callbackFileUpload(files) {
 *
 */
 function callbackFileDelete(seq) {
-
+    const profileImage = document.querySelector(".profile_image");
+    profileImage.innerHTML = "";
 }

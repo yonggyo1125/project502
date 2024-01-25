@@ -9,6 +9,8 @@ import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.ListData;
 import org.choongang.commons.RequestPaging;
 import org.choongang.commons.Utils;
+import org.choongang.file.entities.FileInfo;
+import org.choongang.file.service.FileInfoService;
 import org.choongang.member.MemberUtil;
 import org.choongang.member.entities.Member;
 import org.choongang.member.service.follow.FollowBoardService;
@@ -27,6 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MypageController implements ExceptionProcessor {
 
+    private final FileInfoService fileInfoService;
     private final SaveBoardDataService saveBoardDataService;
     private final FollowBoardService followBoardService;
     private final FollowService followService;
@@ -112,6 +115,12 @@ public class MypageController implements ExceptionProcessor {
         commonProcess("profile", model);
 
         if (errors.hasErrors()) {
+
+            String gid = memberUtil.getMember().getGid();
+            List<FileInfo> profileImages = fileInfoService.getList(gid);
+
+            form.setProfileImage(profileImages.get(0));
+
             return utils.tpl("mypage/profile");
         }
 
