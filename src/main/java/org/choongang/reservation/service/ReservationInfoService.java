@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -98,6 +99,14 @@ public class ReservationInfoService {
 
         }
 
+        String sopt = search.getSopt();
+        String skey = search.getSkey();
+
+        sopt = StringUtils.hasText(sopt) ? sopt : "all";
+        if (StringUtils.hasText(skey)) {
+            skey = skey.trim();
+
+        }
         //검색 조건 페이징
 
         int page = Utils.onlyPositiveNumber(search.getPage(),1);
