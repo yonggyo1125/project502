@@ -23,11 +23,16 @@
             <tr>
                 <th>센터 정보</th>
                 <td>
-                    <input type="hidden" name="cCode" th:field="*{cCode}">
                     <div th:text="${center.cName}"></div>
                     <div th:if="${!#strings.isEmpty(center.address)}">
                         <th:block th:if="${!#strings.isEmpty(center.zonecode)}" th:text="${'(' + center.zonecode + ')'}"></th:block>
                         <th:block th:text="${center.address + ' ' + center.addressSub}"></th:block>
+                    </div>
+                    <div class="input_grp">
+                        <select name="cCode" id="select_center" th:field="*{cCode}">
+                            <option th:each="item : ${centerList}" th:value="${item.cCode}" th:text="${item.cName}"></option>
+                        </select>
+                        <input type="text" id="search_center" placeholder="센터 키워드 입력...">
                     </div>
                 </td>
             </tr>
