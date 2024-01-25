@@ -1,0 +1,12 @@
+<ul xmlns:th="http://www.thymeleaf.org" class="days"
+    th:fragment="days">
+    <li th:each="day, status : ${days}">
+        <th:block th:if="${@rDateService.checkAvailable(requestReservation.cCode, dates[status.index])}">
+            <input type="radio" name="date" th:value="${dates[status.index]}" th:id="${'day_' + status.index}">
+            <label th:for="${'day_' + status.index}" th:text="${day}"></label>
+        </th:block>
+        <th:block th:unless="${@rDateService.checkAvailable(requestReservation.cCode, dates[status.index])}">
+            <div th:text="${day}" class="not_available"></div>
+        </th:block>
+    </li>
+</ul>

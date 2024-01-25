@@ -39,6 +39,9 @@ public class ReservationValidator implements Validator {
         String mode = StringUtils.hasText(form.getMode()) ? form.getMode() : "step1";
         if (mode.equals("step2")) {
             validateStep2(form, errors);
+        } else if (mode.equals("admin_add")) { // 관리자 예약 등록
+            validateStep1(form, errors);
+            validateStep2(form, errors);
         } else {
             validateStep1(form, errors);
         }

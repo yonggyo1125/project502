@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layouts/main}">
+<section layout:fragment="content">
+    <h1>예약 등록</h1>
+    <form name="frmApply" method="post" th:action="@{/admin/reservation/apply}" autocomplete="off" th:object="${requestReservation}">
+
+        <h2>센터 선택</h2>
+        <table class="table_cols mb30">
+            <tr>
+                <th width="180">헌혈 센터</th>
+                <td>
+                    <div class="input_grp">
+                        <select name="cCode" id="select_center" th:field="*{cCode}" class="refresh">
+                            <option value="">- 선택하세요 -</option>
+                            <option th:each="item : ${centerList}" th:value="${item.cCode}" th:text="${item.cName}"></option>
+                        </select>
+                        <input type="text" id="search_center" placeholder="센터 키워드 입력...">
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+
+        <h2>예약 날짜 선택</h2>
+        <div th:if="*{cCode != null}">
+            <div class="year_month">
+                <button type="button" th:data-c-code="*{cCode}", th:data-year="${prevYear}" th:data-month="${prevMonth}" th:text="#{이전달}"></button>
+                <span class="current">
+                    <th:block th:text="${year}"></th:block>
+                    <th:block th:text="#{년}"></th:block>
+
+                    <th:block th:text="${#numbers.formatInteger(month, 2)}"></th:block>
+                    <th:block th:text="#{월}"></th:block>
+                </span>
+                <button type="button" th:data-c-code="*{cCode}" th:data-year="${nextYear}" month="${nextMonth}" th:text="#{다음달}"></button>
+            </div>
+
+            <ul class="yoils">
+                <li th:each="yoil, status : ${yoilTitles}" th:text="${yoil}"></li>
+            </ul>
+            <div class="wrap_days">
+                <ul th:replace="~{admin/reservation/_calendar::days}"></ul>
+            </div>
+        </div>
+        <div class="message" th:if="*{cCode == null}">예약을 등록할 센터를 먼저 선택하세요.</div>
+
+        <div class="submit_btns" th:if="*{cCode != null}">
+            <button type="reset" class="btn">다시입력</button>
+            <button type="submit" class="btn">등록하기</button>
+        </div>
+    </form>
+</section>
+</html>

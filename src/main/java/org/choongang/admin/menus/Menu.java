@@ -35,6 +35,7 @@ public class Menu {
 
         menus.put("reservation", Arrays.asList(
             new MenuDetail("list", "예약 현황", "/admin/reservation"),
+                new MenuDetail("add", "예약 등록", "/admin/reservation/add"),
                 new MenuDetail("holiday", "휴무일 관리", "/admin/reservation/holiday")
         ));
     }

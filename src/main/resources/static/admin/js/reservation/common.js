@@ -14,7 +14,7 @@ window.addEventListener("DOMContentLoaded", function() {
 
 
                 const items = res.data;
-                selectCenterEl.innerHTML = "";
+                selectCenterEl.innerHTML = "<option value=''>- 선택하세요 -</option>";
                 for (const item of items) {
                     const option = document.createElement("option");
                     option.value=item.ccode;
@@ -25,5 +25,11 @@ window.addEventListener("DOMContentLoaded", function() {
                 }
             })
             .catch(err => console.error(err));
+    });
+
+    selectCenterEl.addEventListener("change", function() {
+        if (this.classList.contains("refresh")) {
+            location.href=`?cCode=${this.value}`;
+        }
     });
 });

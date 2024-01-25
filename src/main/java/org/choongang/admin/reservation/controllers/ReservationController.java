@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.choongang.admin.menus.Menu;
 import org.choongang.admin.menus.MenuDetail;
+import org.choongang.calendar.Calendar;
 import org.choongang.center.controllers.CenterSearch;
 import org.choongang.center.entities.CenterInfo;
 import org.choongang.center.service.CenterInfoService;
@@ -11,7 +12,9 @@ import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.ListData;
 import org.choongang.reservation.controllers.RequestReservation;
 import org.choongang.reservation.controllers.ReservationSearch;
+import org.choongang.reservation.controllers.ReservationValidator;
 import org.choongang.reservation.entities.Reservation;
+import org.choongang.reservation.service.ReservationApplyService;
 import org.choongang.reservation.service.ReservationDeleteService;
 import org.choongang.reservation.service.ReservationInfoService;
 import org.choongang.reservation.service.ReservationSaveService;
@@ -22,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Controller("adminReservationController")
@@ -33,6 +37,10 @@ public class ReservationController implements ExceptionProcessor {
     private final ReservationSaveService reservationSaveService;
     private final ReservationDeleteService reservationDeleteService;
     private final CenterInfoService centerInfoService;
+    private final ReservationValidator reservationValidator;
+    private final ReservationApplyService reservationApplyService;
+
+    private final Calendar calendar;
 
     @ModelAttribute("menuCode")
     public String getMenuCode() {
@@ -42,6 +50,16 @@ public class ReservationController implements ExceptionProcessor {
     @ModelAttribute("subMenus")
     public List<MenuDetail> getSubMenus() {
         return Menu.getMenus("reservation");
+    }
+
+
+    @ModelAttribute("centerList")
+    public List<CenterInfo> getCenterList() {
+        CenterSearch search = new CenterSearch();
+        search.setLimit(10000);
+        ListData<CenterInfo> data = centerInfoService.getList(search);
+
+        return data.getItems();
     }
 
     /**
@@ -89,13 +107,35 @@ public class ReservationController implements ExceptionProcessor {
         CenterInfo center = centerInfoService.get(form.getCCode());
         model.addAttribute("center", center);
 
-        CenterSearch search = new CenterSearch();
-        search.setLimit(10000);
-        ListData<CenterInfo> data = centerInfoService.getList(search);
-        List<CenterInfo> centerList = data.getItems();
-        model.addAttribute("centerList", data.getItems());
-
         return "admin/reservation/edit";
+    }
+
+    @GetMapping("/add")
+    public String add(RequestReservation form, Errors errors, Model model) {
+        commonProcess("add", model);
+
+        Map<String, Object> data = calendar.getData(form.getYear(), form.getMonth());
+        model.addAllAttributes(data);
+
+        return "admin/reservation/add";
+    }
+
+    @PostMapping("/apply")
+    public String apply(RequestReservation form, Errors errors, Model model) {
+        form.setMode("admin_add"); // 검증 -> valiateStep1, validateStep2
+        reservationValidator.validate(form, errors);
+
+        if (errors.hasErrors()) {
+
+            Map<String, Object> data = calendar.getData(form.getYear(), form.getMonth());
+            model.addAllAttributes(data);
+
+            return "admin/reservation/add";
+        }
+
+        reservationApplyService.apply(form);
+
+        return "redirect:/admin/reservation";
     }
 
     @PostMapping("/save")
@@ -147,6 +187,15 @@ public class ReservationController implements ExceptionProcessor {
         return "admin/reservation/branch_list";
     }
 
+    @GetMapping("/calendar")
+    public String getCalendar(@ModelAttribute RequestReservation form, Model model) {
+
+        Map<String, Object> data = calendar.getData(form.getYear(), form.getMonth());
+        model.addAllAttributes(data);
+
+        return "admin/reservation/_calendar";
+    }
+
     /**
      * 공통 처리
      *
@@ -169,7 +218,9 @@ public class ReservationController implements ExceptionProcessor {
             pageTitle = "지점 목록";
         } else if (mode.equals("edit")) {
             pageTitle = "예약 정보 수정";
-
+        } else if (mode.equals("add")) {
+            pageTitle = "예약 등록";
+            addScript.add("reservation/form");
         }
 
         model.addAttribute("pageTitle", pageTitle);
