@@ -17,9 +17,9 @@ window.addEventListener("DOMContentLoaded", function() {
                 selectCenterEl.innerHTML = "";
                 for (const item of items) {
                     const option = document.createElement("option");
-                    option.value=item.cCode;
+                    option.value=item.ccode;
 
-                    const optionText = document.createTextNode(item.cName);
+                    const optionText = document.createTextNode(item.cname);
                     option.appendChild(optionText);
                     selectCenterEl.appendChild(option);
                 }
