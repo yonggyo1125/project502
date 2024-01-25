@@ -91,6 +91,20 @@ public class MypageController implements ExceptionProcessor {
         return utils.tpl("mypage/follow_board");
     }
 
+    @GetMapping("/profile")
+    public String profile(Model model) {
+        commonProcess("profile", model);
+
+        return utils.tpl("mypage/profile");
+    }
+
+    @PostMapping("/profile")
+    public String updateProfile(Model model) {
+        commonProcess("profile", model);
+
+        return "redirect:/mypage";
+    }
+
     private void commonProcess(String mode, Model model) {
         mode = StringUtils.hasText(mode) ? mode : "main";
         String pageTitle = Utils.getMessage("마이페이지", "commons");
@@ -108,6 +122,11 @@ public class MypageController implements ExceptionProcessor {
             addScript.add("mypage/save_post");
         } else if (mode.equals("follow")) {
             addCommonScript.add("follow");
+
+        } else if (mode.equals("profile")) {
+            pageTitle = Utils.getMessage("회원정보_수정", "commons");
+            addCommonScript.add("fileManager");
+            addScript.add("mypage/profile");
         }
 
         model.addAttribute("pageTitle", pageTitle);
