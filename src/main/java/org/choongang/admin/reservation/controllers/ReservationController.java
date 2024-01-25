@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -156,6 +157,9 @@ public class ReservationController implements ExceptionProcessor {
         String pageTitle = "예약 현황";
         mode = Objects.requireNonNullElse(mode, "list");
 
+        List<String> addScript = new ArrayList<>();
+        addScript.add("reservation/common");
+
         if (mode.equals("add_branch")) {
             pageTitle = "지점 등록";
             
@@ -165,9 +169,11 @@ public class ReservationController implements ExceptionProcessor {
             pageTitle = "지점 목록";
         } else if (mode.equals("edit")) {
             pageTitle = "예약 정보 수정";
+
         }
 
         model.addAttribute("pageTitle", pageTitle);
         model.addAttribute("subMenuCode", mode);
+        model.addAttribute("addScript", addScript);
     }
 }
