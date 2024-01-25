@@ -16,6 +16,8 @@ import org.springframework.util.StringUtils;
 public class MemberUpdateService {
     private final MemberRepository memberRepository;
     private final FileUploadService fileUploadService;
+    private final MemberInfoService memberInfoService;
+
     private final HttpSession session;
 
     private final PasswordEncoder encoder;
@@ -31,12 +33,13 @@ public class MemberUpdateService {
             member.setPassword(encoder.encode(password.trim()));
         }
 
-        member.setProfileImage(form.getProfileImage());
-
         memberRepository.saveAndFlush(member);
+
 
         fileUploadService.processDone(member.getGid());
 
-        session.setAttribute("member", member);
+        MemberInfo memberInfo = (MemberInfo) memberInfoService.loadUserByUsername(member.getUserId());
+
+        session.setAttribute("member", memberInfo.getMember());
     }
 }

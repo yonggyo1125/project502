@@ -132,6 +132,10 @@ public class Utils {
 
     public String backgroundStyle(FileInfo file, int width, int height) {
 
+        if (file == null) {
+            return "";
+        }
+
         String[] data = fileInfoService.getThumb(file.getSeq(), width, height);
         String imageUrl = data[1];
 
