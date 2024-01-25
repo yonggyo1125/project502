@@ -8,6 +8,7 @@ import org.choongang.center.service.CenterInfoService;
 import org.choongang.commons.ListData;
 import org.choongang.commons.Pagination;
 import org.choongang.commons.Utils;
+import org.choongang.member.MemberUtil;
 import org.choongang.reservation.controllers.RequestReservation;
 import org.choongang.reservation.controllers.ReservationSearch;
 import org.choongang.reservation.entities.QReservation;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,6 +36,7 @@ public class ReservationInfoService {
     private final ReservationRepository reservationRepository;
     private final CenterInfoService centerInfoService;
     private final HttpServletRequest request;
+    private final MemberUtil memberUtil;
 
     public Reservation get(Long bookCode) {
         Reservation reservation = reservationRepository.findById(bookCode).orElseThrow(ReservationNotFoundException::new);
@@ -106,6 +109,16 @@ public class ReservationInfoService {
         Pagination pagination = new Pagination(page, (int)data.getTotalElements(), 10, limit, request);
 
         return new ListData<>(data.getContent(), pagination);
+    }
+
+    public ListData<Reservation> getMyList(ReservationSearch search) {
+        if (!memberUtil.isLogin()) {
+            return null;
+        }
+
+        search.setUserId(Arrays.asList(memberUtil.getMember().getUserId()));
+
+        return getList(search);
     }
 
     public int getAvailableCapacity(Long cCode, LocalDateTime bookDateTime) {
