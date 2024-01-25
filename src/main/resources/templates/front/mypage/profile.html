@@ -20,6 +20,10 @@
                     </a>
                     <th:block th:utext="*{@utils.printThumb(seq, 250, 250, 'image')}"></th:block>
                 </div>
+                <button type="button" class="sbtn upload_files" data-image-only="true" data-single-file="true">
+                    <i class="xi-image"></i>
+                    <th:block th:text="#{이미지_업로드}"></th:block>
+                </button>
             </dd>
         </dl>
         <dl>
