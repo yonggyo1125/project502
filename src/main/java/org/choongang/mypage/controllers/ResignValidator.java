@@ -74,6 +74,14 @@ public class ResignValidator implements Validator {
      * @param errors
      */
     private void validateStep2(RequestResign form, Errors errors) {
+        Integer authCode = form.getAuthCode();
+        if (authCode == null) {
+            errors.rejectValue("authCode", "NotNull");
+        }
+
+        if (authCode != null && !emailVerifyService.check(authCode)) {
+            errors.rejectValue("authCode", "Mismatch");
+        }
 
     }
 }

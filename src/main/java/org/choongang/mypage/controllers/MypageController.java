@@ -17,6 +17,7 @@ import org.choongang.member.entities.Member;
 import org.choongang.member.service.MemberUpdateService;
 import org.choongang.member.service.follow.FollowBoardService;
 import org.choongang.member.service.follow.FollowService;
+import org.choongang.mypage.service.ResignService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,6 +42,7 @@ public class MypageController implements ExceptionProcessor {
     private final ProfileValidator profileValidator;
 
     private final ResignValidator resignValidator;
+    private final ResignService resignService;
 
     private final EmailVerifyService emailVerifyService;
 
@@ -163,6 +165,7 @@ public class MypageController implements ExceptionProcessor {
     public String resignStep2(RequestResign form, Errors errors, Model model) {
         commonProcess("resign", model);  // 비밀번호, 비밀번호 확인 -
 
+        form.setMode("step1");
         resignValidator.validate(form, errors);
 
         if (errors.hasErrors()) {
@@ -182,13 +185,28 @@ public class MypageController implements ExceptionProcessor {
      * @return
      */
     @PostMapping("/resign_done")
-    @PreAuthorize("isAnonymous()")
-    public String resignDone(RequestResign form, Errors errors, Model model) {
+    @PreAuthorize("permitAll()")
+    public String resignProcess(RequestResign form, Errors errors, Model model) {
         commonProcess("resign", model); // 인증번호 여부
+
+        form.setMode("step2");
+        resignValidator.validate(form, errors);
 
         if (errors.hasErrors()) { // 인증 코드 실패시
             return utils.tpl("mypage/resign_auth");
         }
+
+        // 회원 탈퇴 처리
+        resignService.resign();
+
+        return "redirect:/mypage/resign_done";
+    }
+
+    @GetMapping("/resign_done")
+    @PreAuthorize("permitAll()")
+    public String resignDone(Model model) {
+        commonProcess("resign", model);
+
 
         return utils.tpl("mypage/resign_done");
     }
