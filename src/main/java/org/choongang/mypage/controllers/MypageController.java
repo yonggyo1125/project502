@@ -16,6 +16,7 @@ import org.choongang.member.entities.Member;
 import org.choongang.member.service.MemberUpdateService;
 import org.choongang.member.service.follow.FollowBoardService;
 import org.choongang.member.service.follow.FollowService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -137,6 +138,51 @@ public class MypageController implements ExceptionProcessor {
         return "redirect:/mypage";
     }
 
+    /**
+     * 탈퇴 페이지 -> 비밀번호 확인
+     *          -> 이메일 인증 코드
+     *
+     * @param model
+     * @return
+     */
+    @GetMapping("/resign")
+    public String resignStep1(@ModelAttribute RequestResign form, Model model) {
+        commonProcess("resign", model);
+
+
+        return utils.tpl("mypage/resign");
+    }
+
+    // 이메일로 전송된 코드 확인
+    @PostMapping("/resign")
+    public String resignStep2(RequestResign form, Errors errors, Model model) {
+        commonProcess("resign", model);
+
+        if (errors.hasErrors()) {
+            return utils.tpl("mypage/resign");
+        }
+
+        return utils.tpl("mypage/resign_auth");
+    }
+
+    /**
+     * 회원탈퇴 완료
+     *          enable -> false, 로그아웃 -> 비회원도 접근 가능
+     * @param model
+     * @return
+     */
+    @PostMapping("/resign_done")
+    @PreAuthorize("isAnonymous()")
+    public String resignDone(RequestResign form, Errors errors, Model model) {
+        commonProcess("resign", model);
+
+        if (errors.hasErrors()) { // 인증 코드 실패시
+            return utils.tpl("mypage/resign_auth");
+        }
+
+        return utils.tpl("mypage/resign_done");
+    }
+
     private void commonProcess(String mode, Model model) {
         mode = StringUtils.hasText(mode) ? mode : "main";
         String pageTitle = Utils.getMessage("마이페이지", "commons");
@@ -159,6 +205,9 @@ public class MypageController implements ExceptionProcessor {
             pageTitle = Utils.getMessage("회원정보_수정", "commons");
             addCommonScript.add("fileManager");
             addScript.add("mypage/profile");
+
+        } else if (mode.equals("resign")) {
+            pageTitle = Utils.getMessage("회원_탈퇴", "commons");
         }
 
         model.addAttribute("pageTitle", pageTitle);
