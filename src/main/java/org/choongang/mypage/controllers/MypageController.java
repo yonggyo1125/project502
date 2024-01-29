@@ -156,7 +156,7 @@ public class MypageController implements ExceptionProcessor {
     // 이메일로 전송된 코드 확인
     @PostMapping("/resign")
     public String resignStep2(RequestResign form, Errors errors, Model model) {
-        commonProcess("resign", model);
+        commonProcess("resign", model);  // 비밀번호, 비밀번호 확인 -
 
         if (errors.hasErrors()) {
             return utils.tpl("mypage/resign");
@@ -174,7 +174,7 @@ public class MypageController implements ExceptionProcessor {
     @PostMapping("/resign_done")
     @PreAuthorize("isAnonymous()")
     public String resignDone(RequestResign form, Errors errors, Model model) {
-        commonProcess("resign", model);
+        commonProcess("resign", model); // 인증번호 여부
 
         if (errors.hasErrors()) { // 인증 코드 실패시
             return utils.tpl("mypage/resign_auth");
