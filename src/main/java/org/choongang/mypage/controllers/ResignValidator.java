@@ -1,6 +1,7 @@
 package org.choongang.mypage.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.choongang.email.service.EmailVerifyService;
 import org.choongang.member.MemberUtil;
 import org.choongang.member.entities.Member;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import org.springframework.validation.Validator;
 @RequiredArgsConstructor
 public class ResignValidator implements Validator {
 
+    private final EmailVerifyService emailVerifyService;
     private final MemberUtil memberUtil;
     private final PasswordEncoder encoder;
 
