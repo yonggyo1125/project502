@@ -2,10 +2,12 @@ package org.choongang.mypage.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.choongang.member.MemberUtil;
+import org.choongang.member.entities.Member;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 @Component
@@ -44,6 +46,22 @@ public class ResignValidator implements Validator {
     private void validateStep1(RequestResign form, Errors errors) {
         String password = form.getPassword();
         String confirmPassword = form.getConfirmPassword();
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotBlank");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "NotBlank");
+
+        if (StringUtils.hasText(password) && StringUtils.hasText(confirmPassword)
+                && !password.equals(confirmPassword)) {
+
+            errors.rejectValue("confirmPassword", "Mismatch.password");
+        }
+
+        if (memberUtil.isLogin()) {
+            Member member = memberUtil.getMember();
+            if (!encoder.matches(password, member.getPassword())) {
+                errors.rejectValue("password", "Mismatch");
+            }
+        }
     }
 
     /**

@@ -9,6 +9,7 @@ import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.ListData;
 import org.choongang.commons.RequestPaging;
 import org.choongang.commons.Utils;
+import org.choongang.email.service.EmailVerifyService;
 import org.choongang.file.entities.FileInfo;
 import org.choongang.file.service.FileInfoService;
 import org.choongang.member.MemberUtil;
@@ -38,6 +39,10 @@ public class MypageController implements ExceptionProcessor {
 
     private final MemberUpdateService memberUpdateService;
     private final ProfileValidator profileValidator;
+
+    private final ResignValidator resignValidator;
+
+    private final EmailVerifyService emailVerifyService;
 
     private final MemberUtil memberUtil;
 
@@ -158,9 +163,14 @@ public class MypageController implements ExceptionProcessor {
     public String resignStep2(RequestResign form, Errors errors, Model model) {
         commonProcess("resign", model);  // 비밀번호, 비밀번호 확인 -
 
+        resignValidator.validate(form, errors);
+
         if (errors.hasErrors()) {
             return utils.tpl("mypage/resign");
         }
+
+        // 메일로 인증 코드 발송
+        emailVerifyService.sendCode(memberUtil.getMember().getEmail());
 
         return utils.tpl("mypage/resign_auth");
     }
