@@ -26,4 +26,6 @@ public class BoardDataSearch {
     private String userId;
 
     private String category; // 게시판 분류
+
+    private List<Long> seq; // 게시글 번호
 }

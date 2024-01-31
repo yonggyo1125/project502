@@ -109,6 +109,8 @@ public class BoardInfoService {
         if (StringUtils.hasText(bid)) {
             andBuilder.and(boardData.board.bid.eq(bid)); // 게시판 ID
         }
+
+
         /* 검색 조건 처리 S */
 
         String sopt = search.getSopt();
