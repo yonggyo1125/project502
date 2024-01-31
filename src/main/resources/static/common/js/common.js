@@ -100,3 +100,23 @@ commonLib.sendEmailVerifyCheck = function(authNum) {
         })
         .catch(err => console.error(err));
 };
+
+/* 최근 본 게시글 기록 저장 S */
+if (location.pathname.indexOf("/board/view/") != -1) {
+    const v = /\/board\/view\/(\d*)/.exec(location.pathname);
+    const seq = Number(v[1]);
+    const key = "viewPosts";
+    let viewPosts = localStorage.getItem(key);
+    viewPosts = JSON.parse(viewPosts) || [];
+
+    // 이미 열람 기록이 있으면 기존 기록 삭제
+    const index = viewPosts.findIndex(p => p.seq == seq);
+    if (index != -1) viewPosts.splice(index, 1);
+
+    viewPosts.push({seq, timestamp: Date.now()});
+
+    viewPosts.sort((a, b) => b.timestamp - a.timestamp); // 내림차순 정렬
+
+    localStorage.setItem(key, JSON.stringify(viewPosts));
+}
+/* 최근 본 게시글 기록 저장 E */
