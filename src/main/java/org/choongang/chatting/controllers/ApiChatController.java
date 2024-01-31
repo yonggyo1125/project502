@@ -1,6 +1,7 @@
 package org.choongang.chatting.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.choongang.chatting.entities.ChatHistory;
 import org.choongang.chatting.entities.ChatRoom;
 import org.choongang.chatting.service.ChatHistoryInfoService;
 import org.choongang.chatting.service.ChatHistorySaveService;
@@ -12,6 +13,8 @@ import org.choongang.commons.rests.JSONData;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/chat")
@@ -65,5 +68,12 @@ public class ApiChatController implements ExceptionRestProcessor {
         chatHistorySaveService.save(form);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/messages/{roomId}")
+    public JSONData<List<ChatHistory>> getMessages(@PathVariable("roomId") String roomId, @RequestBody ChatHistorySearch search) {
+        List<ChatHistory> messages = chatHistoryInfoService.getList(roomId, search);
+
+        return new JSONData<>(messages);
     }
 }

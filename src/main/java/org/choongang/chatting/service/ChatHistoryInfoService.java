@@ -22,10 +22,12 @@ public class ChatHistoryInfoService {
     private final ChatHistoryRepository chatHistoryRepository;
     private final EntityManager em;
 
-    public List<ChatHistory> getList(ChatHistorySearch search) {
+    public List<ChatHistory> getList(String roomId, ChatHistorySearch search) {
 
         QChatHistory chatHistory = QChatHistory.chatHistory;
         BooleanBuilder andBuilder = new BooleanBuilder();
+
+        andBuilder.and(chatHistory.chatRoom.roomId.eq(roomId));
 
         PathBuilder<ChatHistory> pathBuilder = new PathBuilder<>(ChatHistory.class, "chatHistory");
 
