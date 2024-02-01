@@ -2,7 +2,9 @@ package org.choongang.chatting.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.choongang.chatting.entities.ChatHistory;
 import org.choongang.chatting.entities.ChatRoom;
+import org.choongang.chatting.service.ChatHistoryInfoService;
 import org.choongang.chatting.service.ChatRoomInfoService;
 import org.choongang.chatting.service.ChatRoomSaveService;
 import org.choongang.commons.ExceptionProcessor;
@@ -12,10 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +26,7 @@ public class ChatController implements ExceptionProcessor {
 
     private final ChatRoomInfoService chatRoomInfoService;
     private final ChatRoomSaveService chatRoomSaveService;
+    private final ChatHistoryInfoService chatHistoryInfoService;
 
     private final Utils utils;
 
@@ -63,18 +63,35 @@ public class ChatController implements ExceptionProcessor {
         return "redirect:/chatting/" + form.getRoomId();
     }
 
+    // 채팅 방
+    @GetMapping("/{roomId}")
+    public String chattingRoom(@PathVariable("roomId") String roomId, Model model) {
+        commonProcess("chat_room", model);
+
+        ChatRoom chatRoom = chatRoomInfoService.get(roomId);
+        List<ChatHistory> items = chatHistoryInfoService.getList(roomId);
+
+        model.addAttribute("chatRoom", chatRoom);
+        model.addAttribute("items", items);
+
+        return utils.tpl("chat/room");
+    }
+
     private void commonProcess(String mode, Model model) {
         mode = StringUtils.hasText(mode) ? mode : "room_list";
         String pageTitle = Utils.getMessage("채팅방_목록", "commons");
 
         List<String> addCommonScript = new ArrayList<>();
-        //addCommonScript.add("chat");
+        List<String> addScript = new ArrayList<>();
 
         if (mode.equals("create_room")) {
             pageTitle = Utils.getMessage("채팅방_생성", "commons");
+        } else if (mode.equals("chat_room")) {
+            addScript.add("chat/room");
         }
 
         model.addAttribute("addCommonScript", addCommonScript);
+        model.addAttribute("addScript", addScript);
         model.addAttribute("pageTitle", pageTitle);
     }
 }
