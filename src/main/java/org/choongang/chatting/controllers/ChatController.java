@@ -2,9 +2,11 @@ package org.choongang.chatting.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.choongang.chatting.entities.ChatRoom;
 import org.choongang.chatting.service.ChatRoomInfoService;
 import org.choongang.chatting.service.ChatRoomSaveService;
 import org.choongang.commons.ExceptionProcessor;
+import org.choongang.commons.ListData;
 import org.choongang.commons.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,8 +31,13 @@ public class ChatController implements ExceptionProcessor {
 
 
     @GetMapping
-    public String roomList(Model model) {
+    public String roomList(@ModelAttribute ChatRoomSearch search, Model model) {
         commonProcess("main", model);
+
+        ListData<ChatRoom> data = chatRoomInfoService.getList(search);
+
+        model.addAttribute("items", data.getItems());
+        model.addAttribute("pagination", data.getPagination());
 
         return utils.tpl("chat/rooms");
     }
@@ -49,7 +56,6 @@ public class ChatController implements ExceptionProcessor {
         if (errors.hasErrors()) {
             return utils.tpl("chat/create_room");
         }
-
 
         chatRoomSaveService.save(form);
 
