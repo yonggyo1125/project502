@@ -21,12 +21,16 @@ const chat = {
 window.addEventListener("DOMContentLoaded", function() {
     const ws = new WebSocket("ws://localhost:3000/chat");
 
-    ws.onopen = function(e) {}
+    chat.init(ws);
 
+    ws.onopen = function(e) {}
+        const message = `${frmChat.nickName}님 입장`;
+        chat.send(message);
     };
 
     ws.onclose = function(e) {
-
+        const message = `${frmChat.nickName}님 퇴장`;
+        chat.send(message);
     };
 
     ws.onmessage = function(message) {
