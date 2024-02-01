@@ -72,7 +72,12 @@ public class ApiChatController implements ExceptionRestProcessor {
      * @return
      */
     @PostMapping
-    public ResponseEntity messageSave(@RequestBody RequestChatHistory form) {
+    public ResponseEntity messageSave(@RequestBody @Valid RequestChatHistory form, Errors errors) {
+
+        if (errors.hasErrors()) {
+            throw new CommonRestException(errors, HttpStatus.BAD_REQUEST);
+        }
+
         chatHistorySaveService.save(form);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();

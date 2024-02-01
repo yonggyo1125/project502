@@ -2,9 +2,12 @@ package org.choongang.chatting;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.choongang.chatting.controllers.ChatRoomSearch;
 import org.choongang.chatting.controllers.RequestChatRoom;
 import org.choongang.chatting.entities.ChatRoom;
 import org.choongang.chatting.service.ChatRoomInfoService;
+import org.choongang.chatting.service.ChatRoomSaveService;
+import org.choongang.commons.ListData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +18,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -33,12 +41,23 @@ public class RoomTest {
     @Autowired
     private ChatRoomInfoService chatRoomInfoService;
 
+    @Autowired
+    private ChatRoomSaveService chatRoomSaveService;
+
     private ObjectMapper om;
+
 
     @BeforeEach
     void init() {
         om = new ObjectMapper();
         om.registerModule(new JavaTimeModule());
+
+        for (int i = 1; i <= 10; i++) {
+            RequestChatRoom form = new RequestChatRoom();
+            form.setRoomId("room" + i);
+            form.setRoomNm("방" + i);
+            chatRoomSaveService.save(form);
+        }
     }
 
     @Test
@@ -68,13 +87,32 @@ public class RoomTest {
     @DisplayName("필수 항목 검증")
     void requiredFieldsTest() throws Exception {
         RequestChatRoom form = new RequestChatRoom();
+        form.setCapacity(1);
         String params = om.writeValueAsString(form);
 
-        mockMvc.perform(post("/api/chat/room")
+        String body = mockMvc.perform(post("/api/chat/room")
                 .with(csrf().asHeader())
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(params))
-                .andDo(print());
-    }
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn()
+                .getResponse()
+                .getContentAsString(Charset.forName("UTF-8"));
 
+        assertTrue(body.contains("2명 이상"));
+        assertTrue(body.contains("방 이름"));
+        assertTrue(body.contains("방 아이디"));
+
+    }
+    
+    @Test
+    @DisplayName("방목록 조회 테스트")
+    void roomListTest() {
+        ChatRoomSearch search = new ChatRoomSearch();
+        ListData<ChatRoom> data = chatRoomInfoService.getList(search);
+
+        assertEquals(10, data.getItems().size());
+
+    }
 }

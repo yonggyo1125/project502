@@ -19,7 +19,7 @@ public class CommonRestException extends CommonException {
     private static String toJSON(Errors errors) {
         List<String[]> items =  errors.getFieldErrors()
                 .stream()
-                .map(e -> new String[] { e.getField(), getErrorMessages(e.getCodes()) })
+                .map(e -> new String[] { e.getField(), Utils.getMessage(e.getCodes()[0]) })
                 .toList();
 
         ObjectMapper om = new ObjectMapper();
