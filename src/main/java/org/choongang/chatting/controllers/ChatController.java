@@ -10,6 +10,7 @@ import org.choongang.commons.ListData;
 import org.choongang.commons.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,7 +33,7 @@ public class ChatController implements ExceptionProcessor {
 
     @GetMapping
     public String roomList(@ModelAttribute ChatRoomSearch search, Model model) {
-        commonProcess("main", model);
+        commonProcess("room_list", model);
 
         ListData<ChatRoom> data = chatRoomInfoService.getList(search);
 
@@ -63,9 +64,17 @@ public class ChatController implements ExceptionProcessor {
     }
 
     private void commonProcess(String mode, Model model) {
+        mode = StringUtils.hasText(mode) ? mode : "room_list";
+        String pageTitle = Utils.getMessage("채팅방_목록", "commons");
+
         List<String> addCommonScript = new ArrayList<>();
-        addCommonScript.add("chat");
+        //addCommonScript.add("chat");
+
+        if (mode.equals("create_room")) {
+            pageTitle = Utils.getMessage("채팅방_생성", "commons");
+        }
 
         model.addAttribute("addCommonScript", addCommonScript);
+        model.addAttribute("pageTitle", pageTitle);
     }
 }
