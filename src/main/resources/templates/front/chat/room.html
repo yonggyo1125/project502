@@ -10,8 +10,8 @@
     <form name="frmChat" class="input_box">
         <input type="hidden" name="roomId" th:value="*{roomId}">
 
-        <!--<input type="text" name="nickName" th:value="${session.member != null ? session.member.name : ''}" th:placeholder="#{닉네임}">-->
-        <input type="text" name="nickName" value="강사">
+        <input type="text" name="nickName" th:value="${session.member != null ? session.member.name : ''}" th:placeholder="#{닉네임}">
+
         <input type="text" name="message" th:placeholder="#{메세지_입력...}">
         <button type="submit" th:text="#{전송}"></button>
     </form>

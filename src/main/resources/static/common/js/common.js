@@ -8,7 +8,7 @@ var commonLib = commonLib || {};
 * @param params : 요청 데이터(POST, PUT, PATCH ... )
 * @param responseType :  json : javascript 객체로 변환
 */
-commonLib.ajaxLoad = function(method, url, params, responseType) {
+commonLib.ajaxLoad = function(method, url, params, responseType, headers) {
     method = method || "GET";
     params = params || null;
 
@@ -21,15 +21,20 @@ commonLib.ajaxLoad = function(method, url, params, responseType) {
         xhr.open(method, url);
         xhr.setRequestHeader(tokenHeader, token);
 
+        if (headers) {
+            for (const key in headers) {
+                xhr.setRequestHeader(key, headers[key]);
+            }
+        }
 
-           xhr.send(params); // 요청 body에 실릴 데이터 키=값&키=값& .... FormData 객체 (POST, PATCH, PUT)
+       xhr.send(params); // 요청 body에 실릴 데이터 키=값&키=값& .... FormData 객체 (POST, PATCH, PUT)
 
 
         xhr.onreadystatechange = function() {
             if (xhr.readyState == XMLHttpRequest.DONE) {
-                const resData = (responseType && responseType.toLowerCase() == 'json') ? JSON.parse(xhr.responseText) : xhr.responseText;
+                const resData = (xhr.responseText.trim() && responseType && responseType.toLowerCase() == 'json') ? JSON.parse(xhr.responseText) : xhr.responseText;
 
-                if (xhr.status == 200) {
+                if (xhr.status == 200 || xhr.status == 201) {
 
                     resolve(resData); // 성공시 응답 데이터
                 } else {
