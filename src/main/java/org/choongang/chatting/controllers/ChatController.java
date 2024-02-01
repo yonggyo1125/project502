@@ -10,6 +10,11 @@ import org.choongang.chatting.service.ChatRoomSaveService;
 import org.choongang.commons.ExceptionProcessor;
 import org.choongang.commons.ListData;
 import org.choongang.commons.Utils;
+import org.choongang.commons.exceptions.AlertBackException;
+import org.choongang.member.MemberUtil;
+import org.choongang.member.entities.Member;
+import org.choongang.member.repositories.MemberRepository;
+import org.choongang.member.service.MemberNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -27,7 +32,9 @@ public class ChatController implements ExceptionProcessor {
     private final ChatRoomInfoService chatRoomInfoService;
     private final ChatRoomSaveService chatRoomSaveService;
     private final ChatHistoryInfoService chatHistoryInfoService;
+    private final MemberRepository repository;
 
+    private final MemberUtil memberUtil;
     private final Utils utils;
 
     private ChatRoom chatRoom;
@@ -62,6 +69,30 @@ public class ChatController implements ExceptionProcessor {
         chatRoomSaveService.save(form);
 
         return "redirect:/chatting/" + form.getRoomId();
+    }
+
+    @GetMapping("/apply/{userId}")
+    public String applyChatting(@PathVariable("userId") String userId) {
+
+        if (!repository.existsByUserId(userId)) {
+            throw new MemberNotFoundException();
+        }
+
+        if (!memberUtil.isLogin()) {
+            return "redirect:/member/login?redirectURL=/chatting/apply/"+userId;
+        }
+
+        Member member = memberUtil.getMember();
+        String roomId = member.getUserId() + "_" + userId;
+        String roomNm = "1:1상담";
+        RequestChatRoom form = new RequestChatRoom();
+        form.setRoomId(roomId);
+        form.setRoomNm(roomNm);
+        form.setCapacity(2);
+
+        chatRoomSaveService.save(form);
+
+        return "redirect:/chatting/" + roomId;
     }
 
     // 채팅 방

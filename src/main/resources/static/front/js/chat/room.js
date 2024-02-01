@@ -14,9 +14,23 @@ const chat = {
             frmChat.nickName.focus();
             return;
         }
+
+
+
         const roomId = this.roomId;
         const data = { roomId, nickName, message };
-        this.ws.send(JSON.stringify(data));
+
+        const { ajaxLoad } = commonLib;
+        const url = `/api/chat`;
+
+        const headerName = "Content-Type";
+
+        ajaxLoad('post', url, JSON.stringify(data), 'json', {[headerName]: "application/json; charset=UTF-8"})
+            .then(res => chat.ws.send(JSON.stringify(data)))
+            .catch(err => console.error(err));
+
+         frmChat.message.value = "";
+         frmChat.message.focus();
     },
     // 대화상자에 출력
     print(message) {
