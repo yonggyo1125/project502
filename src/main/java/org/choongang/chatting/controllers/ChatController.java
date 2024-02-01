@@ -30,6 +30,7 @@ public class ChatController implements ExceptionProcessor {
 
     private final Utils utils;
 
+    private ChatRoom chatRoom;
 
     @GetMapping
     public String roomList(@ModelAttribute ChatRoomSearch search, Model model) {
@@ -66,15 +67,21 @@ public class ChatController implements ExceptionProcessor {
     // 채팅 방
     @GetMapping("/{roomId}")
     public String chattingRoom(@PathVariable("roomId") String roomId, Model model) {
-        commonProcess("chat_room", model);
+        commonProcess(roomId, "chat_room", model);
 
-        ChatRoom chatRoom = chatRoomInfoService.get(roomId);
         List<ChatHistory> items = chatHistoryInfoService.getList(roomId);
 
-        model.addAttribute("chatRoom", chatRoom);
         model.addAttribute("items", items);
 
         return utils.tpl("chat/room");
+    }
+
+    private void commonProcess(String roomId, String mode, Model model) {
+        chatRoom = chatRoomInfoService.get(roomId);
+
+        commonProcess(mode, model);
+
+        model.addAttribute("chatRoom", chatRoom);
     }
 
     private void commonProcess(String mode, Model model) {
@@ -83,10 +90,14 @@ public class ChatController implements ExceptionProcessor {
 
         List<String> addCommonScript = new ArrayList<>();
         List<String> addScript = new ArrayList<>();
+        List<String> addCss = new ArrayList<>();
+
+        addCss.add("chat/style");
 
         if (mode.equals("create_room")) {
             pageTitle = Utils.getMessage("채팅방_생성", "commons");
         } else if (mode.equals("chat_room")) {
+            pageTitle = chatRoom.getRoomNm();
             addScript.add("chat/room");
         }
 
